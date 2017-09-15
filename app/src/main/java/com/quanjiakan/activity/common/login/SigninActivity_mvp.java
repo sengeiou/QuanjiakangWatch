@@ -13,13 +13,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.reflect.TypeToken;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.activity.base.QuanjiakanSetting;
 import com.quanjiakan.activity.common.main.MainActivity;
 import com.quanjiakan.constants.IPresenterBusinessCode;
+import com.quanjiakan.net.format.CommonResultEntity;
 import com.quanjiakan.net.retrofit.result_entity.PostLoginEntity;
 import com.quanjiakan.net_presenter.SigninPresenter;
+import com.quanjiakan.util.common.SerialUtil;
 import com.quanjiakan.watch.R;
 import com.umeng.analytics.MobclickAgent;
 
@@ -178,44 +181,44 @@ public class SigninActivity_mvp extends BaseActivity {
         switch (type) {
             case IPresenterBusinessCode.LOGIN:
                 //TODO 使用String格式的Retrofit
-//                if(result!=null && result.toString().startsWith("{")) {
-//                    CommonResultEntity res = (CommonResultEntity) SerialUtil.jsonToObject(result.toString(),new TypeToken<CommonResultEntity>(){}.getType());
-//                    //TODO 实际上仍然需要判断数据中是否是返回200 ，得到用户名，Token，ID等数据
-//                    /**
-//                     * 用户名，
-//                     * 电话
-//                     * 校验用的密码（非原密码，而是加密取SHA1值的密码
-//                     * Token，
-//                     * ID，
-//                     */
-//                    //TODO 先按照罗工的那个步骤序列化数据
-//                    /**
-//                     QuanjiakanSetting.getInstance().setPhone("");
-//                     QuanjiakanSetting.getInstance().setUserId(1);
-//                     QuanjiakanSetting.getInstance().setUserName("");
-//                     QuanjiakanSetting.getInstance().setPwSignature("");
-//                     QuanjiakanSetting.getInstance().setToken("");
-//                     */
-//                    if("200".equals(res.getCode())){
-//                        Intent intent = new Intent(SigninActivity_mvp.this, MainActivity.class);
-//                        startActivity(intent);
-//                        finish();
-//                    }
-//                }
-                //TODO 使用JSON格式的Retrofit
-                if (result != null) {
-                    PostLoginEntity response = (PostLoginEntity) result;
-                    if ("200".equals(response.getCode())) {
-                        QuanjiakanSetting.getInstance().setPhone(etUsername.getText().toString());
-                        QuanjiakanSetting.getInstance().setUserId(response.getObject().getId());
-                        QuanjiakanSetting.getInstance().setUserName(response.getObject().getNickname());
-                        QuanjiakanSetting.getInstance().setPwSignature(etPassword.getText().toString());
-                        QuanjiakanSetting.getInstance().setToken(response.getObject().getToken());
+                if(result!=null && result.toString().startsWith("{")) {
+                    CommonResultEntity res = (CommonResultEntity) SerialUtil.jsonToObject(result.toString(),new TypeToken<CommonResultEntity>(){}.getType());
+                    //TODO 实际上仍然需要判断数据中是否是返回200 ，得到用户名，Token，ID等数据
+                    /**
+                     * 用户名，
+                     * 电话
+                     * 校验用的密码（非原密码，而是加密取SHA1值的密码
+                     * Token，
+                     * ID，
+                     */
+                    //TODO 先按照罗工的那个步骤序列化数据
+                    /**
+                     QuanjiakanSetting.getInstance().setPhone("");
+                     QuanjiakanSetting.getInstance().setUserId(1);
+                     QuanjiakanSetting.getInstance().setUserName("");
+                     QuanjiakanSetting.getInstance().setPwSignature("");
+                     QuanjiakanSetting.getInstance().setToken("");
+                     */
+                    if("200".equals(res.getCode())){
                         Intent intent = new Intent(SigninActivity_mvp.this, MainActivity.class);
                         startActivity(intent);
                         finish();
                     }
                 }
+                //TODO 使用JSON格式的Retrofit
+//                if (result != null) {
+//                    PostLoginEntity response = (PostLoginEntity) result;
+//                    if ("200".equals(response.getCode())) {
+//                        QuanjiakanSetting.getInstance().setPhone(etUsername.getText().toString());
+//                        QuanjiakanSetting.getInstance().setUserId(response.getObject().getId());
+//                        QuanjiakanSetting.getInstance().setUserName(response.getObject().getNickname());
+//                        QuanjiakanSetting.getInstance().setPwSignature(etPassword.getText().toString());
+//                        QuanjiakanSetting.getInstance().setToken(response.getObject().getToken());
+//                        Intent intent = new Intent(SigninActivity_mvp.this, MainActivity.class);
+//                        startActivity(intent);
+//                        finish();
+//                    }
+//                }
                 break;
         }
     }

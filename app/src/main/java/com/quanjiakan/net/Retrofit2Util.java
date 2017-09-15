@@ -1,6 +1,7 @@
 package com.quanjiakan.net;
 
 import com.quanjiakan.net.retrofit.depandence.StringConverterFactory;
+import com.quanjiakan.net.retrofit.depandence.StringConverterFactory2;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -17,6 +18,8 @@ public class Retrofit2Util {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(StringConverterFactory2.create())
+                .addConverterFactory(new StringConverterFactory())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
         return retrofit;
@@ -26,6 +29,8 @@ public class Retrofit2Util {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(StringConverterFactory2.create())
+                .addConverterFactory(new StringConverterFactory())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
         return retrofit;
@@ -34,6 +39,8 @@ public class Retrofit2Util {
     public static Retrofit getRetrofitStringResult(String baseUrl){
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(StringConverterFactory2.create())
                 .addConverterFactory(new StringConverterFactory())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();

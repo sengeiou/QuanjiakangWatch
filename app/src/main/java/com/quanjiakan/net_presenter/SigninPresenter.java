@@ -32,15 +32,46 @@ public class SigninPresenter implements IBasePresenter {
         }
         activityMvp.showMyDialog(IPresenterBusinessCode.LOGIN);
 
-        //TODO
+        //TODO 使用 getRetrofitStringResult 方法在获取JSON格式的数据返回时会现JSON转换的异常
+        /**
+         * 但若是直接使用JSON格式的数据返回，则针对每个不同接口都需要使用特定的实体类来接收获取到的数据
+         */
+//        Retrofit retrofit = Retrofit2Util.getRetrofit(IHttpUrlConstants.BASEURL_QUANJIAKANG);
+//        RxPostLoginEntityService rxGetRequest = retrofit.create(RxPostLoginEntityService.class);
+//        rxGetRequest.doLogin(params.get("password"),
+//                params.get("platform"),
+//                params.get("mobile"))
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Subscriber<PostLoginEntity>() {
+//                    @Override
+//                    public void onCompleted() {
+//                        activityMvp.dismissMyDialog(IPresenterBusinessCode.LOGIN);
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        LogUtil.e(" -- Http RxPostLoginService onError:"+e.getMessage());
+//                        activityMvp.dismissMyDialog(IPresenterBusinessCode.LOGIN);
+//                        activityMvp.onError(IPresenterBusinessCode.LOGIN,200,e.getMessage());
+//                    }
+//
+//                    @Override
+//                    public void onNext(PostLoginEntity response) {
+//                        LogUtil.e(" -- Http RxPostLoginService onSuccess:"+response);
+//                        activityMvp.dismissMyDialog(IPresenterBusinessCode.LOGIN);
+//                        activityMvp.onSuccess(IPresenterBusinessCode.LOGIN,200,response);
+//                    }
+//                });
+
         Retrofit retrofit = Retrofit2Util.getRetrofit(IHttpUrlConstants.BASEURL_QUANJIAKANG);
-        RxPostLoginEntityService rxGetRequest = retrofit.create(RxPostLoginEntityService.class);
+        RxPostLoginService rxGetRequest = retrofit.create(RxPostLoginService.class);
         rxGetRequest.doLogin(params.get("password"),
                 params.get("platform"),
                 params.get("mobile"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<PostLoginEntity>() {
+                .subscribe(new Subscriber<String>() {
                     @Override
                     public void onCompleted() {
                         activityMvp.dismissMyDialog(IPresenterBusinessCode.LOGIN);
@@ -54,12 +85,14 @@ public class SigninPresenter implements IBasePresenter {
                     }
 
                     @Override
-                    public void onNext(PostLoginEntity response) {
+                    public void onNext(String response) {
                         LogUtil.e(" -- Http RxPostLoginService onSuccess:"+response);
                         activityMvp.dismissMyDialog(IPresenterBusinessCode.LOGIN);
                         activityMvp.onSuccess(IPresenterBusinessCode.LOGIN,200,response);
                     }
                 });
+
+
 
     }
 }
