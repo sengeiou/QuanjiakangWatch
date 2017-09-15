@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    >
+    
+    <com.quanjiakan.view.InsideViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+  	</com.quanjiakan.view.InsideViewPager>
+  	
+    <TextView
+        android:id="@+id/btn_enter"
+        android:layout_width="@dimen/height_130"
+        android:layout_height="@dimen/size_40"
+        android:background="@drawable/selector_guide_rectangle_round_orange_round_guide"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/size_60"
+        android:text="立即体验"
+        android:textColor="@color/red_f84b23"
+        android:textSize="@dimen/font_14"
+        android:gravity="center"
+        android:visibility="gone"
+        />
+    
+    <RadioGroup 
+        android:id="@+id/rgp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/size_60"
+        android:orientation="horizontal"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:visibility="visible"
+        >
+        
+        <RadioButton 
+            android:id="@+id/rbtn_1"
+            android:layout_width="@dimen/size_8"
+            android:layout_height="@dimen/size_8"
+            android:layout_margin="@dimen/size_5"
+            android:background="@drawable/selector_guide"
+            android:checked="true"
+            android:button="@null"
+            />
+        
+        <RadioButton 
+            android:id="@+id/rbtn_2"
+            android:layout_width="@dimen/size_8"
+            android:layout_height="@dimen/size_8"
+            android:layout_margin="@dimen/size_5"
+            android:background="@drawable/selector_guide"
+            android:button="@null"
+            />
+
+        <RadioButton
+            android:id="@+id/rbtn_3"
+            android:layout_width="@dimen/size_8"
+            android:layout_height="@dimen/size_8"
+            android:layout_margin="@dimen/size_5"
+            android:background="@drawable/selector_guide"
+            android:button="@null"
+            />
+
+        <RadioButton
+            android:id="@+id/rbtn_4"
+            android:layout_width="@dimen/size_8"
+            android:layout_height="@dimen/size_8"
+            android:layout_margin="@dimen/size_5"
+            android:background="@drawable/selector_guide"
+            android:button="@null"
+            />
+    </RadioGroup>
+</RelativeLayout>

@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="white">#ffffff</color>
+    <color name="maincolor">#00a651</color>
+    <color name="transparent">#00000000</color>
+    <color name="transparent_white">#00FFFFFF</color>
+    <color name="hei">#898989</color>
+    <color name="hei55">#555555</color>
+    <color name="hei222">#222222</color>
+    <color name="qianhei">#ababab</color>
+    <color name="qianhui">#f0f0f0</color>
+
+    <!-- 242 243 245 -->
+    <color name="main_bg_color">#f2f3f5</color>
+
+
+    <color name="live_play_yellow_name">#C7A949</color>
+
+
+    <color name="fengexian">#efefef</color>
+    <color name="red">#ff2a2a</color>
+    <color name="red_fb4848">#fb4848</color>
+    <color name="red_f">#e54141</color>
+    <color name="red_e">#ed0101</color>
+    <color name="red_f42020">#f42020</color>
+    <color name="red_f84b23">#f42020</color>
+
+    <color name="crop__button_bar">#f3f3f3</color>
+    <color name="crop__button_text">#666666</color>
+    <color name="crop__selector_pressed">#1a000000</color>
+    <color name="crop__selector_focused">#77000000</color>
+
+    <color name="selector_urgency">#17A8A8</color>
+
+    <!-- qrcode colors -->
+    <color name="contents_text">#ff000000</color>
+    <color name="encode_view">#ffffffff</color>
+    <color name="help_button_view">#ffcccccc</color>
+    <color name="help_view">#ff404040</color>
+    <color name="possible_result_points">#c0ffff00</color>
+    <color name="result_image_border">#ffffffff</color>
+    <color name="result_minor_text">#ffc0c0c0</color>
+    <color name="result_points">#c000ff00</color>
+    <color name="result_text">#ffffffff</color>
+    <color name="result_view">#b0000000</color>
+    <color name="sbc_header_text">#ff808080</color>
+    <color name="sbc_header_view">#ffffffff</color>
+    <color name="sbc_list_item">#fffff0e0</color>
+    <color name="sbc_layout_view">#ffffffff</color>
+    <color name="sbc_page_number_text">#ff000000</color>
+    <color name="sbc_snippet_text">#ff4b4b4b</color>
+    <color name="share_text">#ff000000</color>
+    <color name="share_view">#ffffffff</color>
+    <color name="status_view">#50000000</color>
+    <color name="status_text">#ffffffff</color>
+    <color name="viewfinder_frame">#ff000000</color>
+    <color name="viewfinder_laser">#ffff0000</color>
+    <color name="viewfinder_mask">#60000000</color>
+
+
+    <color name="color_green_33cc66">#33cc66</color>
+    <color name="color_green_339966">#339966</color>
+
+    <color name="color_dcdcdc">#dcdcdc</color>
+    <color name="color_f6fbfb">#f6fbfb</color>
+    <color name="color_6f6f6f">#6f6f6f</color>
+    <color name="color_e32b2b">#e32b2b</color>
+    <color name="color_ffa657">#ffa657</color>
+    <color name="color_f6f6f6">#F6F6F6</color>
+
+    <color name="common_divider_line_color">#dcdcdc</color>
+
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorSkyBlue">#8EE5EE</color>
+    <color name="colorGlassGreen">#C0FF3E</color>
+    <color name="colorNormalGrey">#EAEAEA</color>
+    <color name="colorNormalGrey1">#DFDFDF</color>
+
+    <color name="colorAlphaWhite_55">#55FFFFFF</color>
+    <color name="colorAlphaWhite_BB">#BBFFFFFF</color>
+    <color name="colorAlphaWhite_CC">#CCFFFFFF</color>
+    <color name="colorAlphaWhite_DD">#DDFFFFFF</color>
+    <color name="colorAlphaWhite_EE">#EEFFFFFF</color>
+    <color name="colorPureWhite">#FFFFFF</color>
+    <color name="colorOrange">#f1c232</color>
+
+    <color name="divider_d1d1d1">#d1d1d1</color>
+    <color name="divider_f8f8f8">#f8f8f8</color>
+
+
+
+    <color name="colorAlphaBlack_00">#00000000</color>
+    <color name="colorAlphaBlack_01">#01000000</color>
+    <color name="colorAlphaBlack_02">#02000000</color>
+    <color name="colorAlphaBlack_03">#03000000</color>
+    <color name="colorAlphaBlack_04">#04000000</color>
+    <color name="colorAlphaBlack_05">#05000000</color>
+    <color name="colorAlphaBlack_09">#09000000</color>
+    <color name="colorAlphaBlack_11">#11000000</color>
+    <color name="colorAlphaBlack_22">#22000000</color>
+    <color name="colorAlphaBlack_33">#33000000</color>
+    <color name="colorAlphaBlack_44">#44000000</color>
+    <color name="colorAlphaBlack_55">#55000000</color>
+    <color name="colorAlphaBlack_66">#66000000</color>
+    <color name="colorAlphaBlack_77">#77000000</color>
+    <color name="colorAlphaBlack_88">#88000000</color>
+    <color name="colorAlphaBlack_99">#99000000</color>
+    <color name="colorAlphaBlack_AA">#AA000000</color>
+    <color name="colorAlphaBlack_BB">#BB000000</color>
+    <color name="colorAlphaBlack_CC">#CC000000</color>
+    <color name="colorAlphaBlack_DD">#DD000000</color>
+    <color name="colorAlphaBlack_EE">#EE000000</color>
+    <color name="colorPureBlack">#000000</color>
+    <color name="colorTransport">#00000000</color>
+
+    <color name="color_countTextColor">#666666</color>
+
+
+    <!--
+    35cbcb  浅色
+    16A9A8  深色
+    -->
+    <color name="color_title_green">#35cbcb</color>
+    <color name="color_title_green_alpha">#7735cbcb</color>
+
+
+    <color name="color_00b2b2">#00b2b2</color>
+    <color name="color_eef3f6">#eef3f6</color>
+    <color name="color_0e7b7b">#0e7b7b</color>
+    <color name="color_c4c4c4">#c4c4c4</color>
+    <!-- 218,243,243  c4c4c4
+    -->
+    <color name="color_setting_modify_background">#daf3f3</color>
+
+    <color name="color_conversation_list_msg">#323333</color>
+    <color name="color_conversation_list_info">#aaaaaa</color>
+    <color name="color_conversation_list_status_unread">#999999</color>
+    <color name="color_conversation_list_status_read">#e9504f</color>
+
+
+    <color name="holo_blue_light">#ff33b5e5</color>
+    <color name="holo_green_light">#ff99cc00</color>
+    <color name="holo_red_light">#ffff4444</color>
+    <color name="holo_orange_light">#ffffbb33</color>
+    <color name="holo_blue_bright">#ff00ddff</color>
+    <color name="holo_gray_bright">#33CCCCCC</color>
+    <color name="holo_purple">#ffaa66cc</color>
+    <color name="holo_yellow">#ff9900</color>
+
+
+
+    <color name="color_14a9a8">#14a9a8</color>
+
+
+    <color name="send_press_color">#346fc3</color>
+
+
+    <color name="jmui_chat_text_color">#373334</color>
+    <color name="jmui_item_click_bg_color">#dddddd</color>
+    <color name="jmui_jpush_blue">#3f80dc</color>
+    <color name="jmui_send_press_color">#346fc3</color>
+    <color name="jmui_default_cursor_color">#8db4eb</color>
+    <color name="jmui_chat_detail_split_line_color">#d4d4d4</color>
+    <color name="jmui_translucent_background">#60000000</color>
+
+    <color name="font_color_000000">#000000</color>
+    <color name="font_color_111111">#111111</color>
+    <color name="font_color_222222">#222222</color>
+    <color name="font_color_323333">#323333</color>
+    <color name="font_color_333333">#333333</color>
+    <color name="font_color_444444">#444444</color>
+    <color name="font_color_555555">#555555</color>
+    <color name="font_color_666666">#666666</color>
+    <color name="font_color_777777">#777777</color>
+    <color name="font_color_888888">#888888</color>
+    <color name="font_color_999999">#999999</color>
+    <color name="font_color_AAAAAA">#AAAAAA</color>
+    <color name="font_color_BBBBBB">#BBBBBB</color>
+    <color name="font_color_CCCCCC">#CCCCCC</color>
+    <color name="font_color_DDDDDD">#DDDDDD</color>
+    <color name="font_color_EEEEEE">#EEEEEE</color>
+    <color name="font_color_FFFFFF">#FFFFFF</color>
+    <color name="font_color_0e7b7b">#0E7B7B</color>
+    <color name="font_color_a9a9a9">#a9a9a9</color>
+    <color name="font_color_15A9A9">#15A9A9</color>
+    <color name="font_color_797979">#797979</color>
+    <color name="font_color_7a7a7a">#7a7a7a</color>
+    <color name="font_color_616162">#616162</color>
+    <color name="font_color_a5a5a5">#a5a5a5</color>
+    <color name="font_color_c9c9c9">#c9c9c9</color>
+    <color name="font_color_e9e9e9">#e9e9e9</color>
+    <color name="font_color_f78118">#f78118</color>
+
+    <color name="font_color_7a7a7a_alphaEE">#EE7a7a7a</color>
+    <color name="font_color_616162_alphaEE">#EE616162</color>
+
+    <color name="font_color_rate_great">#cb2122</color>
+    <color name="font_color_rate_good">#e94819</color>
+    <color name="font_color_rate_bad">#1374b2</color>
+    <color name="font_color_12A9A8">#12A9A8</color>
+    <color name="font_color_rate_normal">#000000</color>
+
+    <color name="font_color_F56221">#F56221</color>
+
+    <color name="bankcardcolor">#3A3532</color>
+    <color name="addbankcard">#494440</color>
+    <color name="volunteercom">#318888</color>
+
+    <color name="linecorner">#E2E3E5</color>
+    <color name="warm">#f29c9f</color>
+    <color name="registcolor">#00A651</color>
+
+    <color name="colorSpecialCar">#0db57c</color>
+    <color name="colorHui">#fafafa</color>
+    <color name="colortext">#989898</color>
+
+    <color name="colorxian">#efefef</color>
+    <color name="miaobian">#dddddd</color>
+    <color name="colorendadress">#ffa44a</color>
+    <color name="colorbutton">#0db57c</color>
+    <color name="colortext1">#bbbbbb</color>
+    <color name="colorflag">#E94E4C</color>
+    <color name="color_status">#AEAEAE</color>
+    <color name="color_xun_ing">#00b2b2</color>
+    <color name="color_change">#cccccc</color>
+    <color name="color_btn_look_ing">#0E7b7b</color>
+
+    <color name="edoucolor">#ffcb00</color>
+    <color name="color_btn_green">#01b2b2</color>
+    <color name="color_btn_boder">#017b7b</color>
+
+
+    <color name="currentStep">#78d51c</color>
+    <color name="totalStep">#75bdb9</color>
+    <color name="lineArc">#b8b8b8</color>
+    <color name="totalStepString">#80dad3</color>
+    F
+    <color name="step_bg">#6CDED6</color>
+    <color name="step_current">#40d1c5</color>
+    <color name="step_target">#80dad3</color>
+    <color name="select_bg">#eef3f6</color>
+    <color name="select_week_bg">#f44028</color>
+    <color name="disable_week_bg">#14c1b8</color>
+
+
+
+
+    <color name="watch_week_bac">#DCDCDC</color>
+
+    <color name="divider_line">#cbcbcb</color>
+    <color name="backround_color">#dedede</color>
+    <color name="step_text_color">#1c92c4</color>
+    <color name="heart_check_color">#2ebbbb</color>
+
+    <color name="update_color">#0e7b7b</color>
+    <color name="common_red">#ed1d1d</color>
+    <color name="call_bg_desc">#ebebeb</color>
+    <color name="child_doctor_price_color">#53bf81</color>
+
+    <color name="devider_child_prevent">#e6e6e6</color>
+    <color name="tab_text_child_missing">#ADADAD</color>
+    <color name="text_content_missing">#343434</color>
+    <color name="text_expend_missing">#414141</color>
+    <color name="devider_expend_missing">#cdcdcd</color>
+    <color name="boder_btn_d9d9d9">#d9d9d9</color>
+    <color name="color_bg_e5e5e5">#e5e5e5</color>
+    <color name="color_bg_e3393e">#e3393e</color>
+    <color name="color_bg_c91c22">#c91c22</color>
+    <color name="color_bg_15a9a9">#15a9a9</color>
+    <color name="color_bg_0f9c9c">#0f9c9c</color>
+    <color name="color_border_d2d2d2">#d2d2d2</color>
+
+    <color name="color_f46a16">#f46a16</color>
+    <color name="color_e58d1c">#e58d1c</color>
+
+    <color name="color_6dbd06">#6dbd06</color>
+    <color name="color_eeb61f">#eeb61f</color>
+    <color name="color_10be6e">#10be6e</color>
+
+    <color name="color_aaa9a9">#aaa9a9</color>
+    <color name="color_2477de">#2477de</color>
+
+
+    <!-- 全局使用的颜色 -->
+    <color name="titlebar_bg_color">#3C3C3C</color>
+    <!-- 这是Login相关界面中的颜色 -->
+    <color name="login_txt_hint_color">#555555</color>
+    <color name="register_split_line_color">#c2d4ec</color>
+    <color name="login_split_line_color">#c1d3cc</color>
+    <color name="login_btn_def_color">#98FB98</color>
+    <color name="re_login_btn_def_color">#6fd66b</color>
+    <color name="login_btn_sel_color">#006400</color>
+    <color name="relogin_txt_color">#555555</color>
+    <color name="swich_user_sel_color">#3F80DC</color>
+    <color name="circular_progressbar_color">#3F80DD</color>
+    <color name="circular_progressbar_bg_color">#D0D4D8</color>
+    <!-- 注册头像设置页面 -->
+    <color name="regist_photo_focus_color">#3F80DD</color>
+    <!-- 主页面 -->
+    <color name="action_bar_txt_color">#969696</color>
+    <color name="actionbar_sel_color">#1c1c1c</color>
+    <color name="me_info_edit_color">#2d2d2d</color>
+    <color name="me_info_hint_color">#cfcdce</color>
+    <color name="actionbar_pres_color">#3f80dc</color>
+    <color name="menu_item_back_pres_color">#3773cb</color>
+    <color name="actionbar_def_color">#3C3C3C</color>
+    <color name="jpush_blue">#3f80dc</color>
+    <color name="main_view_split_line_color">#C8C8C8</color>
+    <color name="conv_list_split_line_color">#d6d6d6</color>
+    <color name="contacts_pinner_bg">#F2F8F8F8</color>
+    <color name="contacts_pinner_txt">#858585</color>
+    <color name="contacts_txt_color">#0479FB</color>
+    <color name="me_split_line_color">#d0d0d0</color>
+    <color name="msg_list_item_sel_color">#A3C2EF</color>
+    <color name="item_click_bg_color">#dddddd</color>
+    <color name="friend_content_text_color">#7f7f7f</color>
+    <color name="chat_text_color">#373334</color>
+    <color name="chat_detail_hit_color">#3C3C3C</color>
+    <color name="chat_detail_item_hit_color">#555555</color>
+    <color name="chat_detail_split_line_color">#d3d3d3</color>
+    <color name="dialog_select_color">#d4d4d4</color>
+    <color name="finish_btn_unclickable_color">#b9ebb8</color>
+    <color name="finish_btn_clickable_color">#6fd66b</color>
+    <color name="default_cursor_color">#8db4eb</color>
+    <color name="menu_item_click_color">#346fc3</color>
+    <color name="me_no_picture_color">#e1e1e1</color>
+    <color name="reset_password_title_color">#4e4e4e</color>
+    <color name="translucent_background">#60000000</color>
+    <color name="header_normal">#ffe74c3c</color>
+    <color name="header_pressed">#ffc0392b</color>
+    <color name="menu_section_header">#FFDDDDDD</color>
+    <color name="letter_hint_start_color">#19892f</color>
+    <color name="leter_hint_end_color">#0ae936</color>
+    <color name="section_color">#f8f8f8</color>
+    <color name="section_text_color">#858585</color>
+    <color name="sidebar_text_color">#0a6afd</color>
+    <color name="select_friend_item_split_color">#dddddd</color>
+    <color name="network_disconnected_bg_color">#ffdfe0</color>
+    <color name="all_members_bg_color">#f0f1f3</color>
+    <!-- 黑色 -->
+    <color name="black">#000000</color>
+    <color name="gray">#808080</color>
+    <!-- 灰色 -->
+    <color name="grey">#808080</color>
+    <!-- 灰色 -->
+    <color name="green">#008000</color>
+    <!-- 绿色 -->
+    <color name="darkgreen">#006400</color>
+    <!-- 暗绿色 -->
+    <color name="blue">#0000FF</color>
+    <!-- 蓝色 -->
+    <color name="light_blue">#8CA4FF</color>
+
+</resources>
