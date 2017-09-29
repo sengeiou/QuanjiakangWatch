@@ -371,6 +371,10 @@ public class SignupActivity extends BaseActivity {
         }).start();
     }
 
+    public String getPhoneNumber(){
+        return etUsername.getText().toString();
+    }
+
     @Override
     public void onResume() {
         super.onResume();

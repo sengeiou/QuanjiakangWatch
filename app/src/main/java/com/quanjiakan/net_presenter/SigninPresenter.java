@@ -65,13 +65,13 @@ public class SigninPresenter implements IBasePresenter {
 //                });
 
         Retrofit retrofit = Retrofit2Util.getRetrofit(IHttpUrlConstants.BASEURL_QUANJIAKANG);
-        RxPostLoginService rxGetRequest = retrofit.create(RxPostLoginService.class);
+        RxPostLoginEntityService rxGetRequest = retrofit.create(RxPostLoginEntityService.class);
         rxGetRequest.doLogin(params.get("password"),
                 params.get("platform"),
                 params.get("mobile"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<String>() {
+                .subscribe(new Subscriber<PostLoginEntity>() {
                     @Override
                     public void onCompleted() {
                         activityMvp.dismissMyDialog(IPresenterBusinessCode.LOGIN);
@@ -85,14 +85,12 @@ public class SigninPresenter implements IBasePresenter {
                     }
 
                     @Override
-                    public void onNext(String response) {
+                    public void onNext(PostLoginEntity response) {
                         LogUtil.e(" -- Http RxPostLoginService onSuccess:"+response);
                         activityMvp.dismissMyDialog(IPresenterBusinessCode.LOGIN);
                         activityMvp.onSuccess(IPresenterBusinessCode.LOGIN,200,response);
                     }
                 });
-
-
 
     }
 }

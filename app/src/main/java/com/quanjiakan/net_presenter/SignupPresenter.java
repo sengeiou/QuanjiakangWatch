@@ -4,7 +4,8 @@ import com.quanjiakan.activity.common.login.SignupActivity;
 import com.quanjiakan.constants.IPresenterBusinessCode;
 import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.Retrofit2Util;
-import com.quanjiakan.net.retrofit.service.RxPostGetSMSService;
+import com.quanjiakan.net.retrofit.result_entity.PostSMSEntity;
+import com.quanjiakan.net.retrofit.service.RxPostSMSEntityService;
 import com.quanjiakan.net.retrofit.service.RxPostSignupService;
 import com.quanjiakan.util.common.LogUtil;
 
@@ -31,12 +32,12 @@ public class SignupPresenter implements IBasePresenter {
         activityMvp.showMyDialog(IPresenterBusinessCode.SMS_CODE);
 
         //TODO
-        Retrofit retrofit = Retrofit2Util.getRetrofitStringResult(IHttpUrlConstants.BASEURL_QUANJIAKANG);
-        RxPostGetSMSService rxGetRequest = retrofit.create(RxPostGetSMSService.class);
-        rxGetRequest.doGetSMSCode(params.get("data"))
+        Retrofit retrofit = Retrofit2Util.getRetrofit(IHttpUrlConstants.BASEURL_QUANJIAKANG);
+        RxPostSMSEntityService rxGetRequest = retrofit.create(RxPostSMSEntityService.class);
+        rxGetRequest.doGetSMSCode(activityMvp.getPhoneNumber(),"1",IHttpUrlConstants.PLATFORM_ANDROID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<String>() {
+                .subscribe(new Subscriber<PostSMSEntity>() {
                     @Override
                     public void onCompleted() {
                         activityMvp.dismissMyDialog(IPresenterBusinessCode.SMS_CODE);
@@ -44,14 +45,14 @@ public class SignupPresenter implements IBasePresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        LogUtil.e(" -- Http RxPostGetSMSService onError:"+e.getMessage());
+                        LogUtil.e(" -- Http SignupPresenter SMS onError:"+e.getMessage());
                         activityMvp.dismissMyDialog(IPresenterBusinessCode.SMS_CODE);
                         activityMvp.onError(IPresenterBusinessCode.SMS_CODE,200,e.getMessage());
                     }
 
                     @Override
-                    public void onNext(String response) {
-                        LogUtil.e(" -- Http RxPostGetSMSService onSuccess:"+response);
+                    public void onNext(PostSMSEntity response) {
+                        LogUtil.e(" -- Http SignupPresenter SMS onSuccess:"+response);
                         activityMvp.dismissMyDialog(IPresenterBusinessCode.SMS_CODE);
                         activityMvp.onSuccess(IPresenterBusinessCode.SMS_CODE,200,response);
                     }

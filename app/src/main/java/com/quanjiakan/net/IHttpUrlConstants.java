@@ -8,7 +8,52 @@ public interface IHttpUrlConstants {
     /**
      *
      */
-//    public static final String BASEURL_QUANJIAKANG = "http://app.quanjiakan.com";//TODO Work
-    public static final String BASEURL_QUANJIAKANG = "http://192.168.0.129:8080";//TODO Test
+    public static final String BASEURL_QUANJIAKANG = "http://app.quanjiakan.com";//TODO Work
+    public static final String BASEURL_APP = "http://app.quanjiakan.com";//TODO Work
+    public static final String BASEURL_WATCH = "http://app.quanjiakan.com";//TODO Work
     public static final String BASEURL_PAY = "http://pay.quanjiakan.com:7080";
+
+    //**********************************************************
+    /**
+     * 请求方式
+     * GET api
+     * POST 版本1 v1
+     */
+    public static final String REQUEST_GET = "api";
+    public static final String REQUEST_POST_V1 = "v1";
+
+
+    //**********************************************************
+    /**
+     * 平安通：pingan
+     * 警务联动：jinwu
+     */
+    public static final String PROJECT_PINGAN = "pingan";
+    //***************************************************
+    /**
+     * 1.Web,
+     * 2.Android
+     * 3.iOS
+     */
+//    public static final String PLATFORM_WEB = "1";
+    public static final String PLATFORM_ANDROID = "2";
+//    public static final String PLATFORM_IOS = "3";
+    //***************************************************
+    /**
+     * Service
+     */
+    public static final String SERVICE_SMS = "sms";
+    //***************************************************
+    /**
+     * action
+     */
+    public static final String ACTION_VAILDATE = "validatecode";
+
+
+    //***************************************************
+    /**
+     * SMS 类型区分---参数常量
+     */
+    public static final String SMS_TYPE_SIGNIN = "1";
+    public static final String SMS_TYPE_FORGET_PW = "2";
 }

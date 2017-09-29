@@ -9,7 +9,6 @@ import retrofit2.http.POST;
  */
 
 public interface RxPostLoginService {
-    //TODO  get请求为api   post为v1
     @FormUrlEncoded
     @POST("/pingan/v1?handler=member&action=signin")
     rx.Observable<String> doLogin(@Field("password") String password,

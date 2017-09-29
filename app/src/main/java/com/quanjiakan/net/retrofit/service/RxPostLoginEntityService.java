@@ -1,5 +1,6 @@
 package com.quanjiakan.net.retrofit.service;
 
+import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.retrofit.result_entity.PostLoginEntity;
 
 import retrofit2.http.Field;
@@ -13,7 +14,7 @@ import retrofit2.http.POST;
 public interface RxPostLoginEntityService {
     //TODO  get请求为api   post为v1
     @FormUrlEncoded
-    @POST("/pingan/v1?handler=member&action=signin")
+    @POST("/"+ IHttpUrlConstants.PROJECT_PINGAN+"/"+IHttpUrlConstants.REQUEST_POST_V1+"?handler=member&action=signin")
     rx.Observable<PostLoginEntity> doLogin(@Field("password") String password,
                                            @Field("platform") String clientType,
                                            @Field("mobile") String mobilephone);

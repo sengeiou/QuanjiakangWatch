@@ -82,4 +82,34 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseAct
     }
 
     //TODO 每个子类必须去实现这个接口方法，来为网络访问提供便利
+
+    @Override
+    public Object getParamter(int type) {
+        return null;
+    }
+
+    @Override
+    public void showMyDialog(int type) {
+
+    }
+
+    @Override
+    public void dismissMyDialog(int type) {
+
+    }
+
+    @Override
+    public void onSuccess(int type, int httpResponseCode, Object result) {
+
+    }
+
+    @Override
+    public void onError(int type, int httpResponseCode, Object errorMsg) {
+
+    }
+
+    @Override
+    public View getViewComponentByID(int viewID) {
+        return null;
+    }
 }

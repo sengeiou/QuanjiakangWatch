@@ -83,8 +83,8 @@ public class SigninActivity_mvp extends BaseActivity {
     }
 
     public void signup() {
-//        Intent intent = new Intent(this, SignupActivity.class);
-//        startActivity(intent);
+        Intent intent = new Intent(this, SignupActivity.class);
+        startActivity(intent);
     }
 
     public void findPassword() {
