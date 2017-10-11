@@ -3,6 +3,8 @@ package com.quanjiakan.util.common;
 import java.text.DecimalFormat;
 
 /**
+ * 将数字转换成特定位数的小数
+ *
  * Created by Administrator on 2016/11/23 0023.
  */
 

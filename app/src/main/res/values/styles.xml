@@ -550,6 +550,7 @@
         <!-- Dialog进入及退出动画 -->
         <item name="android:windowAnimationStyle">@style/AlbumDialogAnimation</item>
     </style>
+
     <style name="AlbumDialogAnimation" parent="@android:style/Animation.Dialog">
         <item name="android:windowEnterAnimation">@anim/album_dialog_in</item>
         <item name="android:windowExitAnimation">@anim/album_dialog_out</item>

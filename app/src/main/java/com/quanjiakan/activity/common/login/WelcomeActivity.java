@@ -33,8 +33,6 @@ public class WelcomeActivity extends BaseActivity {
         setContentView(R.layout.layout_loading);
         ButterKnife.bind(this);
 
-        setsweepScreen();
-
         packageManager = getPackageManager();
         try {
             packageInfo = packageManager.getPackageInfo(getPackageName(), 0);
@@ -51,9 +49,6 @@ public class WelcomeActivity extends BaseActivity {
             initView();
         }
     };
-
-    public void setsweepScreen() {
-    }
 
 
     public void initView() {

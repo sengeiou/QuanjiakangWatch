@@ -5,6 +5,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 /**
+ * 检查当前网络的类型：移动数据，WiFi，网络不可用，其他类型
+ *
  * Created by Administrator on 2017/8/4.
  */
 

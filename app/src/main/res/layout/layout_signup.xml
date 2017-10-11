@@ -6,7 +6,7 @@
 
     <include
         android:id="@+id/layout_title"
-        layout="@layout/titlebar"
+        layout="@layout/titlebar_common"
         />
     <ScrollView
         android:layout_below="@+id/layout_title"

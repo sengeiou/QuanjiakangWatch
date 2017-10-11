@@ -181,8 +181,8 @@ public class SigninActivity_mvp extends BaseActivity {
         switch (type) {
             case IPresenterBusinessCode.LOGIN:
                 //TODO 使用String格式的Retrofit
-                if(result!=null && result.toString().startsWith("{")) {
-                    CommonResultEntity res = (CommonResultEntity) SerialUtil.jsonToObject(result.toString(),new TypeToken<CommonResultEntity>(){}.getType());
+                if(result!=null && result instanceof PostLoginEntity) {
+                    PostLoginEntity res = (PostLoginEntity) result;
                     //TODO 实际上仍然需要判断数据中是否是返回200 ，得到用户名，Token，ID等数据
                     /**
                      * 用户名，
@@ -203,7 +203,11 @@ public class SigninActivity_mvp extends BaseActivity {
                         Intent intent = new Intent(SigninActivity_mvp.this, MainActivity.class);
                         startActivity(intent);
                         finish();
+                    }else{
+                        Toast.makeText(this, getString(R.string.error_login_hint), Toast.LENGTH_SHORT).show();
                     }
+                }else{
+                    Toast.makeText(this, getString(R.string.error_login_hint), Toast.LENGTH_SHORT).show();
                 }
                 //TODO 使用JSON格式的Retrofit
 //                if (result != null) {

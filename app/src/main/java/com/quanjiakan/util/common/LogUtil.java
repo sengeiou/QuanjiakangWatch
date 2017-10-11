@@ -5,6 +5,9 @@ import android.util.Log;
 import com.quanjiakan.watch.BuildConfig;
 
 /**
+ *
+ * 输出日志，根据当前配置的等级来判断
+ *
  * Created by Administrator on 2017/9/12.
  */
 

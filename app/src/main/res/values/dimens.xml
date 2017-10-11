@@ -181,13 +181,19 @@
     <dimen name="height_title">48dp</dimen>
 
     <dimen name="margin_100">100dp</dimen>
+    <dimen name="margin_95">95dp</dimen>
     <dimen name="margin_90">90dp</dimen>
+    <dimen name="margin_85">85dp</dimen>
     <dimen name="margin_80">80dp</dimen>
+    <dimen name="margin_75">75dp</dimen>
     <dimen name="margin_70">70dp</dimen>
+    <dimen name="margin_65">65dp</dimen>
     <dimen name="margin_60">60dp</dimen>
+    <dimen name="margin_55">55dp</dimen>
     <dimen name="margin_50">50dp</dimen>
     <dimen name="margin_45">45dp</dimen>
     <dimen name="margin_40">40dp</dimen>
+    <dimen name="margin_35">35dp</dimen>
     <dimen name="margin_32">32dp</dimen>
     <dimen name="margin_30">30dp</dimen>
     <dimen name="margin_27">27dp</dimen>

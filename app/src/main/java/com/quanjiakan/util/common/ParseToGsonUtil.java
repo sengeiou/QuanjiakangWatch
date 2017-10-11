@@ -10,6 +10,10 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 将String类型的JSON转换成Gson的Json对象
+ */
+
 public class ParseToGsonUtil {
 
 	JsonElement element = null;

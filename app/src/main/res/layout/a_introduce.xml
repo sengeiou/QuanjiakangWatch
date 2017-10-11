@@ -1,0 +1,21 @@
+<RelativeLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_white_dialog_bg"
+    android:padding="@dimen/margin_20"
+    >
+
+	<!--
+	dialog_  开头为Dialog的对应布局文件
+	layout_  开头为Activity对应的布局文件
+	titlebar_ 开头为使用include 方式引用包含的标题栏组件
+	-->
+
+	<!--
+	strings.xml   通用的文字
+	strings_err.xml  错误类型的问题信息
+	strings_hint.xml  提示类型的问题信息
+	-->
+</RelativeLayout>

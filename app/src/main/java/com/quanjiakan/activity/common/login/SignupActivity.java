@@ -23,7 +23,6 @@ import android.widget.Toast;
 
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
-import com.quanjiakan.activity.base.QuanjiakanSetting;
 import com.quanjiakan.activity.base.QuanjiakanUtil;
 import com.quanjiakan.constants.IPresenterBusinessCode;
 import com.quanjiakan.net_presenter.SignupPresenter;
@@ -115,7 +114,7 @@ public class SignupActivity extends BaseActivity {
         initView();
         resetFlag();
 
-        presenter = null;
+        presenter = new SignupPresenter();
     }
 
     public void initTitle() {
@@ -195,8 +194,6 @@ public class SignupActivity extends BaseActivity {
             return;
         }
         try {
-            //        HashMap<String, String> params = new HashMap<>();
-//        params.put("mobile", etUsername.getText().toString());
 
             StringBuilder sb = new StringBuilder();
             sb.append(1).append("@");
@@ -213,94 +210,63 @@ public class SignupActivity extends BaseActivity {
 
             HashMap<String, String> params = new HashMap<>();
             params.put("data", jsonData.toString());
-
-
-//            MyHandler.putTask(this, new Task(new HttpResponseInterface() {
-//                @Override
-//                public void handMsg(String val) {
-//                    if (val != null && val.length() > 0) {
-//                        HttpResponseResult result = new HttpResponseResult(val);
-//                        if (result.getCode().equals("200")) {
-//                            //获取验证码
-//                            showSmsCodeTime();
-//                            lastSMSPhone = etUsername.getText().toString();
-//                            etCode.setTag(result.getMessage());
-//                        } else {
-//                            if (result.getMessage() != null && result.getMessage().length() > 0 && (result.getMessage().contains("发送上限") || result.getMessage().contains("验证码超出"))) {
-//                                Toast.makeText(SignupActivity.this, "超出验证码当天发送上限"/*"获取验证码失败，请重试！"*/, Toast.LENGTH_SHORT).show();
-//                            } else {
-////                            Toast.makeText(SignupActivity.this, result.getMessage(), Toast.LENGTH_SHORT).show();
-//                                String msg = result.getMessage();
-//                                if (msg.contains("=")) {
-//                                    Toast.makeText(SignupActivity.this, msg.substring(msg.lastIndexOf("=") + 1, msg.lastIndexOf("}")), Toast.LENGTH_SHORT).show();
-//                                } else {
-//                                    Toast.makeText(SignupActivity.this, result.getMessage(), Toast.LENGTH_SHORT).show();
-//                                }
-//                            }
-//                        }
-//                    } else {
-////                    Toast.makeText(SignupActivity.this, "接口异常!", Toast.LENGTH_SHORT).show();
-//                    }
-//
-//                }
-//            }, HttpUrls.getSMSCode2()/*+"&data="+jsonData.toString().replace("\"","%22")*/, params, Task.TYPE_POST_DATA_PARAMS, QuanjiakanDialog.getInstance().getDialog(this)));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void signup() {
+    public boolean signup() {
         //先判断一系列条件
         if (CheckUtil.isEmpty(etUsername.getText().toString())) {
             Toast.makeText(SignupActivity.this, getResources().getString(R.string.setting_password_check6), Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
         if (!CheckUtil.isPhoneNumber(etUsername.getText().toString())) {
             Toast.makeText(SignupActivity.this, getResources().getString(R.string.setting_password_check7), Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
 
         if (CheckUtil.isEmpty(etCode.getText().toString())) {
             Toast.makeText(SignupActivity.this, getResources().getString(R.string.setting_password_check8), Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
 
         if (CheckUtil.isEmpty(etCode.getTag().toString()) || !etCode.getTag().toString().equals(etCode.getText().toString())) {
             Toast.makeText(SignupActivity.this, getResources().getString(R.string.setting_password_check9), Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
 
         if (lastSMSPhone != null && !lastSMSPhone.equals(etUsername.getText().toString())) {
             Toast.makeText(SignupActivity.this, getResources().getString(R.string.setting_password_check10), Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
 
         //et_name
         if (CheckUtil.isEmpty(etName.getText().toString())) {
             Toast.makeText(SignupActivity.this, getResources().getString(R.string.setting_password_check14), Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
 
         if (CheckUtil.isEmpty(etPassword.getText().toString()) || CheckUtil.isEmpty(etConfirmpassword.getText().toString())) {
             Toast.makeText(SignupActivity.this, getResources().getString(R.string.setting_password_check12), Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
 
 
         if (etPassword.getText().toString().trim().length() < 6 || etPassword.getText().toString().trim().length() > 15) {
-            Toast.makeText(SignupActivity.this, "新密码位数不对", Toast.LENGTH_SHORT).show();
-            return;
+            Toast.makeText(SignupActivity.this, getString(R.string.hint_new_pw_number_error), Toast.LENGTH_SHORT).show();
+            return false;
         }
 
         if (etConfirmpassword.getText().toString().trim().length() < 6 || etConfirmpassword.getText().toString().trim().length() > 15) {
-            Toast.makeText(SignupActivity.this, "确认密码位数不对", Toast.LENGTH_SHORT).show();
-            return;
+            Toast.makeText(SignupActivity.this, getString(R.string.hint_comfirm_pw_number_error), Toast.LENGTH_SHORT).show();
+            return false;
         }
 
 
         if (!etPassword.getText().toString().equals(etConfirmpassword.getText().toString())) {
             Toast.makeText(SignupActivity.this, getResources().getString(R.string.setting_password_check11), Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
 
         /**
@@ -308,44 +274,15 @@ public class SignupActivity extends BaseActivity {
          */
         if (!CheckUtil.checkStringType(etPassword.getText().toString())) {
             Toast.makeText(SignupActivity.this, getResources().getString(R.string.setting_password_check5), Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
 
         if (!read_flag) {
             Toast.makeText(SignupActivity.this, getResources().getString(R.string.singup_clause_hint), Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
-        //m=member&a=signup&mobile=lp&password=7CCFA0856955C1499924FA7665B74EF9&client=1
-        HashMap<String, String> params = new HashMap<>();
-        params.put("mobile", etUsername.getText().toString());
-        params.put("password", BaseApplication.getInstances().getFormatPWString(etPassword.getText().toString()));
-//        params.put("password", etPassword.getText().toString());
-        params.put("c_password", etConfirmpassword.getText().toString());
-        params.put("nickname", etName.getText().toString());
-        params.put("client", "1");
-//        MyHandler.putTask(this, new Task(new HttpResponseInterface() {
-//
-//            @Override
-//            public void handMsg(String val) {
-//
-//
-//                if (val != null && val.length() > 0) {
-//                    HttpResponseResult result = new HttpResponseResult(val);
-//                    if (result.getCode().equals("200")) {
-//                        QuanjiakanSetting.getInstance().setUserId(Integer.parseInt(result.getMessage()));
-//                        registerOnJpush(result.getMessage());
-//                    } else {
-//                        //result.getMessage()
-////                    Toast.makeText(SignupActivity.this, getResources().getString(R.string.signup_error), Toast.LENGTH_SHORT).show();
-//                        if (result.getMessage() != null && result.getMessage().length() > 0) {
-//                            Toast.makeText(SignupActivity.this, result.getMessage(), Toast.LENGTH_SHORT).show();
-//                        } else {
-//                            Toast.makeText(SignupActivity.this, "该号码已被注册!", Toast.LENGTH_SHORT).show();
-//                        }
-//                    }
-//                }
-//            }
-//        }, HttpUrls.getSignup(), params, Task.TYPE_POST_DATA_PARAMS, getDialog(SignupActivity.this)));
+
+        return true;
     }
 
     public void showSmsCodeTime() {
@@ -371,7 +308,7 @@ public class SignupActivity extends BaseActivity {
         }).start();
     }
 
-    public String getPhoneNumber(){
+    public String getPhoneNumber() {
         return etUsername.getText().toString();
     }
 
@@ -391,21 +328,13 @@ public class SignupActivity extends BaseActivity {
 
     @Override
     public Object getParamter(int type) {
-        try{
-            switch (type){
+        try {
+            switch (type) {
                 case IPresenterBusinessCode.SMS_CODE: {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(1).append("@");
-                    sb.append("signup").append("@");
-                    sb.append(etUsername.getText().toString()).append("@");
-                    //JSON
-                    JSONObject jsonData = new JSONObject();
-                    jsonData.put("client", 1);
-                    jsonData.put("type", "signup");
-                    jsonData.put("mobile", etUsername.getText().toString());
-                    jsonData.put("sign", SignatureUtil.getMD5String(sb.toString()));
                     HashMap<String, String> params = new HashMap<>();
-                    params.put("data", jsonData.toString());
+                    params.put("mobile", etUsername.getText().toString());
+                    params.put("validateType", "1");
+                    params.put("platform", "2");
                     return params;
                 }
                 case IPresenterBusinessCode.SIGNUP: {
@@ -418,7 +347,7 @@ public class SignupActivity extends BaseActivity {
                     return params_signup;
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -436,12 +365,27 @@ public class SignupActivity extends BaseActivity {
 
     @Override
     public void onSuccess(int type, int httpResponseCode, Object result) {
+        switch (type) {
+            case IPresenterBusinessCode.SMS_CODE:
 
+                break;
+        }
     }
 
     @Override
     public void onError(int type, int httpResponseCode, Object errorMsg) {
-
+        switch (type) {
+            case IPresenterBusinessCode.SMS_CODE:
+                if(errorMsg!=null){
+                    Toast.makeText(this, errorMsg.toString(), Toast.LENGTH_SHORT).show();
+                }
+                break;
+            default:
+                if(errorMsg!=null){
+                    Toast.makeText(this, errorMsg.toString(), Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
     }
 
     @Override
@@ -449,13 +393,14 @@ public class SignupActivity extends BaseActivity {
         return null;
     }
 
-    @OnClick({R.id.ibtn_back, R.id.btn_yanzhengma, R.id.signup_clause_ck, R.id.btn_submit,R.id.ll_signup_clause_ck})
+    @OnClick({R.id.ibtn_back, R.id.btn_yanzhengma, R.id.signup_clause_ck, R.id.btn_submit, R.id.ll_signup_clause_ck})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.ibtn_back:
+            case R.id.ibtn_back: {
                 finish();
                 break;
-            case R.id.btn_yanzhengma:
+            }
+            case R.id.btn_yanzhengma: {
                 if (((TextView) view).getText().toString().equals("获取验证码")) {
                     getSMSCode();
 
@@ -466,81 +411,20 @@ public class SignupActivity extends BaseActivity {
                     presenter.getSMSCode(this);
                 }
                 break;
+            }
             case R.id.signup_clause_ck:
                 break;
-            case R.id.btn_submit:
-                signup();
-
-                if (CheckUtil.isEmpty(etUsername.getText().toString())) {
-                    Toast.makeText(SignupActivity.this, getResources().getString(R.string.setting_password_check6), Toast.LENGTH_SHORT).show();
+            case R.id.btn_submit: {
+                if(!signup()){
                     return;
                 }
-                if (!CheckUtil.isPhoneNumber(etUsername.getText().toString())) {
-                    Toast.makeText(SignupActivity.this, getResources().getString(R.string.setting_password_check7), Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if (CheckUtil.isEmpty(etCode.getText().toString())) {
-                    Toast.makeText(SignupActivity.this, getResources().getString(R.string.setting_password_check8), Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if (CheckUtil.isEmpty(etCode.getTag().toString()) || !etCode.getTag().toString().equals(etCode.getText().toString())) {
-                    Toast.makeText(SignupActivity.this, getResources().getString(R.string.setting_password_check9), Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if (lastSMSPhone != null && !lastSMSPhone.equals(etUsername.getText().toString())) {
-                    Toast.makeText(SignupActivity.this, getResources().getString(R.string.setting_password_check10), Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                //et_name
-                if (CheckUtil.isEmpty(etName.getText().toString())) {
-                    Toast.makeText(SignupActivity.this, getResources().getString(R.string.setting_password_check14), Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if (CheckUtil.isEmpty(etPassword.getText().toString()) || CheckUtil.isEmpty(etConfirmpassword.getText().toString())) {
-                    Toast.makeText(SignupActivity.this, getResources().getString(R.string.setting_password_check12), Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-
-                if (etPassword.getText().toString().trim().length() < 6 || etPassword.getText().toString().trim().length() > 15) {
-                    Toast.makeText(SignupActivity.this, "新密码位数不对", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if (etConfirmpassword.getText().toString().trim().length() < 6 || etConfirmpassword.getText().toString().trim().length() > 15) {
-                    Toast.makeText(SignupActivity.this, "确认密码位数不对", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-
-                if (!etPassword.getText().toString().equals(etConfirmpassword.getText().toString())) {
-                    Toast.makeText(SignupActivity.this, getResources().getString(R.string.setting_password_check11), Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                /**
-                 * 提升账号安全措施
-                 */
-                if (!CheckUtil.checkStringType(etPassword.getText().toString())) {
-                    Toast.makeText(SignupActivity.this, getResources().getString(R.string.setting_password_check5), Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if (!read_flag) {
-                    Toast.makeText(SignupActivity.this, getResources().getString(R.string.singup_clause_hint), Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
                 presenter.doSignup(this);
                 break;
-            case R.id.ll_signup_clause_ck:
+            }
+            case R.id.ll_signup_clause_ck: {
                 resetFlag();
                 break;
+            }
         }
     }
 }
