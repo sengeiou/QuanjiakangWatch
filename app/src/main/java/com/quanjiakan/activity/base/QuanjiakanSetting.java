@@ -6,9 +6,7 @@ import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.util.Log;
 
-import com.google.gson.JsonObject;
-import com.quanjiakan.util.common.SerialUtil;
-import com.quanjiakan.util.common.SignatureUtil;
+import com.quanjiakan.util.common.MessageDigestUtil;
 
 import java.util.ArrayList;
 
@@ -182,12 +180,12 @@ public class QuanjiakanSetting {
 
 	public void setPwSignature(String phone) {
 		Editor editor = context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE).edit();
-		editor.putString(USER_PW_SIGNATURE, SignatureUtil.getSHA1String(phone));
+		editor.putString(USER_PW_SIGNATURE, MessageDigestUtil.getSHA1String(phone));
 		editor.commit();
 	}
 
 	public boolean isEqualToOriginalPw(String password){
-		return getPwSignature().equals(SignatureUtil.getSHA1String(password));
+		return getPwSignature().equals(MessageDigestUtil.getSHA1String(password));
 	}
 
 	/**

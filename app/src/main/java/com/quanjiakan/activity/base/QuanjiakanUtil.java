@@ -2,11 +2,9 @@
 package com.quanjiakan.activity.base;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.KeyguardManager;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -16,7 +14,6 @@ import android.os.Environment;
 import android.os.PowerManager;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -32,16 +29,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class QuanjiakanUtil {
-
-	private static Context mContext;
-
-	public static void setCurrentContext(Context context) {
-		mContext = context;
-	}
-
-	public static Context getCurrentoContext() {
-		return mContext;
-	}
 
 	public static String getCurProcessName(Context context) {
 		int pid = android.os.Process.myPid();
@@ -88,41 +75,6 @@ public class QuanjiakanUtil {
 			final float scale = context.getResources().getDisplayMetrics().density;
 			return (int) (dipValue * scale + 0.5f);
 		}
-	}
-
-	public static int px2dip(Context context, float pxValue) {
-		if (pxValue == 0) {
-			return 0;
-		} else {
-			final float scale = context.getResources().getDisplayMetrics().density;
-			return (int) (pxValue / scale + 0.5f);
-		}
-	}
-
-	/**
-	 * 将px值转换为sp值，保证文字大小不变
-	 *
-	 * @param pxValue
-	 * @param pxValue
-	 *            （DisplayMetrics类中属�?scaledDensity�?
-	 * @return
-	 */
-	public static int px2sp(Context context, float pxValue) {
-		final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
-		return (int) (pxValue / fontScale + 0.5f);
-	}
-
-	/**
-	 * 将sp值转换为px值，保证文字大小不变
-	 *
-	 * @param spValue
-	 * @param spValue
-	 *            （DisplayMetrics类中属�?scaledDensity�?
-	 * @return
-	 */
-	public static int sp2px(Context context, float spValue) {
-		final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
-		return (int) (spValue * fontScale + 0.5f);
 	}
 
 	public static boolean isMobileNO(String mobiles) {
@@ -362,7 +314,7 @@ public class QuanjiakanUtil {
 		return (bitmap);
 	}
 
-	public static Bitmap cutBitmap2FitScreen(Bitmap bm) {
+	public static Bitmap cutBitmap2FitScreen(Context mContext,Bitmap bm) {
 		DisplayMetrics dm = new DisplayMetrics();
 		WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
 		wm.getDefaultDisplay().getMetrics(dm);

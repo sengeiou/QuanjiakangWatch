@@ -11,18 +11,14 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.gson.reflect.TypeToken;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
-import com.quanjiakan.activity.base.QuanjiakanSetting;
 import com.quanjiakan.activity.common.main.MainActivity;
 import com.quanjiakan.constants.IPresenterBusinessCode;
-import com.quanjiakan.net.format.CommonResultEntity;
 import com.quanjiakan.net.retrofit.result_entity.PostLoginEntity;
 import com.quanjiakan.net_presenter.SigninPresenter;
-import com.quanjiakan.util.common.SerialUtil;
+import com.quanjiakan.util.dialog.CommonDialogHint;
 import com.quanjiakan.watch.R;
 import com.umeng.analytics.MobclickAgent;
 
@@ -135,7 +131,7 @@ public class SigninActivity_mvp extends BaseActivity {
         switch (type) {
             case IPresenterBusinessCode.LOGIN:
                 if (etUsername.getText().toString().trim().equals("") || etPassword.getText().toString().trim().equals("")) {
-                    Toast.makeText(SigninActivity_mvp.this, getString(R.string.common_hint_login_params_error), Toast.LENGTH_SHORT).show();
+                    CommonDialogHint.getInstance().showHint(SigninActivity_mvp.this,getString(R.string.common_hint_login_params_error));
                     return null;
                 }
                 HashMap<String, String> params = new HashMap<>();
@@ -204,25 +200,11 @@ public class SigninActivity_mvp extends BaseActivity {
                         startActivity(intent);
                         finish();
                     }else{
-                        Toast.makeText(this, getString(R.string.error_login_hint), Toast.LENGTH_SHORT).show();
+                        CommonDialogHint.getInstance().showHint(SigninActivity_mvp.this,getString(R.string.error_login_hint));
                     }
                 }else{
-                    Toast.makeText(this, getString(R.string.error_login_hint), Toast.LENGTH_SHORT).show();
+                    CommonDialogHint.getInstance().showHint(SigninActivity_mvp.this,getString(R.string.error_login_hint));
                 }
-                //TODO 使用JSON格式的Retrofit
-//                if (result != null) {
-//                    PostLoginEntity response = (PostLoginEntity) result;
-//                    if ("200".equals(response.getCode())) {
-//                        QuanjiakanSetting.getInstance().setPhone(etUsername.getText().toString());
-//                        QuanjiakanSetting.getInstance().setUserId(response.getObject().getId());
-//                        QuanjiakanSetting.getInstance().setUserName(response.getObject().getNickname());
-//                        QuanjiakanSetting.getInstance().setPwSignature(etPassword.getText().toString());
-//                        QuanjiakanSetting.getInstance().setToken(response.getObject().getToken());
-//                        Intent intent = new Intent(SigninActivity_mvp.this, MainActivity.class);
-//                        startActivity(intent);
-//                        finish();
-//                    }
-//                }
                 break;
         }
     }
@@ -230,7 +212,7 @@ public class SigninActivity_mvp extends BaseActivity {
     public void onError(int type, int httpResponseCode, Object errorMsg) {
         switch (type) {
             case IPresenterBusinessCode.LOGIN:
-                Toast.makeText(this, "" + errorMsg.toString(), Toast.LENGTH_SHORT).show();//
+                CommonDialogHint.getInstance().showHint(SigninActivity_mvp.this,"" + errorMsg.toString());
                 break;
             case IPresenterBusinessCode.NONE:
                 //TODO 不做任何事情，在获取参数为空时调用并返回，调用前会有对应参数相关的提示

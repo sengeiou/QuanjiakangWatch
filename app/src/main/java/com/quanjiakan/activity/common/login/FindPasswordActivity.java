@@ -1,6 +1,5 @@
 package com.quanjiakan.activity.common.login;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -11,14 +10,14 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
-import com.quanjiakan.util.common.CheckUtil;
+import com.quanjiakan.util.common.StringCheckUtil;
 import com.quanjiakan.util.common.EditTextFilter;
 import com.quanjiakan.util.common.LogUtil;
-import com.quanjiakan.util.common.SignatureUtil;
+import com.quanjiakan.util.common.MessageDigestUtil;
+import com.quanjiakan.util.dialog.CommonDialogHint;
 import com.quanjiakan.watch.R;
 import com.umeng.analytics.MobclickAgent;
 
@@ -124,46 +123,46 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
 
 	public void findPassword() {
 		if (etUsername.length() == 0 || etCode.length() == 0 || etNewpassword.length() == 0 || etConfirmnewpassword.length() == 0) {
-			Toast.makeText(FindPasswordActivity.this, getResources().getString(R.string.setting_password_check1), Toast.LENGTH_SHORT).show();
+			CommonDialogHint.getInstance().showHint(FindPasswordActivity.this,getResources().getString(R.string.setting_password_check1));
 			return;
 		}
 
 		if(!EditTextFilter.isPhoneLegal(etUsername.getText().toString().trim())) {
-			Toast.makeText(FindPasswordActivity.this, "请输入正确手机号码", Toast.LENGTH_SHORT).show();
+			CommonDialogHint.getInstance().showHint(FindPasswordActivity.this,getResources().getString(R.string.error_findpassword_error_phone));
 			return;
 		}
 
 		if (!etCode.getText().toString().equals(etCode.getTag().toString())) {
-			Toast.makeText(FindPasswordActivity.this, "验证码不一致，请重试！", Toast.LENGTH_SHORT).show();
+			CommonDialogHint.getInstance().showHint(FindPasswordActivity.this,getResources().getString(R.string.error_findpassword_error_check_code));
 			return;
 		}
 
 		if (lastSMSPhone != null && !lastSMSPhone.equals(etUsername.getText().toString())) {
-			Toast.makeText(FindPasswordActivity.this, "手机号码与获取验证码的手机号码不一致!", Toast.LENGTH_SHORT).show();
+			CommonDialogHint.getInstance().showHint(FindPasswordActivity.this,getResources().getString(R.string.setting_password_check10));
 			return;
 		}
 
 
 		if(etNewpassword.getText().toString().trim().length()<6||etNewpassword.getText().toString().trim().length()>15) {
-			Toast.makeText(FindPasswordActivity.this, "新密码位数不对", Toast.LENGTH_SHORT).show();
+			CommonDialogHint.getInstance().showHint(FindPasswordActivity.this,getResources().getString(R.string.hint_new_pw_number_error));
 			return;
 		}
 
 		if(etConfirmnewpassword.getText().toString().trim().length()<6||etConfirmnewpassword.getText().toString().trim().length()>15) {
-			Toast.makeText(FindPasswordActivity.this, "确认密码位数不对", Toast.LENGTH_SHORT).show();
+			CommonDialogHint.getInstance().showHint(FindPasswordActivity.this,getResources().getString(R.string.hint_comfirm_pw_number_error));
 			return;
 		}
 
 		/**
 		 * 提升账号安全措施
 		 */
-		if (!CheckUtil.checkStringType(etNewpassword.getText().toString())) {
-			Toast.makeText(FindPasswordActivity.this, getResources().getString(R.string.setting_password_check5), Toast.LENGTH_SHORT).show();
+		if (!StringCheckUtil.checkStringType(etNewpassword.getText().toString())) {
+			CommonDialogHint.getInstance().showHint(FindPasswordActivity.this,getResources().getString(R.string.setting_password_check5));
 			return;
 		}
 
 		if (!etNewpassword.getText().toString().equals(etConfirmnewpassword.getText().toString())) {
-			Toast.makeText(FindPasswordActivity.this, getResources().getString(R.string.setting_password_check11), Toast.LENGTH_SHORT).show();
+			CommonDialogHint.getInstance().showHint(FindPasswordActivity.this,getResources().getString(R.string.setting_password_check11));
 			return;
 		}
 
@@ -171,21 +170,6 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
 		params.put("mobile", etUsername.getText().toString());
 		params.put("password", BaseApplication.getInstances().getFormatPWString(etNewpassword.getText().toString()));
 		params.put("confirmpassword", BaseApplication.getInstances().getFormatPWString(etNewpassword.getText().toString()));
-//		MyHandler.putTask(this, new Task(new HttpResponseInterface() {
-//
-//			@Override
-//			public void handMsg(String val) {
-//				if (val != null && val.length() > 0) {
-//					HttpResponseResult result = new HttpResponseResult(val);
-//					if (result.getCode().equals("200")) {
-//						Toast.makeText(FindPasswordActivity.this, "重置密码成功", Toast.LENGTH_SHORT).show();
-//						finish();
-//					} else {
-//						Toast.makeText(FindPasswordActivity.this, "重置密码失败", Toast.LENGTH_SHORT).show();
-//					}
-//				}
-//			}
-//		}, HttpUrls.findpassword(), params, Task.TYPE_POST_DATA_PARAMS, QuanjiakanDialog.getInstance().getDialog(FindPasswordActivity.this)));
 	}
 
 	/**
@@ -194,7 +178,7 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
 	public void getSMSCode() {
 		try {
 			if(!EditTextFilter.isPhoneLegal(etUsername.getText().toString().trim())) {
-				Toast.makeText(FindPasswordActivity.this, "请输入正确手机号码", Toast.LENGTH_SHORT).show();
+				CommonDialogHint.getInstance().showHint(FindPasswordActivity.this,getResources().getString(R.string.error_findpassword_error_phone));
 				return;
 			}
 
@@ -209,37 +193,15 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
 			jsonData.put("client", 1);
 			jsonData.put("type", "forget");
 			jsonData.put("mobile", etUsername.getText().toString());
-			jsonData.put("sign", SignatureUtil.getMD5String(sb.toString()));
+			jsonData.put("sign", MessageDigestUtil.getMD5String(sb.toString()));
 			//STRING
 			String stringParams = "{\"client\":1,\"type\":\"forget\"," +
 					"\"mobile\":\"" + etUsername.getText().toString() + "\"" +
-					"\"sign\":\"" + SignatureUtil.getMD5String(sb.toString()) + "\"" +
+					"\"sign\":\"" + MessageDigestUtil.getMD5String(sb.toString()) + "\"" +
 					"}";
 
 			HashMap<String, String> params = new HashMap<>();
 			params.put("data", jsonData.toString());
-//			MyHandler.putTask(this, new Task(new HttpResponseInterface() {
-//				@Override
-//				public void handMsg(String val) {
-//					if (val != null && val.length() > 0) {
-//						HttpResponseResult result = new HttpResponseResult(val);
-//						if (result.getCode().equals("200")) {
-//							//获取验证码
-//							showSmsCodeTime();
-//							etCode.setTag(result.getMessage());
-//							lastSMSPhone = etUsername.getText().toString();
-//						} else {
-//							if (result.getMessage() != null && result.getMessage().length() > 0 && (result.getMessage().contains("发送上限") || result.getMessage().contains("验证码超出"))) {
-//								Toast.makeText(FindPasswordActivity.this, "超出验证码当天发送上限"/*"获取验证码失败，请重试！"*/, Toast.LENGTH_SHORT).show();
-//							} else if (result.getMessage() != null && result.getMessage().length() > 0) {
-//								Toast.makeText(FindPasswordActivity.this, result.getMessage()/*"获取验证码失败，请重试！"*/, Toast.LENGTH_SHORT).show();
-//							} else {
-//								Toast.makeText(FindPasswordActivity.this, "获取验证码失败，请重试！", Toast.LENGTH_SHORT).show();
-//							}
-//						}
-//					}
-//				}
-//			}, HttpUrls.getSMSCode2(), params, Task.TYPE_POST_DATA_PARAMS, QuanjiakanDialog.getInstance().getDialog(this)));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

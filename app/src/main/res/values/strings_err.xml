@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="error_login_hint">登录失败</string>
+    <string name="error_hint">登录失败</string>
+    <string name="error_findpassword_error_phone">请输入正确手机号码</string>
+    <string name="error_findpassword_error_check_code">验证码不一致，请重试!</string>
 </resources>
 

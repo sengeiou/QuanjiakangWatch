@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 /**
  * Created by Administrator on 2016/6/14 0014.
  */
-public class CheckUtil {
+public class StringCheckUtil {
 
     public static final String mobileRegex = "^1\\d{10}$";
     public static final String char_ChineseRegex = "[\\u4e00-\\u9fa5]+";
@@ -57,7 +57,6 @@ public class CheckUtil {
         }
     }
 
-
     /**
      * 完全由中文字符组成
      *
@@ -97,7 +96,6 @@ public class CheckUtil {
             return false;
         }
     }
-
 
     /**
      * 一个或多个中文字符、英文、数字【不含空格】

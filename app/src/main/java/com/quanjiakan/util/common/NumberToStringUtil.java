@@ -8,7 +8,7 @@ import java.text.DecimalFormat;
  * Created by Administrator on 2016/11/23 0023.
  */
 
-public class NumberStringUtil {
+public class NumberToStringUtil {
 
     private static final String twoBitDecimalFormat = "####.##";
 

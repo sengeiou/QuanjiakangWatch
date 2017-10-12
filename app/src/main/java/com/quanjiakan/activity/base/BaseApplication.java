@@ -1,6 +1,5 @@
 package com.quanjiakan.activity.base;
 
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -8,7 +7,7 @@ import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.quanjiakan.util.common.SignatureUtil;
+import com.quanjiakan.util.common.MessageDigestUtil;
 import com.umeng.analytics.MobclickAgent;
 
 import java.io.FileOutputStream;
@@ -111,7 +110,7 @@ public class BaseApplication extends MultiDexApplication {
      */
 
     public String getFormatPWString(String formatString){
-        return SignatureUtil.getMD5String("@@"+formatString+"@@hi-board@@");
+        return MessageDigestUtil.getMD5String("@@"+formatString+"@@hi-board@@");
     }
 
     /**
@@ -193,17 +192,17 @@ public class BaseApplication extends MultiDexApplication {
 
     public void setPw_signature(String pw_signature) {
         if(pw_signature==null){
-            QuanjiakanSetting.getInstance().setPwSignature(SignatureUtil.getSHA1String(pw_signature+""));
+            QuanjiakanSetting.getInstance().setPwSignature(MessageDigestUtil.getSHA1String(pw_signature+""));
             return;
         }
-        QuanjiakanSetting.getInstance().setPwSignature(SignatureUtil.getSHA1String(pw_signature));
+        QuanjiakanSetting.getInstance().setPwSignature(MessageDigestUtil.getSHA1String(pw_signature));
     }
 
     public boolean isEqualToOriginal(String pw_signature){
         if(pw_signature==null){
             return false;
         }
-        return getPw_signature().equals(SignatureUtil.getSHA1String(pw_signature));
+        return getPw_signature().equals(MessageDigestUtil.getSHA1String(pw_signature));
     }
 
     /**

@@ -19,17 +19,17 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.activity.base.QuanjiakanUtil;
 import com.quanjiakan.constants.IPresenterBusinessCode;
 import com.quanjiakan.net_presenter.SignupPresenter;
-import com.quanjiakan.util.common.CheckUtil;
+import com.quanjiakan.util.common.StringCheckUtil;
 import com.quanjiakan.util.common.EditTextFilter;
 import com.quanjiakan.util.common.LogUtil;
-import com.quanjiakan.util.common.SignatureUtil;
+import com.quanjiakan.util.common.MessageDigestUtil;
+import com.quanjiakan.util.dialog.CommonDialogHint;
 import com.quanjiakan.util.widget.OrderClickSpan;
 import com.quanjiakan.watch.R;
 import com.umeng.analytics.MobclickAgent;
@@ -95,10 +95,11 @@ public class SignupActivity extends BaseActivity {
             if (msg.what == 1) {
                 if (arg < 1) {
                     btnYanzhengma.setEnabled(true);
-                    btnYanzhengma.setText("获取验证码");
+                    btnYanzhengma.setText(getString(R.string.hint_signup_check_code));
                 } else {
                     btnYanzhengma.setEnabled(false);
-                    btnYanzhengma.setText("剩余" + arg + "s");
+                    btnYanzhengma.setText(getString(R.string.hint_signup_check_code_remain_pre) + arg +
+                            getString(R.string.hint_signup_check_code_remain_suf));
                 }
             }
         }
@@ -137,7 +138,6 @@ public class SignupActivity extends BaseActivity {
                 showDialog();
             }
         });
-
         spannableString.setSpan(orderClickSpan, 0, string.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         signupClauseText.append(spannableString);
         signupClauseText.setMovementMethod(LinkMovementMethod.getInstance());
@@ -162,8 +162,7 @@ public class SignupActivity extends BaseActivity {
         });
         TextView title = (TextView) view.findViewById(R.id.title);
         title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-//        title.setText("全家康免责条款");//软件许可及服务协议
-        title.setText("软件许可及服务协议");//
+        title.setText(getString(R.string.hint_signup_agreement_title));//
         TextView include_value = (TextView) view.findViewById(R.id.indroduce);
         include_value.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         include_value.setText(R.string.signup_rules_new);
@@ -190,7 +189,7 @@ public class SignupActivity extends BaseActivity {
      */
     public void getSMSCode() {
         if (!EditTextFilter.isPhoneLegal(etUsername.getText().toString())) {
-            Toast.makeText(this, "请输入正确的手机号", Toast.LENGTH_SHORT).show();
+            CommonDialogHint.getInstance().showHint(SignupActivity.this,getResources().getString(R.string.hint_input_right_mobilephone));
             return;
         }
         try {
@@ -206,7 +205,7 @@ public class SignupActivity extends BaseActivity {
             jsonData.put("client", 1);
             jsonData.put("type", "signup");
             jsonData.put("mobile", etUsername.getText().toString());
-            jsonData.put("sign", SignatureUtil.getMD5String(sb.toString()));
+            jsonData.put("sign", MessageDigestUtil.getMD5String(sb.toString()));
 
             HashMap<String, String> params = new HashMap<>();
             params.put("data", jsonData.toString());
@@ -217,68 +216,68 @@ public class SignupActivity extends BaseActivity {
 
     public boolean signup() {
         //先判断一系列条件
-        if (CheckUtil.isEmpty(etUsername.getText().toString())) {
-            Toast.makeText(SignupActivity.this, getResources().getString(R.string.setting_password_check6), Toast.LENGTH_SHORT).show();
+        if (StringCheckUtil.isEmpty(etUsername.getText().toString())) {
+            CommonDialogHint.getInstance().showHint(SignupActivity.this,getResources().getString(R.string.setting_password_check6));
             return false;
         }
-        if (!CheckUtil.isPhoneNumber(etUsername.getText().toString())) {
-            Toast.makeText(SignupActivity.this, getResources().getString(R.string.setting_password_check7), Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        if (CheckUtil.isEmpty(etCode.getText().toString())) {
-            Toast.makeText(SignupActivity.this, getResources().getString(R.string.setting_password_check8), Toast.LENGTH_SHORT).show();
+        if (!StringCheckUtil.isPhoneNumber(etUsername.getText().toString())) {
+            CommonDialogHint.getInstance().showHint(SignupActivity.this,getResources().getString(R.string.setting_password_check7));
             return false;
         }
 
-        if (CheckUtil.isEmpty(etCode.getTag().toString()) || !etCode.getTag().toString().equals(etCode.getText().toString())) {
-            Toast.makeText(SignupActivity.this, getResources().getString(R.string.setting_password_check9), Toast.LENGTH_SHORT).show();
+        if (StringCheckUtil.isEmpty(etCode.getText().toString())) {
+            CommonDialogHint.getInstance().showHint(SignupActivity.this,getResources().getString(R.string.setting_password_check8));
+            return false;
+        }
+
+        if (StringCheckUtil.isEmpty(etCode.getTag().toString()) || !etCode.getTag().toString().equals(etCode.getText().toString())) {
+            CommonDialogHint.getInstance().showHint(SignupActivity.this,getResources().getString(R.string.setting_password_check9));
             return false;
         }
 
         if (lastSMSPhone != null && !lastSMSPhone.equals(etUsername.getText().toString())) {
-            Toast.makeText(SignupActivity.this, getResources().getString(R.string.setting_password_check10), Toast.LENGTH_SHORT).show();
+            CommonDialogHint.getInstance().showHint(SignupActivity.this,getResources().getString(R.string.setting_password_check10));
             return false;
         }
 
         //et_name
-        if (CheckUtil.isEmpty(etName.getText().toString())) {
-            Toast.makeText(SignupActivity.this, getResources().getString(R.string.setting_password_check14), Toast.LENGTH_SHORT).show();
+        if (StringCheckUtil.isEmpty(etName.getText().toString())) {
+            CommonDialogHint.getInstance().showHint(SignupActivity.this,getResources().getString(R.string.setting_password_check14));
             return false;
         }
 
-        if (CheckUtil.isEmpty(etPassword.getText().toString()) || CheckUtil.isEmpty(etConfirmpassword.getText().toString())) {
-            Toast.makeText(SignupActivity.this, getResources().getString(R.string.setting_password_check12), Toast.LENGTH_SHORT).show();
+        if (StringCheckUtil.isEmpty(etPassword.getText().toString()) || StringCheckUtil.isEmpty(etConfirmpassword.getText().toString())) {
+            CommonDialogHint.getInstance().showHint(SignupActivity.this,getResources().getString(R.string.setting_password_check12));
             return false;
         }
 
 
         if (etPassword.getText().toString().trim().length() < 6 || etPassword.getText().toString().trim().length() > 15) {
-            Toast.makeText(SignupActivity.this, getString(R.string.hint_new_pw_number_error), Toast.LENGTH_SHORT).show();
+            CommonDialogHint.getInstance().showHint(SignupActivity.this,getResources().getString(R.string.hint_new_pw_number_error));
             return false;
         }
 
         if (etConfirmpassword.getText().toString().trim().length() < 6 || etConfirmpassword.getText().toString().trim().length() > 15) {
-            Toast.makeText(SignupActivity.this, getString(R.string.hint_comfirm_pw_number_error), Toast.LENGTH_SHORT).show();
+            CommonDialogHint.getInstance().showHint(SignupActivity.this,getResources().getString(R.string.hint_comfirm_pw_number_error));
             return false;
         }
 
 
         if (!etPassword.getText().toString().equals(etConfirmpassword.getText().toString())) {
-            Toast.makeText(SignupActivity.this, getResources().getString(R.string.setting_password_check11), Toast.LENGTH_SHORT).show();
+            CommonDialogHint.getInstance().showHint(SignupActivity.this,getResources().getString(R.string.setting_password_check11));
             return false;
         }
 
         /**
          * 提升账号安全措施
          */
-        if (!CheckUtil.checkStringType(etPassword.getText().toString())) {
-            Toast.makeText(SignupActivity.this, getResources().getString(R.string.setting_password_check5), Toast.LENGTH_SHORT).show();
+        if (!StringCheckUtil.checkStringType(etPassword.getText().toString())) {
+            CommonDialogHint.getInstance().showHint(SignupActivity.this,getResources().getString(R.string.setting_password_check5));
             return false;
         }
 
         if (!read_flag) {
-            Toast.makeText(SignupActivity.this, getResources().getString(R.string.singup_clause_hint), Toast.LENGTH_SHORT).show();
+            CommonDialogHint.getInstance().showHint(SignupActivity.this,getResources().getString(R.string.singup_clause_hint));
             return false;
         }
 
@@ -377,12 +376,13 @@ public class SignupActivity extends BaseActivity {
         switch (type) {
             case IPresenterBusinessCode.SMS_CODE:
                 if(errorMsg!=null){
-                    Toast.makeText(this, errorMsg.toString(), Toast.LENGTH_SHORT).show();
+                    CommonDialogHint.getInstance().showHint(SignupActivity.this,errorMsg.toString());
+
                 }
                 break;
             default:
                 if(errorMsg!=null){
-                    Toast.makeText(this, errorMsg.toString(), Toast.LENGTH_SHORT).show();
+                    CommonDialogHint.getInstance().showHint(SignupActivity.this,errorMsg.toString());
                 }
                 break;
         }
@@ -401,11 +401,11 @@ public class SignupActivity extends BaseActivity {
                 break;
             }
             case R.id.btn_yanzhengma: {
-                if (((TextView) view).getText().toString().equals("获取验证码")) {
+                if (((TextView) view).getText().toString().equals(getString(R.string.hint_signup_check_code))) {
                     getSMSCode();
 
                     if (!EditTextFilter.isPhoneLegal(etUsername.getText().toString())) {
-                        Toast.makeText(this, "请输入正确的手机号", Toast.LENGTH_SHORT).show();
+                        CommonDialogHint.getInstance().showHint(SignupActivity.this,getString(R.string.error_findpassword_error_phone));
                         return;
                     }
                     presenter.getSMSCode(this);
