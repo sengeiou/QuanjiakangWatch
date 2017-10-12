@@ -115,31 +115,6 @@ public class BaseApplication extends MultiDexApplication {
 
     /**
      * ****************************************************
-     * 获取版本信息
-     */
-
-    public String getVersion() {
-        try {
-            PackageManager pm = getPackageManager();
-            return pm.getPackageInfo(getPackageName(), 0).versionName + "";
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
-    public String getVersionCode() {
-        try {
-            PackageManager pm = getPackageManager();
-            return pm.getPackageInfo(getPackageName(), 0).versionCode + "";
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
-    /**
-     * ****************************************************
      * 保存用户名
      */
 
@@ -257,25 +232,8 @@ public class BaseApplication extends MultiDexApplication {
 
     /**
      * *********************************************************************************************
-     */
-
-    public boolean isAppBackground(){
-        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
-        for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
-            if (appProcess.processName.equals(getPackageName())) {
-                if (appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND) {
-                    return true;
-                }else{
-                    return false;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * *********************************************************************************************
+     * SharePreference 通用存取方法
+     *
      */
 
     public String getKeyValue(String key) {

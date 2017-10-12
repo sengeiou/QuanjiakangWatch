@@ -88,6 +88,48 @@ public class CommonDialogHint {
         dialog.show();
     }
 
+    public void showHint(Context context, String hintMsg,final View.OnClickListener clickListener){
+        if(dialog!=null && dialog.isShowing()){
+            /**
+             * 已经存在的Dialog若不进行处理，则不处理后续的显示Dialog请求？
+             */
+            return;
+        }
+        dialog = new Dialog(context,R.style.AlbumDialogStyle);
+        View root = LayoutInflater.from(context).inflate(R.layout.dialog_common_confirm_version2,null);
+        /**
+         * 设置指定的提示信息
+         */
+        TextView hintMsgContainer = (TextView) root.findViewById(R.id.tv_content);
+        hintMsgContainer.setText(hintMsg);
+
+        /**
+         *  设置点击
+         */
+        RelativeLayout btn = (RelativeLayout) root.findViewById(R.id.rl_confirm);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(dialog!=null && dialog.isShowing()){
+                    dialog.dismiss();
+                }
+                if(clickListener!=null){
+                    clickListener.onClick(view);
+                }
+            }
+        });
+        /**
+         * 设置Dialog的相关属性
+         */
+        WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();
+        lp.width = UnitExchangeUtil.dip2px(context, 300);
+        lp.height = lp.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
+        dialog.setContentView(root, lp);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+    }
+
     /**
      *
      * @param context

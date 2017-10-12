@@ -10,11 +10,10 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 /**
- * 作者：Administrator on 2017/4/24 16:56
- * <p>  用于过滤emoji 标点符号 等
- * 邮箱：liuzj@hi-board.com
+ *
+ *
+ *
  */
-
 
 public class EditTextFilter {
 

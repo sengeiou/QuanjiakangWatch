@@ -1,17 +1,17 @@
 package com.quanjiakan.net.retrofit.result_entity;
 
 /**
- * Created by Administrator on 2017/9/22.
+ * Created by Administrator on 2017/10/12.
  */
 
-public class PostSMSEntity {
+public class PostSignupEntity {
 
     /**
+     * {"code":"200","message":"返回成功","object":{"memberId":13884}}
      *
-     * {"code":"200","message":"返回成功","object":{"smscode":799785}}
      * code : 200
      * message : 返回成功
-     * object : {"smscode":714148}
+     * object : {"memberId":13884}
      */
 
     private String code;
@@ -44,17 +44,17 @@ public class PostSMSEntity {
 
     public static class ObjectBean {
         /**
-         * smscode : 714148
+         * memberId : 13884
          */
 
-        private int smscode;
+        private int memberId;
 
-        public int getSmscode() {
-            return smscode;
+        public int getMemberId() {
+            return memberId;
         }
 
-        public void setSmscode(int smscode) {
-            this.smscode = smscode;
+        public void setMemberId(int memberId) {
+            this.memberId = memberId;
         }
     }
 }

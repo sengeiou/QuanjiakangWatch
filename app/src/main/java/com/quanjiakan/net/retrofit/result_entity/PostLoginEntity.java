@@ -9,6 +9,8 @@ import java.io.Serializable;
 public class PostLoginEntity implements Serializable {
 
     /**
+     * {"code":"200","message":"返回成功","object":{"id":13884,"nickname":"摩提","token":"bf8473c2b114defc27d48d6715428de6"}}
+     *
      * code : 200
      * message : 返回成功
      * object : {"id":11303,"nickname":"小小莫","token":"89f53006959a0e10f340747e2a938c8b"}
@@ -44,6 +46,7 @@ public class PostLoginEntity implements Serializable {
 
     public static class ObjectBean {
         /**
+         *
          * id : 11303
          * nickname : 小小莫
          * token : 89f53006959a0e10f340747e2a938c8b
@@ -79,7 +82,7 @@ public class PostLoginEntity implements Serializable {
 
         @Override
         public String toString() {
-            return "ObjectBean{" +
+            return "\nObjectBean{" +
                     "id=" + id +
                     ", nickname='" + nickname + '\'' +
                     ", token='" + token + '\'' +

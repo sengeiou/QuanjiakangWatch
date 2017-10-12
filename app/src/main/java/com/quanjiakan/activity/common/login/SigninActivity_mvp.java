@@ -18,6 +18,7 @@ import com.quanjiakan.activity.common.main.MainActivity;
 import com.quanjiakan.constants.IPresenterBusinessCode;
 import com.quanjiakan.net.retrofit.result_entity.PostLoginEntity;
 import com.quanjiakan.net_presenter.SigninPresenter;
+import com.quanjiakan.util.common.LogUtil;
 import com.quanjiakan.util.dialog.CommonDialogHint;
 import com.quanjiakan.watch.R;
 import com.umeng.analytics.MobclickAgent;
@@ -74,19 +75,19 @@ public class SigninActivity_mvp extends BaseActivity {
         signinPresenter = new SigninPresenter();
     }
 
+    /**
+     * ********************************************************************************************
+     * 初始化，设置相关的默认值
+     */
+
     public void initView() {
         tvTitle.setText(R.string.login_title);
     }
 
-    public void signup() {
-        Intent intent = new Intent(this, SignupActivity.class);
-        startActivity(intent);
-    }
-
-    public void findPassword() {
-//        Intent intent = new Intent(this, FindPasswordActivity.class);
-//        startActivity(intent);
-    }
+    /**
+     * ********************************************************************************************
+     * 声明周期方法
+     */
 
     @Override
     public void onResume() {
@@ -101,6 +102,11 @@ public class SigninActivity_mvp extends BaseActivity {
         MobclickAgent.onPause(this);
         MobclickAgent.onPageEnd(this.getClass().getSimpleName());
     }
+
+    /**
+     * ********************************************************************************************
+     * 点击事件
+     */
 
     @OnClick({R.id.btn_submit, R.id.tv_signup, R.id.tv_findpassword})
     public void onClick(View view) {
@@ -117,6 +123,11 @@ public class SigninActivity_mvp extends BaseActivity {
         }
     }
 
+    /**
+     * ********************************************************************************************
+     * 获取用户填入的数据
+     */
+
     public String getUsername() {
         return etUsername.getText().toString();
     }
@@ -125,8 +136,26 @@ public class SigninActivity_mvp extends BaseActivity {
         return etPassword.getText().toString();
     }
 
-    //********************************************************************************************
+    /**
+     * ********************************************************************************************
+     * 跳转
+     */
 
+    public void signup() {
+        Intent intent = new Intent(this, SignupActivity.class);
+        startActivity(intent);
+    }
+
+    public void findPassword() {
+//        Intent intent = new Intent(this, FindPasswordActivity.class);
+//        startActivity(intent);
+    }
+
+    /**
+     * ********************************************************************************************
+     * 根据业务类型，获取对应的参数，若出现参数填入不规范，将传入null，并应该终止业务的执行
+     *
+     */
     public Object getParamter(int type) {
         switch (type) {
             case IPresenterBusinessCode.LOGIN:
@@ -145,6 +174,10 @@ public class SigninActivity_mvp extends BaseActivity {
         return null;
     }
 
+    /**
+     *
+     * @param type
+     */
     public void showMyDialog(int type) {
         if (mDialog != null && mDialog.isShowing()) {
             mDialog.dismiss();
@@ -177,7 +210,7 @@ public class SigninActivity_mvp extends BaseActivity {
         switch (type) {
             case IPresenterBusinessCode.LOGIN:
                 //TODO 使用String格式的Retrofit
-                if(result!=null && result instanceof PostLoginEntity) {
+                if(result!=null && result instanceof PostLoginEntity) {//TODO 避免空指针异常与数据类型的异常
                     PostLoginEntity res = (PostLoginEntity) result;
                     //TODO 实际上仍然需要判断数据中是否是返回200 ，得到用户名，Token，ID等数据
                     /**
@@ -187,6 +220,7 @@ public class SigninActivity_mvp extends BaseActivity {
                      * Token，
                      * ID，
                      */
+                    LogUtil.e(""+res.toString());
                     //TODO 先按照罗工的那个步骤序列化数据
                     /**
                      QuanjiakanSetting.getInstance().setPhone("");

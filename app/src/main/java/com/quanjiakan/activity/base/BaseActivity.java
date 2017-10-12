@@ -14,7 +14,7 @@ import com.quanjiakan.watch.R;
 public abstract class BaseActivity extends AppCompatActivity implements IBaseActivity{
 
     //TODO 全部Activity共用的Dialog
-    public static Dialog mDialog;
+    public Dialog mDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

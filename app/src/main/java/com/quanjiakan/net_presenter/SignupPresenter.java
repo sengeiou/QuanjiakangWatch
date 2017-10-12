@@ -5,6 +5,7 @@ import com.quanjiakan.constants.IPresenterBusinessCode;
 import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.Retrofit2Util;
 import com.quanjiakan.net.retrofit.result_entity.PostSMSEntity;
+import com.quanjiakan.net.retrofit.result_entity.PostSignupEntity;
 import com.quanjiakan.net.retrofit.service.RxPostSMSEntityService;
 import com.quanjiakan.net.retrofit.service.RxPostSignupService;
 import com.quanjiakan.util.common.LogUtil;
@@ -26,7 +27,7 @@ public class SignupPresenter implements IBasePresenter {
         HashMap<String, String> params = (HashMap<String, String>) activityMvp.getParamter(IPresenterBusinessCode.SMS_CODE);
         if(params==null){
             //TODO 控制无效的参数，需要针对不同的业务进行区分，当业务本身即为Get,不需要参数时，这个判断与回调也就不需要了
-            activityMvp.onError(IPresenterBusinessCode.NONE,200,null);
+            activityMvp.onError(IPresenterBusinessCode.NONE,200,null);//TODO
             return ;
         }
         activityMvp.showMyDialog(IPresenterBusinessCode.SMS_CODE);
@@ -73,12 +74,12 @@ public class SignupPresenter implements IBasePresenter {
         RxPostSignupService rxGetRequest = retrofit.create(RxPostSignupService.class);
         rxGetRequest.doLogin(params.get("mobile"),
                 params.get("password"),
-                params.get("c_password"),
+                params.get("validateCode"),
                 params.get("nickname"),
-                params.get("client"))
+                params.get("platform"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<String>() {
+                .subscribe(new Subscriber<PostSignupEntity>() {
                     @Override
                     public void onCompleted() {
                         activityMvp.dismissMyDialog(IPresenterBusinessCode.SIGNUP);
@@ -92,7 +93,7 @@ public class SignupPresenter implements IBasePresenter {
                     }
 
                     @Override
-                    public void onNext(String response) {
+                    public void onNext(PostSignupEntity response) {
                         LogUtil.e(" -- Http RxPostSignupService onSuccess:"+response);
                         activityMvp.dismissMyDialog(IPresenterBusinessCode.SIGNUP);
                         activityMvp.onSuccess(IPresenterBusinessCode.SIGNUP,200,response);

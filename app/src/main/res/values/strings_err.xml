@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!--      流程   登录   错误提示       -->
     <string name="error_login_hint">登录失败</string>
     <string name="error_hint">登录失败</string>
+
+    <!--      流程   注册   错误提示       -->
+    <string name="error_sign_up_get_sms_error">获取短信验证码失败</string>
+    <string name="error_sign_up_fail">注册失败</string>
+
+    <!--      流程   找回密码   错误提示       -->
     <string name="error_findpassword_error_phone">请输入正确手机号码</string>
     <string name="error_findpassword_error_check_code">验证码不一致，请重试!</string>
 </resources>

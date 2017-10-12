@@ -24,6 +24,9 @@ import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.activity.base.QuanjiakanUtil;
 import com.quanjiakan.constants.IPresenterBusinessCode;
+import com.quanjiakan.net.IResponseResultCode;
+import com.quanjiakan.net.retrofit.result_entity.PostSMSEntity;
+import com.quanjiakan.net.retrofit.result_entity.PostSignupEntity;
 import com.quanjiakan.net_presenter.SignupPresenter;
 import com.quanjiakan.util.common.StringCheckUtil;
 import com.quanjiakan.util.common.EditTextFilter;
@@ -79,14 +82,13 @@ public class SignupActivity extends BaseActivity {
     @BindView(R.id.btn_submit)
     Button btnSubmit;
 
-
     private int total = 120;
     private boolean read_flag = false;
     private String lastSMSPhone;
 
     private SignupPresenter presenter;
 
-    Handler mHandler = new Handler() {
+    private Handler mHandler = new Handler() {
 
         @Override
         public void handleMessage(Message msg) {
@@ -118,6 +120,11 @@ public class SignupActivity extends BaseActivity {
         presenter = new SignupPresenter();
     }
 
+    /**
+     * ********************************************************************************************
+     * 初始化，设置相关的默认值
+     */
+
     public void initTitle() {
         tvTitle.setText(R.string.signup_title);
         ibtnBack.setVisibility(View.VISIBLE);
@@ -135,7 +142,7 @@ public class SignupActivity extends BaseActivity {
         OrderClickSpan orderClickSpan = new OrderClickSpan(string, getResources().getColor(R.color.color_title_green), new OnClickListener() {
             @Override
             public void onClick(View viewss) {
-                showDialog();
+                showAgreementDialog();
             }
         });
         spannableString.setSpan(orderClickSpan, 0, string.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -143,7 +150,11 @@ public class SignupActivity extends BaseActivity {
         signupClauseText.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
-    private void showDialog() {
+    /**
+     * ********************************************************************************************
+     * 显示条款Dialog
+     */
+    private void showAgreementDialog() {
         /**
          * 对话框样式《注册声明》
          */
@@ -175,6 +186,11 @@ public class SignupActivity extends BaseActivity {
         detailDialog.show();
     }
 
+    /**
+     * ******************
+     * 切换显示效果
+     */
+
     private void resetFlag() {
         read_flag = !read_flag;
         if (read_flag) {
@@ -185,34 +201,9 @@ public class SignupActivity extends BaseActivity {
     }
 
     /**
-     * 获取短信验证码
+     * ******************
+     * 注册的检查条件
      */
-    public void getSMSCode() {
-        if (!EditTextFilter.isPhoneLegal(etUsername.getText().toString())) {
-            CommonDialogHint.getInstance().showHint(SignupActivity.this,getResources().getString(R.string.hint_input_right_mobilephone));
-            return;
-        }
-        try {
-
-            StringBuilder sb = new StringBuilder();
-            sb.append(1).append("@");
-            sb.append("signup").append("@");
-            sb.append(etUsername.getText().toString()).append("@");
-            LogUtil.e("encodeString:" + sb.toString());
-
-            //JSON
-            JSONObject jsonData = new JSONObject();
-            jsonData.put("client", 1);
-            jsonData.put("type", "signup");
-            jsonData.put("mobile", etUsername.getText().toString());
-            jsonData.put("sign", MessageDigestUtil.getMD5String(sb.toString()));
-
-            HashMap<String, String> params = new HashMap<>();
-            params.put("data", jsonData.toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public boolean signup() {
         //先判断一系列条件
@@ -280,11 +271,18 @@ public class SignupActivity extends BaseActivity {
             CommonDialogHint.getInstance().showHint(SignupActivity.this,getResources().getString(R.string.singup_clause_hint));
             return false;
         }
-
         return true;
     }
 
+    /**
+     * ******************
+     * 开始展示 验证码的倒计时
+     */
+
     public void showSmsCodeTime() {
+        if(total>0){
+            return;
+        }
         total = 120;
         new Thread(new Runnable() {
 
@@ -307,9 +305,19 @@ public class SignupActivity extends BaseActivity {
         }).start();
     }
 
+    /**
+     * ********************************************************************************************
+     * 获取用户填入的参数参数信息
+     */
+
     public String getPhoneNumber() {
         return etUsername.getText().toString();
     }
+
+    /**
+     * ********************************************************************************************
+     * 生命周期方法
+     */
 
     @Override
     public void onResume() {
@@ -324,6 +332,11 @@ public class SignupActivity extends BaseActivity {
         MobclickAgent.onPause(this);
         MobclickAgent.onPageEnd(this.getClass().getSimpleName());
     }
+
+    /**
+     * ********************************************************************************************
+     * 根据业务类型返回对应的参数
+     */
 
     @Override
     public Object getParamter(int type) {
@@ -340,9 +353,9 @@ public class SignupActivity extends BaseActivity {
                     HashMap<String, String> params_signup = new HashMap<>();
                     params_signup.put("mobile", etUsername.getText().toString());
                     params_signup.put("password", BaseApplication.getInstances().getFormatPWString(etPassword.getText().toString()));
-                    params_signup.put("c_password", etConfirmpassword.getText().toString());
+                    params_signup.put("validateCode", etCode.getText().toString());
                     params_signup.put("nickname", etName.getText().toString());
-                    params_signup.put("client", "1");
+                    params_signup.put("platform","2");
                     return params_signup;
                 }
             }
@@ -365,9 +378,49 @@ public class SignupActivity extends BaseActivity {
     @Override
     public void onSuccess(int type, int httpResponseCode, Object result) {
         switch (type) {
-            case IPresenterBusinessCode.SMS_CODE:
-
+            case IPresenterBusinessCode.SMS_CODE: {
+                if (result != null && result instanceof PostSMSEntity) {
+                    PostSMSEntity sms = (PostSMSEntity) result;
+                    if (IResponseResultCode.RESPONSE_SUCCESS.equals(sms.getCode())) {
+                        //TODO 获取验证码成功
+                        etCode.setTag(sms.getObject().getSmscode());
+                        lastSMSPhone = getPhoneNumber();
+                    } else {
+                        if (sms.getMessage() != null && sms.getMessage().length() > 0) {
+                            CommonDialogHint.getInstance().showHint(SignupActivity.this, sms.getMessage());
+                        } else {
+                            CommonDialogHint.getInstance().showHint(SignupActivity.this, getString(R.string.error_sign_up_get_sms_error));
+                        }
+                    }
+                } else {
+                    CommonDialogHint.getInstance().showHint(SignupActivity.this, getString(R.string.error_sign_up_get_sms_error));
+                }
                 break;
+            }
+            case IPresenterBusinessCode.SIGNUP:{
+                if (result != null && result instanceof PostSignupEntity) {
+                    PostSignupEntity signupEntity = (PostSignupEntity) result;
+                    if (IResponseResultCode.RESPONSE_SUCCESS.equals(signupEntity.getCode())) {
+                        //TODO 注册成功
+                        CommonDialogHint.getInstance().showHint(SignupActivity.this, getString(R.string.jmui_register_success), new OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                //TODO 提示用户后返回
+                                SignupActivity.this.finish();
+                            }
+                        });
+                    } else {
+                        if (signupEntity.getMessage() != null && signupEntity.getMessage().length() > 0) {
+                            CommonDialogHint.getInstance().showHint(SignupActivity.this, signupEntity.getMessage());
+                        } else {
+                            CommonDialogHint.getInstance().showHint(SignupActivity.this, getString(R.string.error_sign_up_fail));
+                        }
+                    }
+                } else {
+                    CommonDialogHint.getInstance().showHint(SignupActivity.this, getString(R.string.error_sign_up_fail));
+                }
+                break;
+            }
         }
     }
 
@@ -393,6 +446,11 @@ public class SignupActivity extends BaseActivity {
         return null;
     }
 
+    /**
+     * ********************************************************************************************
+     * 点击事件响应
+     */
+
     @OnClick({R.id.ibtn_back, R.id.btn_yanzhengma, R.id.signup_clause_ck, R.id.btn_submit, R.id.ll_signup_clause_ck})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -401,9 +459,7 @@ public class SignupActivity extends BaseActivity {
                 break;
             }
             case R.id.btn_yanzhengma: {
-                if (((TextView) view).getText().toString().equals(getString(R.string.hint_signup_check_code))) {
-                    getSMSCode();
-
+                if (((TextView) view).getText().toString().equals(getString(R.string.hint_signup_check_code))) {//TODO 未在验证码缓冲事件内
                     if (!EditTextFilter.isPhoneLegal(etUsername.getText().toString())) {
                         CommonDialogHint.getInstance().showHint(SignupActivity.this,getString(R.string.error_findpassword_error_phone));
                         return;
