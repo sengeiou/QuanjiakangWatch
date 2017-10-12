@@ -223,11 +223,11 @@ public class SigninActivity_mvp extends BaseActivity {
                     LogUtil.e(""+res.toString());
                     //TODO 先按照罗工的那个步骤序列化数据
                     /**
-                     QuanjiakanSetting.getInstance().setPhone("");
-                     QuanjiakanSetting.getInstance().setUserId(1);
-                     QuanjiakanSetting.getInstance().setUserName("");
-                     QuanjiakanSetting.getInstance().setPwSignature("");
-                     QuanjiakanSetting.getInstance().setToken("");
+                     SharePreferencesSetting.getInstance().setPhone("");
+                     SharePreferencesSetting.getInstance().setUserId(1);
+                     SharePreferencesSetting.getInstance().setUserName("");
+                     SharePreferencesSetting.getInstance().setPwSignature("");
+                     SharePreferencesSetting.getInstance().setToken("");
                      */
                     if("200".equals(res.getCode())){
                         Intent intent = new Intent(SigninActivity_mvp.this, MainActivity.class);

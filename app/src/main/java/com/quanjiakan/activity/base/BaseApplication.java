@@ -1,8 +1,6 @@
 package com.quanjiakan.activity.base;
 
-import android.app.ActivityManager;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 import android.widget.Toast;
@@ -14,7 +12,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.List;
 
 
 public class BaseApplication extends MultiDexApplication {
@@ -42,7 +39,7 @@ public class BaseApplication extends MultiDexApplication {
 
         initJpush();
 
-        QuanjiakanSetting.init(this);
+        SharePreferencesSetting.init(this);
 
         initUmeng();
 //        stat();
@@ -119,11 +116,11 @@ public class BaseApplication extends MultiDexApplication {
      */
 
     public void setUsername(String username) {
-        QuanjiakanSetting.getInstance().setUserName(username);
+        SharePreferencesSetting.getInstance().setUserName(username);
     }
 
     public String getUsername() {
-        return QuanjiakanSetting.getInstance().getUserName();
+        return SharePreferencesSetting.getInstance().getUserName();
     }
 
 
@@ -134,7 +131,7 @@ public class BaseApplication extends MultiDexApplication {
 
     public boolean isCheckedUpdateToday() {
         boolean bool = false;
-        String time = QuanjiakanSetting.getInstance().getUpdateTime();
+        String time = SharePreferencesSetting.getInstance().getUpdateTime();
         if (time == null || "".equals(time)) {
             bool = false;
         } else {
@@ -144,7 +141,7 @@ public class BaseApplication extends MultiDexApplication {
                 bool = true;
             } else {
                 //今天尚未检查更新
-//                QuanjiakanSetting.getInstance().setUpdateTime(System.currentTimeMillis()+"");
+//                SharePreferencesSetting.getInstance().setUpdateTime(System.currentTimeMillis()+"");
                 bool = false;
             }
         }
@@ -153,7 +150,7 @@ public class BaseApplication extends MultiDexApplication {
 
 
     public void updateCheckTime() {
-        QuanjiakanSetting.getInstance().setUpdateTime(System.currentTimeMillis() + "");
+        SharePreferencesSetting.getInstance().setUpdateTime(System.currentTimeMillis() + "");
     }
 
     /**
@@ -162,15 +159,15 @@ public class BaseApplication extends MultiDexApplication {
      */
 
     public String getPw_signature() {
-        return QuanjiakanSetting.getInstance().getPwSignature();
+        return SharePreferencesSetting.getInstance().getPwSignature();
     }
 
     public void setPw_signature(String pw_signature) {
         if(pw_signature==null){
-            QuanjiakanSetting.getInstance().setPwSignature(MessageDigestUtil.getSHA1String(pw_signature+""));
+            SharePreferencesSetting.getInstance().setPwSignature(MessageDigestUtil.getSHA1String(pw_signature+""));
             return;
         }
-        QuanjiakanSetting.getInstance().setPwSignature(MessageDigestUtil.getSHA1String(pw_signature));
+        SharePreferencesSetting.getInstance().setPwSignature(MessageDigestUtil.getSHA1String(pw_signature));
     }
 
     public boolean isEqualToOriginal(String pw_signature){
@@ -186,11 +183,11 @@ public class BaseApplication extends MultiDexApplication {
      */
 
     public String getUser_id() {
-        return QuanjiakanSetting.getInstance().getUserId() + "";
+        return SharePreferencesSetting.getInstance().getUserId() + "";
     }
 
     public void setUser_id(String user_id) {
-        QuanjiakanSetting.getInstance().setUserId(Integer.parseInt(user_id));
+        SharePreferencesSetting.getInstance().setUserId(Integer.parseInt(user_id));
     }
 
     /**
@@ -200,15 +197,15 @@ public class BaseApplication extends MultiDexApplication {
      *
      */
     public String getSDKServerStatus() {
-        return QuanjiakanSetting.getInstance().getSDKServerStatus() + "";
+        return SharePreferencesSetting.getInstance().getSDKServerStatus() + "";
     }
 
     public boolean isSDKConnected() {
-        return QuanjiakanSetting.getInstance().getSDKServerStatus()>=0;
+        return SharePreferencesSetting.getInstance().getSDKServerStatus()>=0;
     }
 
     public void setSDKServerStatus(String sdk_status) {
-        QuanjiakanSetting.getInstance().setSDKServerStatus(Integer.parseInt(sdk_status));
+        SharePreferencesSetting.getInstance().setSDKServerStatus(Integer.parseInt(sdk_status));
     }
 
     /**
@@ -237,19 +234,19 @@ public class BaseApplication extends MultiDexApplication {
      */
 
     public String getKeyValue(String key) {
-        return QuanjiakanSetting.getInstance().getKeyValue(key);
+        return SharePreferencesSetting.getInstance().getKeyValue(key);
     }
 
     public void setKeyValue(String key, String value) {
-        QuanjiakanSetting.getInstance().setKeyValue(key,value);
+        SharePreferencesSetting.getInstance().setKeyValue(key,value);
     }
 
     public int getKeyNumberValue(String key) {
-        return QuanjiakanSetting.getInstance().getKeyNumberValue(key);
+        return SharePreferencesSetting.getInstance().getKeyNumberValue(key);
     }
 
     public void setKeyNumberValue(String key, int value) {
-        QuanjiakanSetting.getInstance().setKeyNumberValue(key,value);
+        SharePreferencesSetting.getInstance().setKeyNumberValue(key,value);
     }
 
     /**
@@ -257,19 +254,19 @@ public class BaseApplication extends MultiDexApplication {
      */
 
     public String getDefaultDevice() {
-        return QuanjiakanSetting.getInstance().getKeyValue(getUser_id()+"DefaultDevice");
+        return SharePreferencesSetting.getInstance().getKeyValue(getUser_id()+"DefaultDevice");
     }
 
     public void setDefaultDevice(String IMEI_16radix) {
-        QuanjiakanSetting.getInstance().setKeyValue(getUser_id()+"DefaultDevice",IMEI_16radix);
+        SharePreferencesSetting.getInstance().setKeyValue(getUser_id()+"DefaultDevice",IMEI_16radix);
     }
 
     public String getMode(){
-        return QuanjiakanSetting.getInstance().getKeyValue(getUser_id()+"mode");
+        return SharePreferencesSetting.getInstance().getKeyValue(getUser_id()+"mode");
     }
 
     public void setMode(String mode) {
-        QuanjiakanSetting.getInstance().setKeyValue(getUser_id()+"mode",mode);
+        SharePreferencesSetting.getInstance().setKeyValue(getUser_id()+"mode",mode);
     }
 
     /**

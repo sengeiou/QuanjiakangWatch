@@ -385,6 +385,8 @@ public class SignupActivity extends BaseActivity {
                         //TODO 获取验证码成功
                         etCode.setTag(sms.getObject().getSmscode());
                         lastSMSPhone = getPhoneNumber();
+                        //TODO 成功获取验证码
+                        showSmsCodeTime();
                     } else {
                         if (sms.getMessage() != null && sms.getMessage().length() > 0) {
                             CommonDialogHint.getInstance().showHint(SignupActivity.this, sms.getMessage());

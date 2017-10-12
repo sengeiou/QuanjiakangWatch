@@ -10,10 +10,10 @@ import com.quanjiakan.util.common.MessageDigestUtil;
 
 import java.util.ArrayList;
 
-public class QuanjiakanSetting {
+public class SharePreferencesSetting {
 	
-	private final String TAG = "LOGUTIL "+QuanjiakanSetting.class.getSimpleName();
-	private static QuanjiakanSetting instance = null;
+	private final String TAG = "LOGUTIL "+SharePreferencesSetting.class.getSimpleName();
+	private static SharePreferencesSetting instance = null;
 	private static boolean bInited = false;
 	private Context context = null;
 	private SharedPreferences sharedPreferences;
@@ -40,7 +40,7 @@ public class QuanjiakanSetting {
 			throw new NullPointerException();
 		}
 		if (!bInited) {
-			instance = new QuanjiakanSetting(context);
+			instance = new SharePreferencesSetting(context);
 			bInited = true;
 		}
 	}
@@ -49,7 +49,7 @@ public class QuanjiakanSetting {
 		return (instance != null);
 	}
 	
-	private QuanjiakanSetting(Context con) {
+	private SharePreferencesSetting(Context con) {
 		context = con;
 		sharedPreferences = context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE);
 		sharedPreferences
@@ -200,7 +200,7 @@ public class QuanjiakanSetting {
 		return "1";
 	}
 	
-	public static QuanjiakanSetting getInstance() {
+	public static SharePreferencesSetting getInstance() {
 		return instance;
 	}
 

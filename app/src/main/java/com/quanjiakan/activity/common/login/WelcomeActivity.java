@@ -8,11 +8,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
-import com.quanjiakan.activity.base.QuanjiakanSetting;
+import com.quanjiakan.activity.base.SharePreferencesSetting;
 import com.quanjiakan.activity.common.main.MainActivity;
 import com.quanjiakan.watch.R;
 import com.umeng.analytics.MobclickAgent;
@@ -52,12 +51,12 @@ public class WelcomeActivity extends BaseActivity {
 
 
     public void initView() {
-        String version = QuanjiakanSetting.getInstance().getValue("isyindaoye");
+        String version = SharePreferencesSetting.getInstance().getValue("isyindaoye");
         if (version == null || "".equals(version) || packageInfo.versionCode > Integer.parseInt(version)) {
             Intent intent = new Intent(WelcomeActivity.this, GuidePageActivity.class);
             startActivity(intent);
         } else {
-            if (QuanjiakanSetting.getInstance().getUserId() == 0 || "0".equals(BaseApplication.getInstances().getUser_id())) {
+            if (SharePreferencesSetting.getInstance().getUserId() == 0 || "0".equals(BaseApplication.getInstances().getUser_id())) {
                 Intent intent = new Intent(WelcomeActivity.this, SigninActivity_mvp.class);
                 startActivity(intent);
             } else {

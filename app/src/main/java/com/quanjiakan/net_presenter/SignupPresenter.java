@@ -53,7 +53,7 @@ public class SignupPresenter implements IBasePresenter {
 
                     @Override
                     public void onNext(PostSMSEntity response) {
-                        LogUtil.e(" -- Http SignupPresenter SMS onSuccess:"+response);
+                        LogUtil.e(" -- Http SignupPresenter SMS onSuccess:"+response.toString());
                         activityMvp.dismissMyDialog(IPresenterBusinessCode.SMS_CODE);
                         activityMvp.onSuccess(IPresenterBusinessCode.SMS_CODE,200,response);
                     }

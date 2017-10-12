@@ -17,7 +17,7 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 
 import com.quanjiakan.activity.base.BaseActivity;
-import com.quanjiakan.activity.base.QuanjiakanSetting;
+import com.quanjiakan.activity.base.SharePreferencesSetting;
 import com.quanjiakan.activity.common.main.MainActivity;
 import com.quanjiakan.watch.R;
 import com.quanjiakan.view.InsideViewPager;
@@ -153,12 +153,12 @@ public class GuidePageActivity extends BaseActivity {
 			@Override
 			public void onClick(View arg0) {
 				Intent intent;
-				if (QuanjiakanSetting.getInstance().getUserId() != 0) {
+				if (SharePreferencesSetting.getInstance().getUserId() != 0) {
 					intent = new Intent(GuidePageActivity.this, MainActivity.class);
 				} else {
 					intent = new Intent(GuidePageActivity.this, SigninActivity_mvp.class);
 				}
-				QuanjiakanSetting.getInstance().setKeyValue("isyindaoye", ""+packageInfo.versionCode);
+				SharePreferencesSetting.getInstance().setKeyValue("isyindaoye", ""+packageInfo.versionCode);
 				startActivity(intent);
 				finish();
 			}

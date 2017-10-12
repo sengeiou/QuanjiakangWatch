@@ -56,5 +56,21 @@ public class PostSMSEntity {
         public void setSmscode(int smscode) {
             this.smscode = smscode;
         }
+
+        @Override
+        public String toString() {
+            return "ObjectBean{" +
+                    "smscode=" + smscode +
+                    '}';
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "PostSMSEntity{" +
+                "code='" + code + '\'' +
+                ", message='" + message + '\'' +
+                ", object=" + object +
+                '}';
     }
 }
