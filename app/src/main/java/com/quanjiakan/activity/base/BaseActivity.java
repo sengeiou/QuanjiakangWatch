@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.quanjiakan.util.common.UnitExchangeUtil;
 import com.quanjiakan.watch.R;
 
 public abstract class BaseActivity extends AppCompatActivity implements IBaseActivity{
@@ -59,8 +60,8 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseAct
         mDialog = new Dialog(context, R.style.dialog_loading);
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_loading, null);
         WindowManager.LayoutParams lp = mDialog.getWindow().getAttributes();
-        lp.width = QuanjiakanUtil.dip2px(context, 80);
-        lp.height = QuanjiakanUtil.dip2px(context, 80);
+        lp.width = UnitExchangeUtil.dip2px(context, 80);
+        lp.height = UnitExchangeUtil.dip2px(context, 80);
         lp.gravity = Gravity.CENTER;
         mDialog.setContentView(view, lp);
         mDialog.setCanceledOnTouchOutside(false);
@@ -68,12 +69,18 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseAct
         return mDialog;
     }
 
+    public void dismissDialog(){
+        if(mDialog!=null && mDialog.isShowing()){
+            mDialog.dismiss();
+        }
+    }
+
     public Dialog getNewDialog(Context context) {
         Dialog mDialog = new Dialog(context, R.style.dialog_loading);
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_loading, null);
         WindowManager.LayoutParams lp = mDialog.getWindow().getAttributes();
-        lp.width = QuanjiakanUtil.dip2px(context, 80);
-        lp.height = QuanjiakanUtil.dip2px(context, 80);
+        lp.width = UnitExchangeUtil.dip2px(context, 80);
+        lp.height = UnitExchangeUtil.dip2px(context, 80);
         lp.gravity = Gravity.CENTER;
         mDialog.setContentView(view, lp);
         mDialog.setCanceledOnTouchOutside(false);

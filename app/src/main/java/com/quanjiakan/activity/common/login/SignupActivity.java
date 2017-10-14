@@ -22,22 +22,18 @@ import android.widget.TextView;
 
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
-import com.quanjiakan.activity.base.QuanjiakanUtil;
-import com.quanjiakan.constants.IPresenterBusinessCode;
+import com.quanjiakan.activity.base.CommonUtil;
+import com.quanjiakan.net_presenter.IPresenterBusinessCode;
 import com.quanjiakan.net.IResponseResultCode;
 import com.quanjiakan.net.retrofit.result_entity.PostSMSEntity;
 import com.quanjiakan.net.retrofit.result_entity.PostSignupEntity;
 import com.quanjiakan.net_presenter.SignupPresenter;
 import com.quanjiakan.util.common.StringCheckUtil;
 import com.quanjiakan.util.common.EditTextFilter;
-import com.quanjiakan.util.common.LogUtil;
-import com.quanjiakan.util.common.MessageDigestUtil;
 import com.quanjiakan.util.dialog.CommonDialogHint;
 import com.quanjiakan.util.widget.OrderClickSpan;
 import com.quanjiakan.watch.R;
 import com.umeng.analytics.MobclickAgent;
-
-import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -178,7 +174,7 @@ public class SignupActivity extends BaseActivity {
         include_value.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         include_value.setText(R.string.signup_rules_new);
         WindowManager.LayoutParams lp = detailDialog.getWindow().getAttributes();
-        lp.width = QuanjiakanUtil.dip2px(this, 300);
+        lp.width = CommonUtil.dip2px(this, 300);
         lp.height = lp.WRAP_CONTENT;
         lp.gravity = Gravity.CENTER;
         detailDialog.setContentView(view, lp);

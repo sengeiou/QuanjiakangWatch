@@ -1,5 +1,6 @@
 package com.quanjiakan.net_presenter;
 
+import com.quanjiakan.activity.common.login.FindPasswordActivity;
 import com.quanjiakan.activity.common.login.SignupActivity;
 import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.Retrofit2Util;
@@ -20,9 +21,9 @@ import rx.schedulers.Schedulers;
  * Created by Administrator on 2017/9/13.
  */
 
-public class SignupPresenter implements IBasePresenter {
+public class FindPasswordPresenter implements IBasePresenter {
 
-    public void getSMSCode(final SignupActivity activityMvp){
+    public void getSMSCode(final FindPasswordActivity activityMvp){
         HashMap<String, String> params = (HashMap<String, String>) activityMvp.getParamter(IPresenterBusinessCode.SMS_CODE);
         if(params==null){
             //TODO 控制无效的参数，需要针对不同的业务进行区分，当业务本身即为Get,不需要参数时，这个判断与回调也就不需要了
@@ -59,7 +60,7 @@ public class SignupPresenter implements IBasePresenter {
                 });
     }
 
-    public void doSignup(final SignupActivity activityMvp){
+    public void doResetPassword(final FindPasswordActivity activityMvp){
         HashMap<String, String> params = (HashMap<String, String>) activityMvp.getParamter(IPresenterBusinessCode.SIGNUP);
         if(params==null){
             //TODO 控制无效的参数，需要针对不同的业务进行区分，当业务本身即为Get,不需要参数时，这个判断与回调也就不需要了
@@ -98,6 +99,5 @@ public class SignupPresenter implements IBasePresenter {
                         activityMvp.onSuccess(IPresenterBusinessCode.SIGNUP,200,response);
                     }
                 });
-
     }
 }

@@ -18,22 +18,8 @@ public class SharePreferencesSetting {
 	private Context context = null;
 	private SharedPreferences sharedPreferences;
 	private final String PREFERENCES_FILE = "quanjiakang_setting";
-	private ArrayList<String> list;
-
-	private boolean mbShortcutCreated = false;
-
-	private final String USER_ID_KEY = "user_id";
-	private final String PHONE_KEY = "phone";
-	private final String USER_NAME = "user_name";
-	private final String USER_TOKEN = "user_token";
-	private final String USER_PW_SIGNATURE = "pw_signature";
-	private final String DEVICE = "device";
 	private final String UPDATE_TIME = "update_time";
-
-	private final String SHORTCUT_CREATED = "shortcut_created";
 	private final String SDK_SERVER_STATUS = "sdk_server_status";
-
-	public static final String KEY_SIGNAL = "key_signal";
 
 	public static void init(Context context) {
 		if (context == null) {
@@ -44,11 +30,11 @@ public class SharePreferencesSetting {
 			bInited = true;
 		}
 	}
-	
-	public static boolean isInitialized(){
-		return (instance != null);
+
+	public static SharePreferencesSetting getInstance() {
+		return instance;
 	}
-	
+
 	private SharePreferencesSetting(Context con) {
 		context = con;
 		sharedPreferences = context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE);
@@ -61,7 +47,6 @@ public class SharePreferencesSetting {
 				});
 	}
 	
-
 	/**
 	 *************************************************************
 	 * SDK 连接状态
@@ -73,50 +58,6 @@ public class SharePreferencesSetting {
 	public void setSDKServerStatus(int userId) {
 		Editor editor = context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE).edit();
 		editor.putInt(SDK_SERVER_STATUS, userId);
-		editor.commit();
-	}
-	/**
-	 *************************************************************
-	 * 当前登录用户的ID
-	 */
-	public int getUserId() {
-		return context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE).getInt(USER_ID_KEY,0);
-	}
-
-	public void setUserId(int userId) {
-		Editor editor = context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE).edit();
-		editor.putInt(USER_ID_KEY, userId);
-		editor.commit();
-	}
-
-	/**
-	 ************************************************************
-	 * 设备信息---暂时没有用到
-	 */
-
-	public String getDevice() {
-		return context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE).getString(DEVICE,"");
-	}
-
-	public void setDevice(String userId) {
-		Editor editor = context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE).edit();
-		editor.putString(DEVICE, userId);
-		editor.commit();
-	}
-
-	/**
-	 ************************************************************
-	 * 用户名信息
-	 *
-	 */
-	
-	public String getUserName() {
-		return context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE).getString(USER_NAME,"");
-	}
-
-	public void setUserName(String userName) {
-		Editor editor = context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE).edit();
-		editor.putString(USER_NAME, userName);
 		editor.commit();
 	}
 
@@ -138,115 +79,7 @@ public class SharePreferencesSetting {
 
 	/**
 	 ************************************************************
-	 * 用户电话---相当于账号
-	 *
-	 */
-
-	public String getPhone() {
-		return context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE).getString(PHONE_KEY,"");
-	}
-
-	public void setPhone(String phone) {
-		Editor editor = context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE).edit();
-		editor.putString(PHONE_KEY, phone);
-		editor.commit();
-	}
-
-	/**
-	 ************************************************************
-	 * 用户Token
-	 *
-	 */
-
-	public String getToken() {
-		return context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE).getString(USER_TOKEN,"");
-	}
-
-	public void setToken(String phone) {
-		Editor editor = context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE).edit();
-		editor.putString(USER_TOKEN, phone);
-		editor.commit();
-	}
-
-	/**
-	 ************************************************************
-	 * 用户密码签名
-	 *
-	 */
-
-	public String getPwSignature() {
-		return context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE).getString(USER_PW_SIGNATURE,"");
-	}
-
-	public void setPwSignature(String phone) {
-		Editor editor = context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE).edit();
-		editor.putString(USER_PW_SIGNATURE, MessageDigestUtil.getSHA1String(phone));
-		editor.commit();
-	}
-
-	public boolean isEqualToOriginalPw(String password){
-		return getPwSignature().equals(MessageDigestUtil.getSHA1String(password));
-	}
-
-	/**
-	 ************************************************************
-	 */
-	
-	public boolean isShortcutCreated() {
-		return context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE).getBoolean(SHORTCUT_CREATED,false);
-	}
-	
-	public String getSourceCode() {
-		return "1";
-	}
-	
-	public static SharePreferencesSetting getInstance() {
-		return instance;
-	}
-
-	public void setShortcutCreated(boolean isShortcutCreated) {
-		mbShortcutCreated = isShortcutCreated;
-		Editor editor = context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE).edit();
-		editor.putBoolean(SHORTCUT_CREATED, mbShortcutCreated);
-		editor.commit();
-	}
-
-	
-	/** 清除本地，个人信�?*/
-	public void logout() {
-		Log.i(TAG, "logout and clear all info...");
-		Editor editor = context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE).edit();
-		editor.putInt(USER_ID_KEY, 0);
-		editor.putString(PHONE_KEY, null);
-		editor.putString(USER_NAME, null);
-		editor.commit();
-		/**
-		 * 停止Push通知
-		 */
-		setUserId(0);
-	}
-
-	/**
-	 ************************************************************
-	 */
-
-	private void setSharedPreference(String key, String value){
-		Editor editor = context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE).edit();
-		editor.putString(key, value);
-		editor.commit();
-	}	
-	
-	public void setValue(String key, String value){
-		setSharedPreference(key, value);
-	}
-	
-	public String getValue(String key){
-		return sharedPreferences.getString(key, "");
-	}
-
-
-	/**
-	 ************************************************************
+	 * TODO 通用的存储
 	 */
 	public String getKeyValue(String key) {
 		return context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE).getString(key,"");
@@ -260,6 +93,7 @@ public class SharePreferencesSetting {
 
 	/**
 	 ************************************************************
+	 * TODO 通用的存储（整型）
 	 */
 
 	public int getKeyNumberValue(String key) {

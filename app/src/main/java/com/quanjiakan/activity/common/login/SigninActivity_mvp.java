@@ -15,10 +15,13 @@ import android.widget.TextView;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.activity.common.main.MainActivity;
-import com.quanjiakan.constants.IPresenterBusinessCode;
+import com.quanjiakan.net_presenter.IPresenterBusinessCode;
+import com.quanjiakan.db.entity.LoginUserInfoEntity;
+import com.quanjiakan.db.manager.DaoManager;
 import com.quanjiakan.net.retrofit.result_entity.PostLoginEntity;
 import com.quanjiakan.net_presenter.SigninPresenter;
 import com.quanjiakan.util.common.LogUtil;
+import com.quanjiakan.util.common.MessageDigestUtil;
 import com.quanjiakan.util.dialog.CommonDialogHint;
 import com.quanjiakan.watch.R;
 import com.umeng.analytics.MobclickAgent;
@@ -230,6 +233,9 @@ public class SigninActivity_mvp extends BaseActivity {
                      SharePreferencesSetting.getInstance().setToken("");
                      */
                     if("200".equals(res.getCode())){
+                        //TODO 保存用户的登录信息
+                        saveLoginInfo(res);
+
                         Intent intent = new Intent(SigninActivity_mvp.this, MainActivity.class);
                         startActivity(intent);
                         finish();
@@ -257,5 +263,22 @@ public class SigninActivity_mvp extends BaseActivity {
     @Override
     public View getViewComponentByID(int viewID) {
         return null;
+    }
+
+    /**
+     *************************************************************************************************************************************
+     */
+
+    //TODO 保存登录信息，并进行持久化
+    public void saveLoginInfo(PostLoginEntity res){
+        LoginUserInfoEntity entity = new LoginUserInfoEntity();
+        entity.setLoginPhone(getUsername());//保存登录使用的电话，在收到发给自己的广播时进行判断使用
+        entity.setPasswordDigest(MessageDigestUtil.getSHA1String(getPassword()));//保存密码的签名
+        //TODO 服务器返回的数据
+        entity.setNickName(res.getObject().getNickname());
+        entity.setUserId(res.getObject().getId()+"");
+        entity.setToken(res.getObject().getToken());
+        //TODO 保存或替换当前用户数据
+        DaoManager.getInstances(this).getDaoSession().getLoginUserInfoEntityDao().insertOrReplaceInTx(entity);
     }
 }

@@ -20,22 +20,31 @@ import java.util.Map;
 
 public class NotificationUtil {
 
-    private Context mContext;
     // NotificationManager ： 是状态栏通知的管理类，负责发通知、清楚通知等。
     private NotificationManager manager;
     // 定义Map来保存Notification对象
-    private static Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+    private Map<Integer, Integer> map = new HashMap<Integer, Integer>();
 
-    private static final int VOICE_NOTI = 50001;
-    private static final int VOICE_UNWEAR = 50002;
+    private static NotificationUtil instances;
 
+    private NotificationUtil(Context context) {
+        if(manager==null){
+            // NotificationManager 是一个系统Service，必须通过 getSystemService()方法来获取。
+            manager = (NotificationManager) context.getApplicationContext()
+                    .getSystemService(Context.NOTIFICATION_SERVICE);
+            map.clear();
+        }
+    }
 
-    public NotificationUtil(Context context) {
-        this.mContext = context;
-        // NotificationManager 是一个系统Service，必须通过 getSystemService()方法来获取。
-        manager = (NotificationManager) mContext
-                .getSystemService(Context.NOTIFICATION_SERVICE);
-        map.clear();
+    public static NotificationUtil getInstances(Context context){
+        if(instances==null){
+            instances = new NotificationUtil(context.getApplicationContext());
+        }
+        return instances;
+    }
+
+    public void release(){
+        instances = null;
     }
 
     /**
@@ -57,7 +66,7 @@ public class NotificationUtil {
      * 将通知加入散列表中
      */
 
-    public static void put(Context mContext,int id){
+    public void put(Context mContext,int id){
         if(map.containsKey(id)){
             NotificationManager manager = (NotificationManager) mContext
                     .getSystemService(Context.NOTIFICATION_SERVICE);
@@ -70,7 +79,7 @@ public class NotificationUtil {
      * **********************************************************************************************
      * 通用的通知---在通知栏上点击此通知后自动清除此通知
      */
-    public static int commonNotificationAutoCancel(Context context, String title, String text, Intent jump) {
+    public int commonNotificationAutoCancel(Context context, String title, String text, Intent jump) {
         // 创建一个通知
         int time = (int) System.currentTimeMillis();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -91,33 +100,35 @@ public class NotificationUtil {
             mNotification.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
             Uri sound = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.beep);
             mNotification.sound = sound;
+            mNotification.flags = Notification.FLAG_AUTO_CANCEL;
 
             //TODO 发送通知
             NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             mNotificationManager.notify(time, mNotification);
             put(context,time);
         } else {
-//            Notification mNotification = new Notification();
-//            // 设置属性值
-//            mNotification.icon = R.drawable.ic_launcher;
-//            mNotification.tickerText = text;
-//            mNotification.when = System.currentTimeMillis(); // 立即发生此通知
-//            // 添加声音效果
-//            mNotification.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
-//            Uri sound = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.beep);
-//            mNotification.sound = sound;
-//            mNotification.flags = Notification.FLAG_INSISTENT;
-//            PendingIntent contentIntent = PendingIntent.getActivity
-//                    (context, 0, jump, 0);
+            Notification mNotification = new Notification();
+            // 设置属性值
+            mNotification.icon = R.drawable.ic_launcher;
+            mNotification.tickerText = text;
+            mNotification.when = System.currentTimeMillis(); // 立即发生此通知
+            // 添加声音效果
+            mNotification.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
+            Uri sound = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.beep);
+            mNotification.sound = sound;
+            mNotification.flags = Notification.FLAG_AUTO_CANCEL;
+            PendingIntent contentIntent = PendingIntent.getActivity
+                    (context, 0, jump, 0);
 //            mNotification.setLatestEventInfo(context, title,
 //                    text, contentIntent);
-//            NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-//            mNotificationManager.notify(time, mNotification);
+            mNotification.contentIntent = contentIntent;
+            NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.notify(time, mNotification);
         }
         return time;
     }
 
-    public static int commonNotificationAutoCancel(Context context, String title, String text, Intent jump,int notifyID) {
+    public int commonNotificationAutoCancel(Context context, String title, String text, Intent jump,int notifyID) {
         // 创建一个通知
         int time = (int) System.currentTimeMillis();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -138,6 +149,7 @@ public class NotificationUtil {
             mNotification.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
             Uri sound = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.beep);
             mNotification.sound = sound;
+            mNotification.flags = Notification.FLAG_AUTO_CANCEL;
 
             //TODO 发送通知
             NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -145,22 +157,23 @@ public class NotificationUtil {
 
             put(context,notifyID);
         } else {
-//            Notification mNotification = new Notification();
-//            // 设置属性值
-//            mNotification.icon = R.drawable.ic_launcher;
-//            mNotification.tickerText = text;
-//            mNotification.when = System.currentTimeMillis(); // 立即发生此通知
-//            // 添加声音效果
-//            mNotification.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
-//            Uri sound = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.beep);
-//            mNotification.sound = sound;
-//            mNotification.flags = Notification.FLAG_INSISTENT;
-//            PendingIntent contentIntent = PendingIntent.getActivity
-//                    (context, 0, jump, 0);
+            Notification mNotification = new Notification();
+            // 设置属性值
+            mNotification.icon = R.drawable.ic_launcher;
+            mNotification.tickerText = text;
+            mNotification.when = System.currentTimeMillis(); // 立即发生此通知
+            // 添加声音效果
+            mNotification.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
+            Uri sound = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.beep);
+            mNotification.sound = sound;
+            mNotification.flags = Notification.FLAG_AUTO_CANCEL;
+            PendingIntent contentIntent = PendingIntent.getActivity
+                    (context, 0, jump, 0);
 //            mNotification.setLatestEventInfo(context, title,
 //                    text, contentIntent);
-//            NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-//            mNotificationManager.notify(time, mNotification);
+            mNotification.contentIntent = contentIntent;
+            NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.notify(time, mNotification);
         }
         return time;
     }
@@ -169,103 +182,105 @@ public class NotificationUtil {
      * **********************************************************************************************
      * 通用的通知---重复发出声音，直到用户响应此通知
      */
-//    public static int commonNotificationInsistent(Context context, String title, String text, Intent jump) {
-//        // 创建一个通知
-//        int time = (int) System.currentTimeMillis();
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-//            Notification.Builder builder = new Notification.Builder(context);
-//            builder.setSmallIcon(R.drawable.ic_launcher);
-//            builder.setContentText(text);
-//            builder.setContentTitle(title);
-//            PendingIntent contentIntent = PendingIntent.getActivity(context, 0, jump, PendingIntent.FLAG_CANCEL_CURRENT);
-//            builder.setContentIntent(contentIntent);
-//            builder.setWhen(System.currentTimeMillis());
-//
-//            Notification mNotification = builder.build();
-//            mNotification.tickerText = text;
-//            mNotification.when = System.currentTimeMillis();
-//            mNotification.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
-//            Uri sound = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.beep);
-//            mNotification.sound = sound;
-//            mNotification.flags = Notification.FLAG_INSISTENT;
-//
-//            //TODO 发送通知
-//            NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-//            mNotificationManager.notify(time, mNotification);
-//
-//            put(context,time);
-//        } else {
-////            Notification mNotification = new Notification();
-////            // 设置属性值
-////            mNotification.icon = R.drawable.ic_launcher;
-////            mNotification.tickerText = text;
-////            mNotification.when = System.currentTimeMillis(); // 立即发生此通知
-////            // 添加声音效果
-////            mNotification.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
-////            Uri sound = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.beep);
-////            mNotification.sound = sound;
-////            mNotification.flags = Notification.FLAG_INSISTENT;
-////            PendingIntent contentIntent = PendingIntent.getActivity
-////                    (context, 0, jump, 0);
-////            mNotification.setLatestEventInfo(context, title,
-////                    text, contentIntent);
-////            NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-////            mNotificationManager.notify(time, mNotification);
-//        }
-//        return time;
-//    }
-//
-//    public static int commonNotificationInsistent(Context context, String title, String text, Intent jump,int notifyID) {
-//        // 创建一个通知
-//        int time = (int) System.currentTimeMillis();
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-//            Notification.Builder builder = new Notification.Builder(context);
-//            builder.setSmallIcon(R.drawable.ic_launcher);
-//            builder.setContentText(text);
-//            builder.setContentTitle(title);
-//            PendingIntent contentIntent = PendingIntent.getActivity(context, 0, jump, PendingIntent.FLAG_CANCEL_CURRENT);
-//            builder.setContentIntent(contentIntent);
-//            builder.setWhen(System.currentTimeMillis());
-//
-//            Notification mNotification = builder.build();
-//            mNotification.tickerText = text;
-//            mNotification.when = System.currentTimeMillis();
-//            mNotification.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
-//            Uri sound = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.beep);
-//            mNotification.sound = sound;
-//            mNotification.flags = Notification.FLAG_INSISTENT;
-//
-//            //TODO 发送通知
-//            NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-//            mNotificationManager.notify(notifyID, mNotification);
-//
-//            put(context,notifyID);
-//        } else {
-////            Notification mNotification = new Notification();
-////            // 设置属性值
-////            mNotification.icon = R.drawable.ic_launcher;
-////            mNotification.tickerText = text;
-////            mNotification.when = System.currentTimeMillis(); // 立即发生此通知
-////            // 添加声音效果
-////            mNotification.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
-////            Uri sound = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.beep);
-////            mNotification.sound = sound;
-////            mNotification.flags = Notification.FLAG_INSISTENT;
-////            PendingIntent contentIntent = PendingIntent.getActivity
-////                    (context, 0, jump, 0);
-////            mNotification.setLatestEventInfo(context, title,
-////                    text, contentIntent);
-////            NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-////            mNotificationManager.notify(time, mNotification);
-//        }
-//        return time;
-//    }
+    public int commonNotificationInsistent(Context context, String title, String text, Intent jump) {
+        // 创建一个通知
+        int time = (int) System.currentTimeMillis();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            Notification.Builder builder = new Notification.Builder(context);
+            builder.setSmallIcon(R.drawable.ic_launcher);
+            builder.setContentText(text);
+            builder.setContentTitle(title);
+            PendingIntent contentIntent = PendingIntent.getActivity(context, 0, jump, PendingIntent.FLAG_CANCEL_CURRENT);
+            builder.setContentIntent(contentIntent);
+            builder.setWhen(System.currentTimeMillis());
+
+            Notification mNotification = builder.build();
+            mNotification.tickerText = text;
+            mNotification.when = System.currentTimeMillis();
+            mNotification.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
+            Uri sound = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.beep);
+            mNotification.sound = sound;
+            mNotification.flags = Notification.FLAG_INSISTENT;
+
+            //TODO 发送通知
+            NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.notify(time, mNotification);
+
+            put(context,time);
+        } else {
+            Notification mNotification = new Notification();
+            // 设置属性值
+            mNotification.icon = R.drawable.ic_launcher;
+            mNotification.tickerText = text;
+            mNotification.when = System.currentTimeMillis(); // 立即发生此通知
+            // 添加声音效果
+            mNotification.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
+            Uri sound = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.beep);
+            mNotification.sound = sound;
+            mNotification.flags = Notification.FLAG_INSISTENT;
+            PendingIntent contentIntent = PendingIntent.getActivity
+                    (context, 0, jump, 0);
+//            mNotification.setLatestEventInfo(context, title,
+//                    text, contentIntent);
+            mNotification.contentIntent = contentIntent;
+            NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.notify(time, mNotification);
+        }
+        return time;
+    }
+
+    public int commonNotificationInsistent(Context context, String title, String text, Intent jump,int notifyID) {
+        // 创建一个通知
+        int time = (int) System.currentTimeMillis();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            Notification.Builder builder = new Notification.Builder(context);
+            builder.setSmallIcon(R.drawable.ic_launcher);
+            builder.setContentText(text);
+            builder.setContentTitle(title);
+            PendingIntent contentIntent = PendingIntent.getActivity(context, 0, jump, PendingIntent.FLAG_CANCEL_CURRENT);
+            builder.setContentIntent(contentIntent);
+            builder.setWhen(System.currentTimeMillis());
+
+            Notification mNotification = builder.build();
+            mNotification.tickerText = text;
+            mNotification.when = System.currentTimeMillis();
+            mNotification.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
+            Uri sound = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.beep);
+            mNotification.sound = sound;
+            mNotification.flags = Notification.FLAG_INSISTENT;
+
+            //TODO 发送通知
+            NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.notify(notifyID, mNotification);
+
+            put(context,notifyID);
+        } else {
+            Notification mNotification = new Notification();
+            // 设置属性值
+            mNotification.icon = R.drawable.ic_launcher;
+            mNotification.tickerText = text;
+            mNotification.when = System.currentTimeMillis(); // 立即发生此通知
+            // 添加声音效果
+            mNotification.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
+            Uri sound = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.beep);
+            mNotification.sound = sound;
+            mNotification.flags = Notification.FLAG_INSISTENT;
+            PendingIntent contentIntent = PendingIntent.getActivity
+                    (context, 0, jump, 0);
+//            mNotification.setLatestEventInfo(context, title,
+//                    text, contentIntent);
+            mNotification.contentIntent = contentIntent;
+            NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.notify(time, mNotification);
+        }
+        return time;
+    }
 
     /**
      * **********************************************************************************************
      * 通用的通知---仅响一次
      */
-    public static int commonNotificationAlertOnce(Context context, String title, String text, Intent jump) {
+    public int commonNotificationAlertOnce(Context context, String title, String text, Intent jump) {
         // 创建一个通知
         int time = (int) System.currentTimeMillis();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -293,27 +308,29 @@ public class NotificationUtil {
 
             put(context,time);
         } else {
-//            Notification mNotification = new Notification();
-//            // 设置属性值
-//            mNotification.icon = R.drawable.ic_launcher;
-//            mNotification.tickerText = text;
-//            mNotification.when = System.currentTimeMillis(); // 立即发生此通知
-//            // 添加声音效果
-//            mNotification.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
-//            Uri sound = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.beep);
-//            mNotification.sound = sound;
-//            mNotification.flags = Notification.FLAG_INSISTENT;
-//            PendingIntent contentIntent = PendingIntent.getActivity
-//                    (context, 0, jump, 0);
+            Notification mNotification = new Notification();
+            // 设置属性值
+            mNotification.icon = R.drawable.ic_launcher;
+            mNotification.tickerText = text;
+            mNotification.when = System.currentTimeMillis(); // 立即发生此通知
+            // 添加声音效果
+            mNotification.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
+            Uri sound = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.beep);
+            mNotification.sound = sound;
+            mNotification.flags = Notification.FLAG_ONLY_ALERT_ONCE;
+            PendingIntent contentIntent = PendingIntent.getActivity
+                    (context, 0, jump, 0);
 //            mNotification.setLatestEventInfo(context, title,
 //                    text, contentIntent);
-//            NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-//            mNotificationManager.notify(time, mNotification);
+            mNotification.contentIntent = contentIntent;
+
+            NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.notify(time, mNotification);
         }
         return time;
     }
 
-    public static int commonNotificationAlertOnce(Context context, String title, String text, Intent jump,int notifyID) {
+    public int commonNotificationAlertOnce(Context context, String title, String text, Intent jump,int notifyID) {
         // 创建一个通知
         int time = (int) System.currentTimeMillis();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -341,22 +358,23 @@ public class NotificationUtil {
 
             put(context,notifyID);
         } else {
-//            Notification mNotification = new Notification();
-//            // 设置属性值
-//            mNotification.icon = R.drawable.ic_launcher;
-//            mNotification.tickerText = text;
-//            mNotification.when = System.currentTimeMillis(); // 立即发生此通知
-//            // 添加声音效果
-//            mNotification.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
-//            Uri sound = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.beep);
-//            mNotification.sound = sound;
-//            mNotification.flags = Notification.FLAG_INSISTENT;
-//            PendingIntent contentIntent = PendingIntent.getActivity
-//                    (context, 0, jump, 0);
+            Notification mNotification = new Notification();
+            // 设置属性值
+            mNotification.icon = R.drawable.ic_launcher;
+            mNotification.tickerText = text;
+            mNotification.when = System.currentTimeMillis(); // 立即发生此通知
+            // 添加声音效果
+            mNotification.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
+            Uri sound = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.beep);
+            mNotification.sound = sound;
+            mNotification.flags = Notification.FLAG_ONLY_ALERT_ONCE;
+            PendingIntent contentIntent = PendingIntent.getActivity
+                    (context, 0, jump, 0);
 //            mNotification.setLatestEventInfo(context, title,
 //                    text, contentIntent);
-//            NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-//            mNotificationManager.notify(time, mNotification);
+            mNotification.contentIntent = contentIntent;
+            NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.notify(time, mNotification);
         }
         return time;
     }

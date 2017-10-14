@@ -1,13 +1,11 @@
 package com.quanjiakan.net_presenter;
 
 import com.quanjiakan.activity.common.login.SigninActivity_mvp;
-import com.quanjiakan.constants.IPresenterBusinessCode;
 import com.quanjiakan.entity.LoginInfoEntity;
 import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.Retrofit2Util;
 import com.quanjiakan.net.retrofit.result_entity.PostLoginEntity;
 import com.quanjiakan.net.retrofit.service.RxPostLoginEntityService;
-import com.quanjiakan.net.retrofit.service.RxPostLoginService;
 import com.quanjiakan.util.common.LogUtil;
 
 import java.util.HashMap;

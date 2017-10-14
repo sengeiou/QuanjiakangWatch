@@ -1,6 +1,23 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.greenrobot.greendao'
 
+buildscript {
+    repositories {
+        mavenCentral() // add repository
+    }
+    dependencies {
+        classpath 'org.greenrobot:greendao-gradle-plugin:3.0.0'  // add plugin
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+greendao {
+    schemaVersion 1
+    daoPackage 'com.example.greendao.dao'
+    targetGenDir 'src/main/java'
+}
+
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.3"
@@ -21,29 +38,26 @@ android {
 
     }
     buildTypes {
-        debug{
+        debug {
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-            buildConfigField "boolean","LOG_DEBUG","true"
-            buildConfigField "int","LOG_LEVEL","1"
+            buildConfigField "boolean", "LOG_DEBUG", "true"
+            buildConfigField "int", "LOG_LEVEL", "1"
+            buildConfigField "String", "DB_NAME", '"databaseName.db"'
         }
         release {
             minifyEnabled true
             zipAlignEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-            buildConfigField "boolean","LOG_DEBUG","false"
-            buildConfigField "int","LOG_LEVEL","10"
+            buildConfigField "boolean", "LOG_DEBUG", "false"
+            buildConfigField "int", "LOG_LEVEL", "10"
+            buildConfigField "String", "DB_NAME", '"databaseName.db"'
         }
     }
 
-    greendao {
-        schemaVersion 1
-        daoPackage 'com.example.greendao.dao'
-        targetGenDir 'src/main/java'
-    }
 }
 
 dependencies {
@@ -77,7 +91,10 @@ dependencies {
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     //************************* greendao
-    compile 'org.greenrobot:greendao:3.2.0'
+    // greendao3.0 配置可以参考 http://blog.csdn.net/njweiyukun/article/details/51893092
+    compile 'org.greenrobot:greendao:3.0.1'
+    compile 'org.greenrobot:greendao-generator:3.0.0'
+
     //************************* eventbus
     compile 'org.greenrobot:eventbus:3.0.0'
     //************************* butterknife

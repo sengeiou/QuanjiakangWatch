@@ -1,4 +1,4 @@
-package com.quanjiakan.constants;
+package com.quanjiakan.net_presenter;
 
 /**
  * Created by Administrator on 2017/5/4 0004.
@@ -15,4 +15,5 @@ public interface IPresenterBusinessCode {
     int LANGUAGE_SWITCH = 30004;
     int SIGNIN_AGREEMENT = 30005;
     int SIGNIN_CODE = 30006;
+    int PASSWORD_RESET = 30007;
 }

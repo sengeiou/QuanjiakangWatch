@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
+import com.quanjiakan.net_presenter.FindPasswordPresenter;
+import com.quanjiakan.net_presenter.IPresenterBusinessCode;
 import com.quanjiakan.util.common.StringCheckUtil;
 import com.quanjiakan.util.common.EditTextFilter;
 import com.quanjiakan.util.common.LogUtil;
@@ -72,25 +74,23 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
 
 	};
 
+	private FindPasswordPresenter presenter;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.layout_findpassword);
 		ButterKnife.bind(this);
+
+		init();
 		initTitle();
 		initView();
-
 	}
 
-	public void initTitle() {
-		ibtnBack.setVisibility(View.VISIBLE);
-		tvTitle.setText(R.string.reset_password);
-	}
-
-	public void initView() {
-		etCode.setTag("");
-		etConfirmnewpassword = (EditText) findViewById(R.id.et_confirmnewpassword);
-	}
+	/**
+	 * **********************************************************************************
+	 * 生命周期方法
+	 */
 
 	@Override
 	public void onResume() {
@@ -106,51 +106,82 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
 		MobclickAgent.onPageEnd(this.getClass().getSimpleName());
 	}
 
-	@OnClick({R.id.ibtn_back, R.id.btn_submit,R.id.btn_yanzhengma})
-	public void onClick(View view) {
-		switch (view.getId()) {
-			case R.id.ibtn_back:
-				finish();
-				break;
-			case R.id.btn_submit:
-				findPassword();
-				break;
-			case R.id.btn_yanzhengma:
-				getSMSCode();
-				break;
-		}
+	/**
+	 * **********************************************************************************
+	 * 组件初始化方法
+	 */
+
+	public void init(){
+		presenter = new FindPasswordPresenter();
 	}
 
-	public void findPassword() {
+	public void initTitle() {
+		ibtnBack.setVisibility(View.VISIBLE);
+		tvTitle.setText(R.string.reset_password);
+	}
+
+	public void initView() {
+		etCode.setTag("");
+		etConfirmnewpassword = (EditText) findViewById(R.id.et_confirmnewpassword);
+	}
+
+	public String getPhoneNumber(){
+		return etUsername.getText().toString().trim();
+	}
+
+	public void showSmsCodeTime() {
+		btnYanzhengma.setEnabled(false);
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					do {
+						Thread.sleep(1000);
+						total--;
+						Message msg = new Message();
+						msg.what = 1;
+						msg.arg1 = total;
+						mHandler.sendMessage(msg);
+					} while (total > 0);
+
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}).start();
+	}
+
+	public boolean findPassword() {
 		if (etUsername.length() == 0 || etCode.length() == 0 || etNewpassword.length() == 0 || etConfirmnewpassword.length() == 0) {
 			CommonDialogHint.getInstance().showHint(FindPasswordActivity.this,getResources().getString(R.string.setting_password_check1));
-			return;
+			return false;
 		}
 
 		if(!EditTextFilter.isPhoneLegal(etUsername.getText().toString().trim())) {
 			CommonDialogHint.getInstance().showHint(FindPasswordActivity.this,getResources().getString(R.string.error_findpassword_error_phone));
-			return;
+			return false;
 		}
 
 		if (!etCode.getText().toString().equals(etCode.getTag().toString())) {
 			CommonDialogHint.getInstance().showHint(FindPasswordActivity.this,getResources().getString(R.string.error_findpassword_error_check_code));
-			return;
+			return false;
 		}
 
 		if (lastSMSPhone != null && !lastSMSPhone.equals(etUsername.getText().toString())) {
 			CommonDialogHint.getInstance().showHint(FindPasswordActivity.this,getResources().getString(R.string.setting_password_check10));
-			return;
+			return false;
 		}
 
 
 		if(etNewpassword.getText().toString().trim().length()<6||etNewpassword.getText().toString().trim().length()>15) {
 			CommonDialogHint.getInstance().showHint(FindPasswordActivity.this,getResources().getString(R.string.hint_new_pw_number_error));
-			return;
+			return false;
 		}
 
 		if(etConfirmnewpassword.getText().toString().trim().length()<6||etConfirmnewpassword.getText().toString().trim().length()>15) {
 			CommonDialogHint.getInstance().showHint(FindPasswordActivity.this,getResources().getString(R.string.hint_comfirm_pw_number_error));
-			return;
+			return false;
 		}
 
 		/**
@@ -158,18 +189,14 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
 		 */
 		if (!StringCheckUtil.checkStringType(etNewpassword.getText().toString())) {
 			CommonDialogHint.getInstance().showHint(FindPasswordActivity.this,getResources().getString(R.string.setting_password_check5));
-			return;
+			return false;
 		}
 
 		if (!etNewpassword.getText().toString().equals(etConfirmnewpassword.getText().toString())) {
 			CommonDialogHint.getInstance().showHint(FindPasswordActivity.this,getResources().getString(R.string.setting_password_check11));
-			return;
+			return false;
 		}
-
-		HashMap<String, String> params = new HashMap<>();
-		params.put("mobile", etUsername.getText().toString());
-		params.put("password", BaseApplication.getInstances().getFormatPWString(etNewpassword.getText().toString()));
-		params.put("confirmpassword", BaseApplication.getInstances().getFormatPWString(etNewpassword.getText().toString()));
+		return true;
 	}
 
 	/**
@@ -207,52 +234,95 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
 		}
 	}
 
-	public void showSmsCodeTime() {
-		btnYanzhengma.setEnabled(false);
-		new Thread(new Runnable() {
+	/**
+	 * **********************************************************************************
+	 * 组件初始化方法
+	 */
 
-			@Override
-			public void run() {
-				try {
-					do {
-						Thread.sleep(1000);
-						total--;
-						Message msg = new Message();
-						msg.what = 1;
-						msg.arg1 = total;
-						mHandler.sendMessage(msg);
-					} while (total > 0);
-
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+	@OnClick({R.id.ibtn_back, R.id.btn_submit,R.id.btn_yanzhengma})
+	public void onClick(View view) {
+		switch (view.getId()) {
+			case R.id.ibtn_back: {
+				finish();
+				break;
 			}
-		}).start();
+			case R.id.btn_submit: {
+				findPassword();
+				break;
+			}
+			case R.id.btn_yanzhengma: {
+				getSMSCode();
+				break;
+			}
+		}
 	}
 
 	@Override
 	public Object getParamter(int type) {
-		return null;
+		switch (type){
+			case IPresenterBusinessCode.SMS_CODE:
+				return null;
+			case IPresenterBusinessCode.PASSWORD_RESET:
+				return null;
+			default:
+				return null;
+		}
 	}
 
 	@Override
 	public void showMyDialog(int type) {
-
+		switch (type){
+			case IPresenterBusinessCode.SMS_CODE:
+				getDialog(this);
+				break;
+			case IPresenterBusinessCode.PASSWORD_RESET:
+				getDialog(this);
+				break;
+			default:
+				break;
+		}
 	}
 
 	@Override
 	public void dismissMyDialog(int type) {
-
+		switch (type){
+			case IPresenterBusinessCode.SMS_CODE:
+				dismissDialog();
+				break;
+			case IPresenterBusinessCode.PASSWORD_RESET:
+				dismissDialog();
+				break;
+			default:
+				break;
+		}
 	}
 
 	@Override
 	public void onSuccess(int type, int httpResponseCode, Object result) {
+		switch (type){
+			case IPresenterBusinessCode.SMS_CODE:
+				//TODO 操作成功，开始倒计时
+				showSmsCodeTime();
+				//TODO 保存验证码数据
 
+				break;
+			case IPresenterBusinessCode.PASSWORD_RESET:
+				break;
+			default:
+				break;
+		}
 	}
 
 	@Override
 	public void onError(int type, int httpResponseCode, Object errorMsg) {
-
+		switch (type){
+			case IPresenterBusinessCode.SMS_CODE:
+				break;
+			case IPresenterBusinessCode.PASSWORD_RESET:
+				break;
+			default:
+				break;
+		}
 	}
 
 	@Override

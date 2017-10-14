@@ -30,8 +30,16 @@ public class MainActivity extends AppCompatActivity {
     @OnClick(R.id.logout)
     public void onClick() {
         //TODO
+
+        onLogout();
+
         Intent intent = new Intent(this, SigninActivity_mvp.class);
         startActivity(intent);
         finish();
+    }
+
+
+    public void onLogout(){
+
     }
 }

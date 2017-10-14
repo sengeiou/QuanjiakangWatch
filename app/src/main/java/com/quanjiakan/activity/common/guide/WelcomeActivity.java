@@ -1,4 +1,4 @@
-package com.quanjiakan.activity.common.login;
+package com.quanjiakan.activity.common.guide;
 
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -6,12 +6,12 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.view.View;
 import android.widget.ImageView;
 
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
-import com.quanjiakan.activity.base.SharePreferencesSetting;
+import com.quanjiakan.activity.base.ICommonSharePreferencesKey;
+import com.quanjiakan.activity.common.login.SigninActivity_mvp;
 import com.quanjiakan.activity.common.main.MainActivity;
 import com.quanjiakan.watch.R;
 import com.umeng.analytics.MobclickAgent;
@@ -23,15 +23,27 @@ public class WelcomeActivity extends BaseActivity {
 
     @BindView(R.id.backpage)
     ImageView backpage;
+
     private PackageManager packageManager = null;
     private PackageInfo packageInfo = null;
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            jumpPath();
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_loading);
         ButterKnife.bind(this);
+        initPackageInfo();
+    }
 
+    public void initPackageInfo(){
         packageManager = getPackageManager();
         try {
             packageInfo = packageManager.getPackageInfo(getPackageName(), 0);
@@ -40,23 +52,16 @@ public class WelcomeActivity extends BaseActivity {
         }
     }
 
-    Handler mHandler = new Handler() {
+    public void jumpPath() {
+        String version = BaseApplication.getInstances().getKeyValue(ICommonSharePreferencesKey.KEY_ACCESSED_WELCOME);
 
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            initView();
-        }
-    };
-
-
-    public void initView() {
-        String version = SharePreferencesSetting.getInstance().getValue("isyindaoye");
         if (version == null || "".equals(version) || packageInfo.versionCode > Integer.parseInt(version)) {
+            //TODO 如果更新了，将重新进入一次引导页
             Intent intent = new Intent(WelcomeActivity.this, GuidePageActivity.class);
             startActivity(intent);
         } else {
-            if (SharePreferencesSetting.getInstance().getUserId() == 0 || "0".equals(BaseApplication.getInstances().getUser_id())) {
+            //TODO
+            if (!BaseApplication.getInstances().isLogin()) {
                 Intent intent = new Intent(WelcomeActivity.this, SigninActivity_mvp.class);
                 startActivity(intent);
             } else {
@@ -72,7 +77,9 @@ public class WelcomeActivity extends BaseActivity {
         super.onResume();
         MobclickAgent.onResume(this);
         MobclickAgent.onPageStart(this.getClass().getSimpleName());
-
+        /**
+         * 延迟一秒钟进行跳转
+         */
         mHandler.postDelayed(new Runnable() {
 
             @Override
@@ -87,35 +94,5 @@ public class WelcomeActivity extends BaseActivity {
         super.onPause();
         MobclickAgent.onPause(this);
         MobclickAgent.onPageEnd(this.getClass().getSimpleName());
-    }
-
-    @Override
-    public Object getParamter(int type) {
-        return null;
-    }
-
-    @Override
-    public void showMyDialog(int type) {
-
-    }
-
-    @Override
-    public void dismissMyDialog(int type) {
-
-    }
-
-    @Override
-    public void onSuccess(int type, int httpResponseCode, Object result) {
-
-    }
-
-    @Override
-    public void onError(int type, int httpResponseCode, Object errorMsg) {
-
-    }
-
-    @Override
-    public View getViewComponentByID(int viewID) {
-        return null;
     }
 }
