@@ -354,4 +354,7 @@
     <!-- 蓝色 -->
     <color name="light_blue">#8CA4FF</color>
 
+
+    <color name="main_tab_item_default_color">#77000000</color>
+
 </resources>

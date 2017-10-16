@@ -15,4 +15,8 @@ public interface ICommonData {
 
     int FORBID_USER_INT = 0;
 
+    int MAIN_TAB_ITEM_MAIN = 1;
+    int MAIN_TAB_ITEM_MSG = 2;
+    int MAIN_TAB_ITEM_SETTING = 3;
+
 }

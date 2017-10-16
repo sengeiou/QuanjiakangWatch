@@ -22,14 +22,15 @@ import android.widget.TextView;
 
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
-import com.quanjiakan.activity.base.CommonUtil;
-import com.quanjiakan.net_presenter.IPresenterBusinessCode;
+import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.IResponseResultCode;
 import com.quanjiakan.net.retrofit.result_entity.PostSMSEntity;
 import com.quanjiakan.net.retrofit.result_entity.PostSignupEntity;
+import com.quanjiakan.net_presenter.IPresenterBusinessCode;
 import com.quanjiakan.net_presenter.SignupPresenter;
-import com.quanjiakan.util.common.StringCheckUtil;
 import com.quanjiakan.util.common.EditTextFilter;
+import com.quanjiakan.util.common.StringCheckUtil;
+import com.quanjiakan.util.common.UnitExchangeUtil;
 import com.quanjiakan.util.dialog.CommonDialogHint;
 import com.quanjiakan.util.widget.OrderClickSpan;
 import com.quanjiakan.watch.R;
@@ -174,7 +175,7 @@ public class SignupActivity extends BaseActivity {
         include_value.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         include_value.setText(R.string.signup_rules_new);
         WindowManager.LayoutParams lp = detailDialog.getWindow().getAttributes();
-        lp.width = CommonUtil.dip2px(this, 300);
+        lp.width = UnitExchangeUtil.dip2px(this, 300);
         lp.height = lp.WRAP_CONTENT;
         lp.gravity = Gravity.CENTER;
         detailDialog.setContentView(view, lp);
@@ -341,8 +342,8 @@ public class SignupActivity extends BaseActivity {
                 case IPresenterBusinessCode.SMS_CODE: {
                     HashMap<String, String> params = new HashMap<>();
                     params.put("mobile", etUsername.getText().toString());
-                    params.put("validateType", "1");
-                    params.put("platform", "2");
+                    params.put("validateType", IHttpUrlConstants.SMS_TYPE_SIGNIN);
+                    params.put("platform", IHttpUrlConstants.PLATFORM_ANDROID);
                     return params;
                 }
                 case IPresenterBusinessCode.SIGNUP: {
@@ -351,7 +352,7 @@ public class SignupActivity extends BaseActivity {
                     params_signup.put("password", BaseApplication.getInstances().getFormatPWString(etPassword.getText().toString()));
                     params_signup.put("validateCode", etCode.getText().toString());
                     params_signup.put("nickname", etName.getText().toString());
-                    params_signup.put("platform","2");
+                    params_signup.put("platform",IHttpUrlConstants.PLATFORM_ANDROID);
                     return params_signup;
                 }
             }
@@ -359,16 +360,6 @@ public class SignupActivity extends BaseActivity {
             e.printStackTrace();
         }
         return null;
-    }
-
-    @Override
-    public void showMyDialog(int type) {
-
-    }
-
-    @Override
-    public void dismissMyDialog(int type) {
-
     }
 
     @Override
@@ -437,11 +428,6 @@ public class SignupActivity extends BaseActivity {
                 }
                 break;
         }
-    }
-
-    @Override
-    public View getViewComponentByID(int viewID) {
-        return null;
     }
 
     /**

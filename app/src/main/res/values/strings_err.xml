@@ -12,5 +12,6 @@
     <!--      流程   找回密码   错误提示       -->
     <string name="error_findpassword_error_phone">请输入正确手机号码</string>
     <string name="error_findpassword_error_check_code">验证码不一致，请重试!</string>
+    <string name="error_findpassword_reset_error">找回密码失败!</string>
 </resources>
 

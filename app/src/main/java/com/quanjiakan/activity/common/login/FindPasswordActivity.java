@@ -13,17 +13,17 @@ import android.widget.TextView;
 
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
+import com.quanjiakan.net.IHttpUrlConstants;
+import com.quanjiakan.net.IResponseResultCode;
+import com.quanjiakan.net.retrofit.result_entity.PostResetPasswordEntity;
+import com.quanjiakan.net.retrofit.result_entity.PostSMSEntity;
 import com.quanjiakan.net_presenter.FindPasswordPresenter;
 import com.quanjiakan.net_presenter.IPresenterBusinessCode;
-import com.quanjiakan.util.common.StringCheckUtil;
 import com.quanjiakan.util.common.EditTextFilter;
-import com.quanjiakan.util.common.LogUtil;
-import com.quanjiakan.util.common.MessageDigestUtil;
+import com.quanjiakan.util.common.StringCheckUtil;
 import com.quanjiakan.util.dialog.CommonDialogHint;
 import com.quanjiakan.watch.R;
 import com.umeng.analytics.MobclickAgent;
-
-import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -202,36 +202,16 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
 	/**
 	 * 获取短信验证码
 	 */
-	public void getSMSCode() {
+	public boolean getSMSCode() {
 		try {
 			if(!EditTextFilter.isPhoneLegal(etUsername.getText().toString().trim())) {
 				CommonDialogHint.getInstance().showHint(FindPasswordActivity.this,getResources().getString(R.string.error_findpassword_error_phone));
-				return;
+				return false;
 			}
-
-			StringBuilder sb = new StringBuilder();
-			sb.append(1).append("@");
-			sb.append("forget").append("@");
-			sb.append(etUsername.getText().toString()).append("@");
-			LogUtil.e("encodeString:" + sb.toString());
-
-			//JSON
-			JSONObject jsonData = new JSONObject();
-			jsonData.put("client", 1);
-			jsonData.put("type", "forget");
-			jsonData.put("mobile", etUsername.getText().toString());
-			jsonData.put("sign", MessageDigestUtil.getMD5String(sb.toString()));
-			//STRING
-			String stringParams = "{\"client\":1,\"type\":\"forget\"," +
-					"\"mobile\":\"" + etUsername.getText().toString() + "\"" +
-					"\"sign\":\"" + MessageDigestUtil.getMD5String(sb.toString()) + "\"" +
-					"}";
-
-			HashMap<String, String> params = new HashMap<>();
-			params.put("data", jsonData.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return true;
 	}
 
 	/**
@@ -247,11 +227,18 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
 				break;
 			}
 			case R.id.btn_submit: {
-				findPassword();
+				if(!findPassword()){
+					return;
+				}
+				presenter.doResetPassword(this);
 				break;
 			}
 			case R.id.btn_yanzhengma: {
-				getSMSCode();
+				//TODO 先校验参数正确性
+				if(!getSMSCode()){
+					return;
+				}
+				presenter.getSMSCode(this);
 				break;
 			}
 		}
@@ -260,12 +247,24 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
 	@Override
 	public Object getParamter(int type) {
 		switch (type){
-			case IPresenterBusinessCode.SMS_CODE:
+			case IPresenterBusinessCode.SMS_CODE: {
+				HashMap<String, String> params = new HashMap<>();
+				params.put("mobile", etUsername.getText().toString());
+				params.put("validateType", IHttpUrlConstants.SMS_TYPE_FORGET_PW);//TODO
+				params.put("platform", IHttpUrlConstants.PLATFORM_ANDROID);
+				return params;
+			}
+			case IPresenterBusinessCode.PASSWORD_RESET: {
+				HashMap<String, String> params = new HashMap<>();
+				params.put("mobile", etUsername.getText().toString());
+				params.put("password", BaseApplication.getInstances().getFormatPWString(etNewpassword.getText().toString()));
+				params.put("validateCode", etCode.getText().toString());
+				params.put("platform", IHttpUrlConstants.PLATFORM_ANDROID);
+				return params;
+			}
+			default: {
 				return null;
-			case IPresenterBusinessCode.PASSWORD_RESET:
-				return null;
-			default:
-				return null;
+			}
 		}
 	}
 
@@ -300,14 +299,48 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
 	@Override
 	public void onSuccess(int type, int httpResponseCode, Object result) {
 		switch (type){
-			case IPresenterBusinessCode.SMS_CODE:
+			case IPresenterBusinessCode.SMS_CODE: {
 				//TODO 操作成功，开始倒计时
-				showSmsCodeTime();
 				//TODO 保存验证码数据
-
+				if(result!=null && result instanceof PostSMSEntity){
+					PostSMSEntity sms = (PostSMSEntity) result;
+					if (IResponseResultCode.RESPONSE_SUCCESS.equals(sms.getCode())) {
+						//TODO 获取验证码成功
+						etCode.setTag(sms.getObject().getSmscode());
+						lastSMSPhone = getPhoneNumber();
+						//TODO 成功获取验证码
+						showSmsCodeTime();
+					} else {
+						if (sms.getMessage() != null && sms.getMessage().length() > 0) {
+							CommonDialogHint.getInstance().showHint(FindPasswordActivity.this, sms.getMessage());
+						} else {
+							CommonDialogHint.getInstance().showHint(FindPasswordActivity.this, getString(R.string.error_sign_up_get_sms_error));
+						}
+					}
+				}
 				break;
-			case IPresenterBusinessCode.PASSWORD_RESET:
+			}
+			case IPresenterBusinessCode.PASSWORD_RESET: {
+				if(result!=null && result instanceof PostResetPasswordEntity){
+					PostResetPasswordEntity sms = (PostResetPasswordEntity) result;
+					if (IResponseResultCode.RESPONSE_SUCCESS.equals(sms.getCode())) {
+						CommonDialogHint.getInstance().showHint(FindPasswordActivity.this, getString(R.string.hint_findpassword_reset_success), new OnClickListener() {
+							@Override
+							public void onClick(View view) {
+								//TODO 提示用户后返回
+								FindPasswordActivity.this.finish();
+							}
+						});
+					}else{
+						if (sms.getMessage() != null && sms.getMessage().length() > 0) {
+							CommonDialogHint.getInstance().showHint(FindPasswordActivity.this, sms.getMessage());
+						} else {
+							CommonDialogHint.getInstance().showHint(FindPasswordActivity.this, getString(R.string.error_findpassword_reset_error));
+						}
+					}
+				}
 				break;
+			}
 			default:
 				break;
 		}
@@ -323,10 +356,5 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
 			default:
 				break;
 		}
-	}
-
-	@Override
-	public View getViewComponentByID(int viewID) {
-		return null;
 	}
 }

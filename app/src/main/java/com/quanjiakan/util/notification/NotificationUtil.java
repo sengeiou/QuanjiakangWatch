@@ -38,7 +38,11 @@ public class NotificationUtil {
 
     public static NotificationUtil getInstances(Context context){
         if(instances==null){
-            instances = new NotificationUtil(context.getApplicationContext());
+            synchronized (NotificationUtil.class){
+                if(instances==null){
+                    instances = new NotificationUtil(context.getApplicationContext());
+                }
+            }
         }
         return instances;
     }

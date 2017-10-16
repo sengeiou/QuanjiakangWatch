@@ -4,8 +4,10 @@ import com.quanjiakan.activity.common.login.FindPasswordActivity;
 import com.quanjiakan.activity.common.login.SignupActivity;
 import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.Retrofit2Util;
+import com.quanjiakan.net.retrofit.result_entity.PostResetPasswordEntity;
 import com.quanjiakan.net.retrofit.result_entity.PostSMSEntity;
 import com.quanjiakan.net.retrofit.result_entity.PostSignupEntity;
+import com.quanjiakan.net.retrofit.service.RxPostResetPasswordService;
 import com.quanjiakan.net.retrofit.service.RxPostSMSEntityService;
 import com.quanjiakan.net.retrofit.service.RxPostSignupService;
 import com.quanjiakan.util.common.LogUtil;
@@ -35,7 +37,7 @@ public class FindPasswordPresenter implements IBasePresenter {
         //TODO
         Retrofit retrofit = Retrofit2Util.getRetrofit(IHttpUrlConstants.BASEURL_QUANJIAKANG);
         RxPostSMSEntityService rxGetRequest = retrofit.create(RxPostSMSEntityService.class);
-        rxGetRequest.doGetSMSCode(activityMvp.getPhoneNumber(),"1",IHttpUrlConstants.PLATFORM_ANDROID)
+        rxGetRequest.doGetSMSCode(params.get("mobile"),params.get("validateType"),params.get("platform"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<PostSMSEntity>() {
@@ -46,14 +48,14 @@ public class FindPasswordPresenter implements IBasePresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        LogUtil.e(" -- Http SignupPresenter SMS onError:"+e.getMessage());
+                        LogUtil.e(" -- Http FindPasswordPresenter SMS onError:"+e.getMessage());
                         activityMvp.dismissMyDialog(IPresenterBusinessCode.SMS_CODE);
                         activityMvp.onError(IPresenterBusinessCode.SMS_CODE,200,e.getMessage());
                     }
 
                     @Override
                     public void onNext(PostSMSEntity response) {
-                        LogUtil.e(" -- Http SignupPresenter SMS onSuccess:"+response.toString());
+                        LogUtil.e(" -- Http FindPasswordPresenter SMS onSuccess:"+response.toString());
                         activityMvp.dismissMyDialog(IPresenterBusinessCode.SMS_CODE);
                         activityMvp.onSuccess(IPresenterBusinessCode.SMS_CODE,200,response);
                     }
@@ -61,42 +63,41 @@ public class FindPasswordPresenter implements IBasePresenter {
     }
 
     public void doResetPassword(final FindPasswordActivity activityMvp){
-        HashMap<String, String> params = (HashMap<String, String>) activityMvp.getParamter(IPresenterBusinessCode.SIGNUP);
+        HashMap<String, String> params = (HashMap<String, String>) activityMvp.getParamter(IPresenterBusinessCode.PASSWORD_RESET);
         if(params==null){
             //TODO 控制无效的参数，需要针对不同的业务进行区分，当业务本身即为Get,不需要参数时，这个判断与回调也就不需要了
             activityMvp.onError(IPresenterBusinessCode.NONE,200,null);
             return ;
         }
-        activityMvp.showMyDialog(IPresenterBusinessCode.SIGNUP);
+        activityMvp.showMyDialog(IPresenterBusinessCode.PASSWORD_RESET);
 
         //TODO
         Retrofit retrofit = Retrofit2Util.getRetrofit(IHttpUrlConstants.BASEURL_QUANJIAKANG);
-        RxPostSignupService rxGetRequest = retrofit.create(RxPostSignupService.class);
+        RxPostResetPasswordService rxGetRequest = retrofit.create(RxPostResetPasswordService.class);
         rxGetRequest.doLogin(params.get("mobile"),
                 params.get("password"),
                 params.get("validateCode"),
-                params.get("nickname"),
                 params.get("platform"))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<PostSignupEntity>() {
+                .subscribe(new Subscriber<PostResetPasswordEntity>() {
                     @Override
                     public void onCompleted() {
-                        activityMvp.dismissMyDialog(IPresenterBusinessCode.SIGNUP);
+                        activityMvp.dismissMyDialog(IPresenterBusinessCode.PASSWORD_RESET);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        LogUtil.e(" -- Http RxPostSignupService onError:"+e.getMessage());
-                        activityMvp.dismissMyDialog(IPresenterBusinessCode.SIGNUP);
-                        activityMvp.onError(IPresenterBusinessCode.SIGNUP,200,e.getMessage());
+                        LogUtil.e(" -- Http FindPasswordPresenter onError:"+e.getMessage());
+                        activityMvp.dismissMyDialog(IPresenterBusinessCode.PASSWORD_RESET);
+                        activityMvp.onError(IPresenterBusinessCode.PASSWORD_RESET,200,e.getMessage());
                     }
 
                     @Override
-                    public void onNext(PostSignupEntity response) {
-                        LogUtil.e(" -- Http RxPostSignupService onSuccess:"+response);
-                        activityMvp.dismissMyDialog(IPresenterBusinessCode.SIGNUP);
-                        activityMvp.onSuccess(IPresenterBusinessCode.SIGNUP,200,response);
+                    public void onNext(PostResetPasswordEntity response) {
+                        LogUtil.e(" -- Http FindPasswordPresenter onSuccess:"+response);
+                        activityMvp.dismissMyDialog(IPresenterBusinessCode.PASSWORD_RESET);
+                        activityMvp.onSuccess(IPresenterBusinessCode.PASSWORD_RESET,200,response);
                     }
                 });
     }

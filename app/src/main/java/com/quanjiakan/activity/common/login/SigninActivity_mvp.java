@@ -15,10 +15,11 @@ import android.widget.TextView;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.activity.common.main.MainActivity;
-import com.quanjiakan.net_presenter.IPresenterBusinessCode;
 import com.quanjiakan.db.entity.LoginUserInfoEntity;
 import com.quanjiakan.db.manager.DaoManager;
+import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.retrofit.result_entity.PostLoginEntity;
+import com.quanjiakan.net_presenter.IPresenterBusinessCode;
 import com.quanjiakan.net_presenter.SigninPresenter;
 import com.quanjiakan.util.common.LogUtil;
 import com.quanjiakan.util.common.MessageDigestUtil;
@@ -150,8 +151,8 @@ public class SigninActivity_mvp extends BaseActivity {
     }
 
     public void findPassword() {
-//        Intent intent = new Intent(this, FindPasswordActivity.class);
-//        startActivity(intent);
+        Intent intent = new Intent(this, FindPasswordActivity.class);
+        startActivity(intent);
     }
 
     /**
@@ -169,7 +170,7 @@ public class SigninActivity_mvp extends BaseActivity {
                 HashMap<String, String> params = new HashMap<>();
                 params.put("mobile", etUsername.getText().toString());
                 params.put("password", BaseApplication.getInstances().getFormatPWString(etPassword.getText().toString()));
-                params.put("platform", "2");
+                params.put("platform", IHttpUrlConstants.PLATFORM_ANDROID);
                 return params;
             default:
                 break;
@@ -258,11 +259,6 @@ public class SigninActivity_mvp extends BaseActivity {
                 //TODO 不做任何事情，在获取参数为空时调用并返回，调用前会有对应参数相关的提示
                 break;
         }
-    }
-
-    @Override
-    public View getViewComponentByID(int viewID) {
-        return null;
     }
 
     /**
