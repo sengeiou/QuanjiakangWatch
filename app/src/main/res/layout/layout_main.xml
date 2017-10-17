@@ -6,6 +6,61 @@
     >
 
     <RelativeLayout
+        android:id="@+id/rl_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_title_bar_height"
+        android:background="@color/color_title_green" >
+
+        <ImageButton
+            android:id="@+id/ibtn_back"
+            android:layout_width="@dimen/common_title_bar_height"
+            android:layout_height="@dimen/common_title_bar_height"
+            android:layout_marginLeft="@dimen/size_5"
+            android:layout_alignParentBottom="true"
+            android:background="@color/transparent"
+            android:src="@drawable/back"
+            android:visibility="invisible"
+            android:scaleType="centerInside"
+            />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/common_title_bar_height"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:gravity="center_vertical"
+            android:text="Title"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_big" />
+
+        <ImageButton
+            android:id="@+id/ibtn_menu"
+            android:layout_width="@dimen/common_title_bar_height"
+            android:layout_height="@dimen/common_title_bar_height"
+            android:scaleType="centerInside"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:background="@color/transparent"
+            android:visibility="invisible"/>
+
+        <TextView
+            android:id="@+id/menu_text"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/common_title_bar_height"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:text="添加添加"
+            android:textSize="@dimen/font_16"
+            android:textColor="@color/white"
+            android:layout_marginRight="@dimen/margin_10"
+            android:gravity="right|center_vertical"
+            android:visibility="gone"
+            />
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/bottom_tab_item_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -21,8 +76,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/bottom_tab_item_container"
+        android:layout_below="@+id/rl_title"
         >
-
 
     </FrameLayout>
 </RelativeLayout>

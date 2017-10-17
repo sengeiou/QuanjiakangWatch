@@ -34,6 +34,34 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/main_tab_item_msg"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@drawable/selector_common_click_effect"
+        android:clickable="true"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/main_tab_item_msg_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/selector_main_tab_item_message_center" />
+
+        <TextView
+            android:id="@+id/main_tab_item_msg_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/main_tab_item_msg_img"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/size_3"
+            android:text="@string/main_tab_item_main_message_center_string"
+            android:textColor="#77000000"
+            android:textSize="@dimen/font_12" />
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/main_tab_item_setting"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

@@ -32,7 +32,7 @@ android {
         multiDexEnabled true
 
         ndk {
-            abiFilters 'armeabi', 'x86', 'armeabi-v7a'
+            abiFilters "armeabi", "armeabi-v7a", "arm64-v8a", "x86","arm64-v8a","x86_64"
 // 'x86_64', 'arm64-v8a', mips, mips64...加入需要生成的文件夹
         }
 
@@ -100,5 +100,9 @@ dependencies {
     //************************* butterknife
     compile 'com.jakewharton:butterknife:8.4.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+    //************************* AMap
+    compile 'com.amap.api:location:latest.integration'
+    compile 'com.amap.api:search:latest.integration'
+    compile 'com.amap.api:navi-3dmap:latest.integration'//TODO 导航里存在3Dmap，若再次引入map将出现重复引用异常
 
 }

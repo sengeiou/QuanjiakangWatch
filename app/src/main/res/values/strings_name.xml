@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!--      流程   首页   名字       -->
+    <!--      流程   首页   导航栏 名字       -->
     <string name="main_tab_item_main_name_string">首页</string>
+    <string name="main_tab_item_main_message_center_string">消息</string>
     <string name="main_tab_item_main_setting_string">我的</string>
+
+    <!--      流程   标题栏名字       -->
+    <string name="main_map_title">首页</string>
+    <string name="main_map_title_right_menu">绑定</string>
+
 </resources>
 

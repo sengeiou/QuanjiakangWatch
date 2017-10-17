@@ -10,11 +10,17 @@ public interface ICommonData {
     String FORBID_USER = "0";
 
 
+    String MAIN_TAB_ITEM_MAIN_TAG = "main_tag";
+    String MAIN_TAB_ITEM_MSG_TAG = "msg_tag";
+    String MAIN_TAB_ITEM_SETTING_TAG = "setting_tag";
+
+
     //TODO ************************************************
     //TODO 公共 数值 类型数据
 
     int FORBID_USER_INT = 0;
 
+    int MAIN_TAB_ITEM_NONE = 0;
     int MAIN_TAB_ITEM_MAIN = 1;
     int MAIN_TAB_ITEM_MSG = 2;
     int MAIN_TAB_ITEM_SETTING = 3;

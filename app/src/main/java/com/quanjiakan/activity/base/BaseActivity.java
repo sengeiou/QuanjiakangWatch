@@ -12,6 +12,8 @@ import android.view.WindowManager;
 import com.quanjiakan.util.common.UnitExchangeUtil;
 import com.quanjiakan.watch.R;
 
+import org.greenrobot.eventbus.EventBus;
+
 public abstract class BaseActivity extends AppCompatActivity implements IBaseActivity{
 
     //TODO 全部Activity共用的Dialog
@@ -118,5 +120,19 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseAct
     @Override
     public View getViewComponentByID(int viewID) {
         return null;
+    }
+
+    public void registerEventBus(){
+        //TODO 没有注册则进行注册
+        if(!EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().register(this);
+        }
+    }
+
+    public void unregisterEventBus(){
+        //TODO 注册了，则反注册
+        if(EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().unregister(this);
+        }
     }
 }
