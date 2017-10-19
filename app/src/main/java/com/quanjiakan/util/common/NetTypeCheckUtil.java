@@ -61,4 +61,17 @@ public class NetTypeCheckUtil {
             return false;
         }
     }
+
+    /**
+     * 检查是否网络可用
+     * @param mContext
+     * @return
+     */
+    public static boolean isNetAvailable(Context mContext){
+        if(isWiFi(mContext) || isMobile(mContext)){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }

@@ -419,7 +419,6 @@ public class SignupActivity extends BaseActivity {
             case IPresenterBusinessCode.SMS_CODE:
                 if(errorMsg!=null){
                     CommonDialogHint.getInstance().showHint(SignupActivity.this,errorMsg.toString());
-
                 }
                 break;
             default:

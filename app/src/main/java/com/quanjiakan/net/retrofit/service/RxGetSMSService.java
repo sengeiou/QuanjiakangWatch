@@ -17,7 +17,6 @@ import retrofit2.http.Query;
 
 public interface RxGetSMSService {
 
-    @FormUrlEncoded
     @GET("/"+IHttpUrlConstants.PROJECT_PINGAN+"/"+ IHttpUrlConstants.REQUEST_POST_V1+"?handler=member&action=validatecode")
     rx.Observable<String> doGetSMSCode(@Query("data") String password );
 }

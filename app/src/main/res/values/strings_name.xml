@@ -10,5 +10,16 @@
     <string name="main_map_title">首页</string>
     <string name="main_map_title_right_menu">绑定</string>
 
+    <string name="main_slide_service_phone_number">客服电话: 020-39434080</string>
+    <string name="main_slide_title">服务</string>
+    <string name="main_slide_item_freeinquire">健康咨询</string>
+    <string name="main_slide_item_mall">个性服务商城</string>
+    <string name="main_slide_item_baby_go_home">宝贝回家</string>
+    <string name="main_slide_item_care_for_loss">防走失</string>
+    <string name="main_slide_item_referral">咨询转介</string>
+    <string name="main_slide_item_housekeeper">家政护理</string>
+
+
+
 </resources>
 

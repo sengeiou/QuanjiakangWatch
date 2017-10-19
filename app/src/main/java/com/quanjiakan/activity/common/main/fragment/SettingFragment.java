@@ -24,14 +24,6 @@ import butterknife.Unbinder;
  */
 
 public class SettingFragment extends BaseFragment {
-    @BindView(R.id.ibtn_back)
-    ImageButton ibtnBack;
-    @BindView(R.id.tv_title)
-    TextView tvTitle;
-    @BindView(R.id.ibtn_menu)
-    ImageButton ibtnMenu;
-    @BindView(R.id.menu_text)
-    TextView menuText;
     Unbinder unbinder;
     //***************************************************
 
@@ -80,19 +72,6 @@ public class SettingFragment extends BaseFragment {
         unbinder.unbind();
     }
 
-    @OnClick({R.id.ibtn_back, R.id.ibtn_menu, R.id.menu_text})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.ibtn_back:
-                BaseApplication.getInstances().onLogout((MainActivity)getActivity());
-                break;
-            case R.id.ibtn_menu:
-                break;
-            case R.id.menu_text:
-                break;
-        }
-    }
-
     /**
      * *****************************************************************************************************************************
      * EventBus 广播事件
@@ -107,17 +86,9 @@ public class SettingFragment extends BaseFragment {
         /**
          * 设置组件的默认值
          */
-        tvTitle.setText(R.string.main_tab_item_main_setting_string);
     }
 
     public void initTitleBar(){
-        ibtnBack.setVisibility(View.VISIBLE);
-        ibtnBack.setImageResource(R.drawable.back);
-
-        tvTitle.setVisibility(View.VISIBLE);
-
-        menuText.setVisibility(View.GONE);
-        ibtnMenu.setVisibility(View.GONE);
 
     }
 

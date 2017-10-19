@@ -7,6 +7,9 @@ package com.quanjiakan.activity.base;
 public interface ICommonData {
     //TODO ************************************************
     //TODO 公共 String 类型数据
+
+    String ENCODE_DECODE_UTF_8 = "utf-8";
+
     String FORBID_USER = "0";
 
 

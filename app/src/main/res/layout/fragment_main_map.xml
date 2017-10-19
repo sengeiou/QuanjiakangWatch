@@ -18,7 +18,8 @@
         android:layout_width="@dimen/size_65"
         android:divider="@color/transparent"
         android:dividerHeight="@dimen/size_0"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
 
     </ListView>
 </RelativeLayout>

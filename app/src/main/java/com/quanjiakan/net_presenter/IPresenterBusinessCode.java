@@ -16,4 +16,6 @@ public interface IPresenterBusinessCode {
     int SIGNIN_AGREEMENT = 30005;
     int SIGNIN_CODE = 30006;
     int PASSWORD_RESET = 30007;
+
+    int DEVICE_WATCH_LIST = 30100;
 }

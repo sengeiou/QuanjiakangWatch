@@ -10,7 +10,8 @@ public interface IHttpUrlConstants {
      */
     public static final String BASEURL_QUANJIAKANG = "http://app.quanjiakan.com";//TODO Work
     public static final String BASEURL_APP = "http://app.quanjiakan.com";//TODO Work
-    public static final String BASEURL_WATCH = "http://app.quanjiakan.com";//TODO Work
+    public static final String BASEURL_WATCH = "http://watch.quanjiakan.com";//TODO Work
+    public static final String BASEURL_DEVICE = "http://device.quanjiakan.com";//TODO Work
     public static final String BASEURL_PAY = "http://pay.quanjiakan.com:7080";
 
     //**********************************************************
@@ -29,6 +30,7 @@ public interface IHttpUrlConstants {
      * 警务联动：jinwu
      */
     public static final String PROJECT_PINGAN = "pingan";
+    public static final String PROJECT_DEVICES = "devices";
     //***************************************************
     /**
      * 1.Web,

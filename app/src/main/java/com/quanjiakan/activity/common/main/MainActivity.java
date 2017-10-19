@@ -1,14 +1,15 @@
 package com.quanjiakan.activity.common.main;
 
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -22,10 +23,10 @@ import com.quanjiakan.activity.common.main.fragment.SettingFragment;
 import com.quanjiakan.broadcast.entity.CommonNattyData;
 import com.quanjiakan.constants.IParamsIntValue;
 import com.quanjiakan.constants.IParamsName;
+import com.quanjiakan.view.SlidingMenu;
 import com.quanjiakan.watch.R;
 import com.umeng.analytics.MobclickAgent;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -55,6 +56,26 @@ public class MainActivity extends BaseActivity {
     TextView mainTabItemSettingName;
     @BindView(R.id.main_tab_fragment_container)
     FrameLayout mainTabFragmentContainer;
+    //TODO 侧滑菜单
+    @BindView(R.id.hint)
+    TextView hint;
+    @BindView(R.id.inquiry)
+    LinearLayout inquiry;
+    @BindView(R.id.housekeeper)
+    LinearLayout housekeeper;
+    @BindView(R.id.old_care)
+    LinearLayout oldCare;
+    @BindView(R.id.child_missing)
+    LinearLayout childMissing;
+    @BindView(R.id.go_home)
+    LinearLayout goHome;
+    @BindView(R.id.shop)
+    LinearLayout shop;
+    @BindView(R.id.main_menu)
+    RelativeLayout mainMenu;
+    @BindView(R.id.sliding_menu)
+    SlidingMenu slidingMenu;
+    //TODO
     @BindView(R.id.ibtn_back)
     ImageButton ibtnBack;
     @BindView(R.id.tv_title)
@@ -63,8 +84,10 @@ public class MainActivity extends BaseActivity {
     ImageButton ibtnMenu;
     @BindView(R.id.menu_text)
     TextView menuText;
-    @BindView(R.id.rl_title)
-    RelativeLayout rlTitle;
+    /**
+     * TODO 关于相同标题栏显示存在与其他页面在显示上存在色差的问题：
+     *  猜想是由于本身这个MainActivity的特殊性，最外层是SlideMenu，在滑动时会
+     */
 
 
     private int newIntentType;
@@ -73,7 +96,6 @@ public class MainActivity extends BaseActivity {
     private FragmentManager fragmentManager;
     //TODO
     private MainMapFragment fragmentMain;
-    private Fragment fragmentVideo;
     private MessageListFragment fragmentMessage;
     private SettingFragment fragmentSetting;
     private int currentFragment = ICommonData.MAIN_TAB_ITEM_NONE;
@@ -187,9 +209,9 @@ public class MainActivity extends BaseActivity {
     public void setCurrentTabItem(int item) {
         setCurrentTabImage(item);
         setCurrentTabName(item);
-        setCurrentTabFragment(item,null);
-        //TODO
-        setTitleBar(item);
+        setCurrentTabFragment(item, null);
+
+        initTitleBar(item);
     }
 
     /**
@@ -204,108 +226,109 @@ public class MainActivity extends BaseActivity {
         switch (item) {
             case ICommonData.MAIN_TAB_ITEM_MAIN: {
 
-                if(currentFragment==ICommonData.MAIN_TAB_ITEM_MAIN){
+                if (currentFragment == ICommonData.MAIN_TAB_ITEM_MAIN) {
                     return;
                 }
                 startFragmentTransaction();
                 hideOther(currentFragment);
                 startFragmentTransaction();
-                if(fragmentMain==null){
+                if (fragmentMain == null) {
                     fragmentMain = new MainMapFragment();
-                    if(fragmentBeforeShow!=null){
+                    if (fragmentBeforeShow != null) {
                         fragmentBeforeShow.setFragmentValue();
                     }
-                    transaction.add(R.id.main_tab_fragment_container,fragmentMain,ICommonData.MAIN_TAB_ITEM_MAIN_TAG);
-                }else{
+                    transaction.add(R.id.main_tab_fragment_container, fragmentMain, ICommonData.MAIN_TAB_ITEM_MAIN_TAG);
+                } else {
                     fragmentMain = (MainMapFragment) fragmentManager.findFragmentByTag(ICommonData.MAIN_TAB_ITEM_MAIN_TAG);
-                    if(fragmentBeforeShow!=null){
+                    if (fragmentBeforeShow != null) {
                         fragmentBeforeShow.setFragmentValue();
                     }
                     transaction.show(fragmentMain);
                 }
 
-                currentFragment=ICommonData.MAIN_TAB_ITEM_MAIN;
+                currentFragment = ICommonData.MAIN_TAB_ITEM_MAIN;
                 transaction.commit();
                 break;
             }
             case ICommonData.MAIN_TAB_ITEM_MSG: {
-                if(currentFragment==ICommonData.MAIN_TAB_ITEM_MSG){
+                if (currentFragment == ICommonData.MAIN_TAB_ITEM_MSG) {
                     return;
                 }
                 startFragmentTransaction();
                 hideOther(currentFragment);
                 startFragmentTransaction();
-                if(fragmentMessage==null){
+                if (fragmentMessage == null) {
                     fragmentMessage = new MessageListFragment();
-                    if(fragmentBeforeShow!=null){
+                    if (fragmentBeforeShow != null) {
                         fragmentBeforeShow.setFragmentValue();
                     }
-                    transaction.add(R.id.main_tab_fragment_container,fragmentMessage,ICommonData.MAIN_TAB_ITEM_MSG_TAG);
-                }else{
+                    transaction.add(R.id.main_tab_fragment_container, fragmentMessage, ICommonData.MAIN_TAB_ITEM_MSG_TAG);
+                } else {
                     fragmentMessage = (MessageListFragment) fragmentManager.findFragmentByTag(ICommonData.MAIN_TAB_ITEM_MSG_TAG);
-                    if(fragmentBeforeShow!=null){
+                    if (fragmentBeforeShow != null) {
                         fragmentBeforeShow.setFragmentValue();
                     }
                     transaction.show(fragmentMessage);
                 }
-                currentFragment=ICommonData.MAIN_TAB_ITEM_MSG;
+                currentFragment = ICommonData.MAIN_TAB_ITEM_MSG;
                 transaction.commit();
                 break;
             }
             case ICommonData.MAIN_TAB_ITEM_SETTING: {
-                if(currentFragment==ICommonData.MAIN_TAB_ITEM_SETTING){
+                if (currentFragment == ICommonData.MAIN_TAB_ITEM_SETTING) {
                     return;
                 }
                 startFragmentTransaction();
                 hideOther(currentFragment);
                 startFragmentTransaction();
-                if(fragmentSetting==null){
+                if (fragmentSetting == null) {
                     fragmentSetting = new SettingFragment();
-                    if(fragmentBeforeShow!=null){
+                    if (fragmentBeforeShow != null) {
                         fragmentBeforeShow.setFragmentValue();
                     }
-                    transaction.add(R.id.main_tab_fragment_container,fragmentSetting,ICommonData.MAIN_TAB_ITEM_SETTING_TAG);
-                }else{
+                    transaction.add(R.id.main_tab_fragment_container, fragmentSetting, ICommonData.MAIN_TAB_ITEM_SETTING_TAG);
+                } else {
                     fragmentSetting = (SettingFragment) fragmentManager.findFragmentByTag(ICommonData.MAIN_TAB_ITEM_SETTING_TAG);
-                    if(fragmentBeforeShow!=null){
+                    if (fragmentBeforeShow != null) {
                         fragmentBeforeShow.setFragmentValue();
                     }
                     transaction.show(fragmentSetting);
                 }
-                currentFragment=ICommonData.MAIN_TAB_ITEM_SETTING;
+                currentFragment = ICommonData.MAIN_TAB_ITEM_SETTING;
                 transaction.commit();
                 break;
             }
         }
     }
-    public void hideOther(int item){
+
+    public void hideOther(int item) {
         switch (item) {
             case ICommonData.MAIN_TAB_ITEM_MAIN: {
-                if(fragmentMain!=null){
+                if (fragmentMain != null) {
                     fragmentMain = (MainMapFragment) fragmentManager.findFragmentByTag(ICommonData.MAIN_TAB_ITEM_MAIN_TAG);
                     transaction.hide(fragmentMain);
                     transaction.commit();
-                }else{
+                } else {
                     transaction.commit();
                 }
                 break;
             }
             case ICommonData.MAIN_TAB_ITEM_MSG: {
-                if(fragmentMessage!=null){
+                if (fragmentMessage != null) {
                     fragmentMessage = (MessageListFragment) fragmentManager.findFragmentByTag(ICommonData.MAIN_TAB_ITEM_MSG_TAG);
                     transaction.hide(fragmentMessage);
                     transaction.commit();
-                }else{
+                } else {
                     transaction.commit();
                 }
                 break;
             }
             case ICommonData.MAIN_TAB_ITEM_SETTING: {
-                if(fragmentSetting!=null){
+                if (fragmentSetting != null) {
                     fragmentSetting = (SettingFragment) fragmentManager.findFragmentByTag(ICommonData.MAIN_TAB_ITEM_SETTING_TAG);
                     transaction.hide(fragmentSetting);
                     transaction.commit();
-                }else{
+                } else {
                     transaction.commit();
                 }
                 break;
@@ -313,9 +336,9 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    public void startFragmentTransaction(){
+    public void startFragmentTransaction() {
         //TODO 准备开始Fragment事务
-        if(fragmentManager==null){
+        if (fragmentManager == null) {
             fragmentManager = getFragmentManager();
         }
         transaction = fragmentManager.beginTransaction();
@@ -386,32 +409,45 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    //TODO 根据不同页面切换设置标题栏的可见性
-    public void setTitleBar(int item) {
+    public void initTitleBar(int item){
+        //TODO 设置选中状态
         switch (item) {
             case ICommonData.MAIN_TAB_ITEM_MAIN: {
-                //TODO 让这个部分的标题栏在外层显示
-                rlTitle.setVisibility(View.VISIBLE);
+                //TODO
+                ibtnBack.setVisibility(View.VISIBLE);
+                ibtnBack.setImageResource(R.drawable.main_map_menu_item_left);
 
                 tvTitle.setVisibility(View.VISIBLE);
                 tvTitle.setText(R.string.main_tab_item_main_name_string);
-
-                ibtnBack.setImageResource(R.drawable.main_map_menu_item_left);
-                ibtnBack.setVisibility(View.VISIBLE);
 
                 ibtnMenu.setVisibility(View.GONE);
 
                 menuText.setVisibility(View.VISIBLE);
                 menuText.setText(R.string.main_map_title_right_menu);
-
                 break;
             }
             case ICommonData.MAIN_TAB_ITEM_MSG: {
-                rlTitle.setVisibility(View.GONE);
+                ibtnBack.setVisibility(View.GONE);
+                ibtnBack.setImageResource(R.drawable.main_map_menu_item_left);
+
+                tvTitle.setVisibility(View.VISIBLE);
+                tvTitle.setText(R.string.main_tab_item_main_message_center_string);
+
+                ibtnMenu.setVisibility(View.GONE);
+
+                menuText.setVisibility(View.GONE);
                 break;
             }
             case ICommonData.MAIN_TAB_ITEM_SETTING: {
-                rlTitle.setVisibility(View.GONE);
+                ibtnBack.setVisibility(View.GONE);
+                ibtnBack.setImageResource(R.drawable.main_map_menu_item_left);
+
+                tvTitle.setVisibility(View.VISIBLE);
+                tvTitle.setText(R.string.main_tab_item_main_setting_string);
+
+                ibtnMenu.setVisibility(View.GONE);
+
+                menuText.setVisibility(View.GONE);
                 break;
             }
         }
@@ -465,6 +501,28 @@ public class MainActivity extends BaseActivity {
     public void initView() {
         //TODO 设置默认的选中值--
         setCurrentTabItem(ICommonData.MAIN_TAB_ITEM_MAIN);
+
+        initSlideMenu();
+    }
+
+    public void initSlideMenu() {
+        //TODO 屏蔽掉点击事件的传递
+        slidingMenu.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+        //TODO 设置侧滑菜单的自适应宽度
+        resetSlideMenuWidth();
+    }
+
+    public void resetSlideMenuWidth() {
+        mainMenu = (RelativeLayout) findViewById(R.id.main_menu);
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mainMenu.getLayoutParams();
+        params.width = getResources().getDisplayMetrics().widthPixels / 2;
+        params.height = LinearLayout.LayoutParams.MATCH_PARENT;
+        mainMenu.setLayoutParams(params);
     }
 
     public void onLogout() {
@@ -476,24 +534,55 @@ public class MainActivity extends BaseActivity {
      * EventBus 广播事件
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onCommonNattyData(CommonNattyData result){
+    public void onCommonNattyData(CommonNattyData result) {
         //TODO 控制无效的广播
-        if(result==null){
+        if (result == null) {
             return;
         }
-        switch (result.getType()){
+        switch (result.getType()) {
 
         }
     }
-
 
     /**
      * *****************************************************************************************************************************
      */
 
-    @OnClick({R.id.main_tab_item_main, R.id.main_tab_item_msg, R.id.main_tab_item_setting})
+    //TODO
+    public void openSlideMenu() {
+        slidingMenu.toggleMenu();
+    }
+
+    //TODO
+    public void goToBindDevice(){
+
+    }
+
+    @OnClick({R.id.main_tab_item_main, R.id.main_tab_item_msg, R.id.main_tab_item_setting,
+            R.id.hint, R.id.inquiry, R.id.housekeeper,
+            R.id.old_care, R.id.child_missing, R.id.go_home,
+            R.id.shop,R.id.tv_title,
+            R.id.menu_text,R.id.ibtn_back})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.tv_title:{
+                if(currentFragment==ICommonData.MAIN_TAB_ITEM_MAIN){
+                    fragmentMain.getBindWatchListFromNet();
+                }
+                break;
+            }
+            case R.id.ibtn_back: {
+                if(currentFragment==ICommonData.MAIN_TAB_ITEM_MAIN){
+                    openSlideMenu();//TODO 打开侧边菜单
+                }
+                break;
+            }
+            case R.id.menu_text: {
+                if(currentFragment==ICommonData.MAIN_TAB_ITEM_MAIN){
+                    goToBindDevice();//TODO 跳至绑定设备
+                }
+                break;
+            }
             case R.id.main_tab_item_main: {
                 setCurrentTabItem(ICommonData.MAIN_TAB_ITEM_MAIN);
                 break;
@@ -507,6 +596,54 @@ public class MainActivity extends BaseActivity {
                 //TODO
                 break;
             }
+            //TODO **********************************
+            //当处理完侧滑菜单点击事件后，先关闭菜单，然后执行
+            case R.id.hint: {
+                openSlideMenu();
+                break;
+            }
+            case R.id.inquiry: {
+                openSlideMenu();
+                //TODO 免费问诊（健康咨询）
+
+                break;
+            }
+            case R.id.housekeeper: {
+                openSlideMenu();
+                //TODO 家政
+
+                break;
+            }
+            case R.id.old_care: {
+                openSlideMenu();
+                //TODO 咨询转介
+
+                break;
+            }
+            case R.id.child_missing: {
+                openSlideMenu();
+                //TODO 防走失
+
+                break;
+            }
+            case R.id.go_home: {
+                openSlideMenu();
+                //TODO 宝贝回家
+
+                break;
+            }
+            case R.id.shop: {
+                openSlideMenu();
+                //TODO 商城
+
+
+                break;
+            }
         }
     }
+
+    /**
+     * *****************************************************************************************************************************
+     */
+
 }

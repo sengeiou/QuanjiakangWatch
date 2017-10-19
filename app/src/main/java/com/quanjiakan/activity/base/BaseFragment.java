@@ -28,7 +28,7 @@ import butterknife.Unbinder;
  * Created by Administrator on 2017/10/17.
  */
 
-public abstract class BaseFragment extends Fragment {
+public abstract class BaseFragment extends Fragment implements IBaseActivity{
 
     /**
      * ************************************************************************************************************************
@@ -92,4 +92,34 @@ public abstract class BaseFragment extends Fragment {
     /**
      * ************************************************************************************************************************
      */
+
+    @Override
+    public Object getParamter(int type) {
+        return null;
+    }
+
+    @Override
+    public void showMyDialog(int type) {
+
+    }
+
+    @Override
+    public void dismissMyDialog(int type) {
+
+    }
+
+    @Override
+    public void onSuccess(int type, int httpResponseCode, Object result) {
+
+    }
+
+    @Override
+    public void onError(int type, int httpResponseCode, Object errorMsg) {
+
+    }
+
+    @Override
+    public View getViewComponentByID(int viewID) {
+        return null;
+    }
 }

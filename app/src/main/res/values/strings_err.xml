@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
+    <string name="error_common_net_request_fail">数据获取失败，请重试!</string>
+    <string name="error_common_net_invalid_parameters">无效的请求参数!</string>
+
     <!--      流程   登录   错误提示       -->
     <string name="error_login_hint">登录失败</string>
     <string name="error_hint">登录失败</string>

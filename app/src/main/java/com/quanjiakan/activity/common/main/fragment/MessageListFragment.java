@@ -22,14 +22,6 @@ import butterknife.Unbinder;
  */
 
 public class MessageListFragment extends BaseFragment {
-    @BindView(R.id.ibtn_back)
-    ImageButton ibtnBack;
-    @BindView(R.id.tv_title)
-    TextView tvTitle;
-    @BindView(R.id.ibtn_menu)
-    ImageButton ibtnMenu;
-    @BindView(R.id.menu_text)
-    TextView menuText;
     Unbinder unbinder;
     //***************************************************
 
@@ -77,18 +69,6 @@ public class MessageListFragment extends BaseFragment {
         unbinder.unbind();
     }
 
-    @OnClick({R.id.ibtn_back, R.id.ibtn_menu, R.id.menu_text})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.ibtn_back:
-                break;
-            case R.id.ibtn_menu:
-                break;
-            case R.id.menu_text:
-                break;
-        }
-    }
-
     /**
      * *****************************************************************************************************************************
      * EventBus 广播事件
@@ -102,7 +82,6 @@ public class MessageListFragment extends BaseFragment {
         /**
          * 设置组件的默认值
          */
-        tvTitle.setText(R.string.main_tab_item_main_message_center_string);
     }
 
     /**

@@ -18,6 +18,7 @@ import com.quanjiakan.activity.common.main.MainActivity;
 import com.quanjiakan.db.entity.LoginUserInfoEntity;
 import com.quanjiakan.db.manager.DaoManager;
 import com.quanjiakan.net.IHttpUrlConstants;
+import com.quanjiakan.net.IResponseResultCode;
 import com.quanjiakan.net.retrofit.result_entity.PostLoginEntity;
 import com.quanjiakan.net_presenter.IPresenterBusinessCode;
 import com.quanjiakan.net_presenter.SigninPresenter;
@@ -233,7 +234,7 @@ public class SigninActivity_mvp extends BaseActivity {
                      SharePreferencesSetting.getInstance().setPwSignature("");
                      SharePreferencesSetting.getInstance().setToken("");
                      */
-                    if("200".equals(res.getCode())){
+                    if(IResponseResultCode.RESPONSE_SUCCESS.equals(res.getCode())){
                         //TODO 保存用户的登录信息
                         saveLoginInfo(res);
 
@@ -241,7 +242,11 @@ public class SigninActivity_mvp extends BaseActivity {
                         startActivity(intent);
                         finish();
                     }else{
-                        CommonDialogHint.getInstance().showHint(SigninActivity_mvp.this,getString(R.string.error_login_hint));
+                        if(res.getMessage()!=null && res.getMessage().length()>0){
+                            CommonDialogHint.getInstance().showHint(SigninActivity_mvp.this,res.getMessage());
+                        }else{
+                            CommonDialogHint.getInstance().showHint(SigninActivity_mvp.this,getString(R.string.error_login_hint));
+                        }
                     }
                 }else{
                     CommonDialogHint.getInstance().showHint(SigninActivity_mvp.this,getString(R.string.error_login_hint));
@@ -253,7 +258,9 @@ public class SigninActivity_mvp extends BaseActivity {
     public void onError(int type, int httpResponseCode, Object errorMsg) {
         switch (type) {
             case IPresenterBusinessCode.LOGIN:
-                CommonDialogHint.getInstance().showHint(SigninActivity_mvp.this,"" + errorMsg.toString());
+                if(errorMsg!=null){
+                    CommonDialogHint.getInstance().showHint(SigninActivity_mvp.this,"" + errorMsg.toString());
+                }
                 break;
             case IPresenterBusinessCode.NONE:
                 //TODO 不做任何事情，在获取参数为空时调用并返回，调用前会有对应参数相关的提示
