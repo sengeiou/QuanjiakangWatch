@@ -17,6 +17,9 @@ public interface ICommonData {
     String MAIN_TAB_ITEM_MSG_TAG = "msg_tag";
     String MAIN_TAB_ITEM_SETTING_TAG = "setting_tag";
 
+    String DEVICE_TYPE_OLD = "0";
+    String DEVICE_TYPE_CHILD = "1";
+
 
     //TODO ************************************************
     //TODO 公共 数值 类型数据
@@ -27,5 +30,7 @@ public interface ICommonData {
     int MAIN_TAB_ITEM_MAIN = 1;
     int MAIN_TAB_ITEM_MSG = 2;
     int MAIN_TAB_ITEM_SETTING = 3;
+
+    int VALID_IMEI_LENGTH = 15;
 
 }

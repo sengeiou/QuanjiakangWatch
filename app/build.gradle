@@ -13,7 +13,7 @@ buildscript {
 }
 
 greendao {
-    schemaVersion 1
+    schemaVersion 2
     daoPackage 'com.example.greendao.dao'
     targetGenDir 'src/main/java'
 }
@@ -104,5 +104,7 @@ dependencies {
     compile 'com.amap.api:location:latest.integration'
     compile 'com.amap.api:search:latest.integration'
     compile 'com.amap.api:navi-3dmap:latest.integration'//TODO 导航里存在3Dmap，若再次引入map将出现重复引用异常
+    //************************* Picasso 图片加载
+    compile 'com.squareup.picasso:picasso:2.5.2'
 
 }

@@ -53,14 +53,12 @@ public class BindDeviceListPresenter implements IBasePresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        LogUtil.e(" -- Http getBindDeviceList onError:"+e.getMessage());
                         activityMvp.dismissMyDialog(IPresenterBusinessCode.DEVICE_WATCH_LIST);
                         activityMvp.onError(IPresenterBusinessCode.DEVICE_WATCH_LIST,200,e.getMessage());
                     }
 
                     @Override
                     public void onNext(GetWatchListEntity response) {
-                        LogUtil.e(" -- Http getBindDeviceList onSuccess:"+response.toString());
                         activityMvp.dismissMyDialog(IPresenterBusinessCode.DEVICE_WATCH_LIST);
                         activityMvp.onSuccess(IPresenterBusinessCode.DEVICE_WATCH_LIST,200,response);
                     }

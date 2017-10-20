@@ -1,12 +1,23 @@
 package com.quanjiakan.activity.common.main.fragment;
 
+import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -16,16 +27,24 @@ import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.LocationSource;
 import com.amap.api.maps.MapView;
+import com.amap.api.maps.model.BitmapDescriptor;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
+import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
+import com.amap.api.services.core.AMapException;
+import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.geocoder.GeocodeResult;
 import com.amap.api.services.geocoder.GeocodeSearch;
+import com.amap.api.services.geocoder.RegeocodeAddress;
+import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
 import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.activity.base.BaseFragment;
+import com.quanjiakan.activity.base.ICommonData;
 import com.quanjiakan.activity.common.main.MainActivity;
+import com.quanjiakan.adapter.DeviceContainerAdapter;
 import com.quanjiakan.broadcast.entity.CommonNattyData;
 import com.quanjiakan.db.entity.BindWatchInfoEntity;
 import com.quanjiakan.db.manager.DaoManager;
@@ -34,7 +53,13 @@ import com.quanjiakan.net.IResponseResultCode;
 import com.quanjiakan.net.retrofit.result_entity.GetWatchListEntity;
 import com.quanjiakan.net_presenter.BindDeviceListPresenter;
 import com.quanjiakan.net_presenter.IPresenterBusinessCode;
+import com.quanjiakan.util.common.StringCheckUtil;
+import com.quanjiakan.util.common.ToastUtil;
+import com.quanjiakan.util.common.UnitExchangeUtil;
 import com.quanjiakan.util.dialog.CommonDialogHint;
+import com.quanjiakan.util.dialog.QuanjiakanDialog;
+import com.quanjiakan.util.map.MapUtil;
+import com.quanjiakan.util.map.NaviMapUtil;
 import com.quanjiakan.watch.R;
 import com.umeng.analytics.MobclickAgent;
 
@@ -46,6 +71,11 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -89,6 +119,17 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
     private BindDeviceListPresenter presenter;
 
     private List<BindWatchInfoEntity> watchInfoEntityList = new ArrayList<>();
+    private DeviceContainerAdapter bindWatchListAdapter;
+    private int currentClickPosition = 0;//TODO 记录当前点击的位置
+
+    private List<LatLng> markerList = new ArrayList<>();
+    //*    * InfoWindow 组件
+    private TextView info_location;
+    private TextView phone;
+    private ImageView call_phone;
+    private LinearLayout guide_line;//导航
+    private LinearLayout phone_line;
+    //******************
 
     /**
      * ************************************************************************************************************************
@@ -120,8 +161,6 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
         super.onResume();
         MobclickAgent.onPageStart(this.getClass().getSimpleName());
         mapView.onResume();
-
-        locateSelf(LOCATION_TYPE_SHOW_AND_MOVE_POSITION);
     }
 
     @Override
@@ -186,7 +225,7 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
         aMap.setOnInfoWindowClickListener(this);// 设置点击infoWindow事件监听器
         aMap.setInfoWindowAdapter(this);
         //TODO 设置地图面板
-        locateSelf(LOCATION_TYPE_SHOW_AND_MOVE_POSITION);
+        locateSelf(LOCATION_TYPE_GET_POSITION);//TODO 仅获取自己的位置
 
         geocoderSearch = new GeocodeSearch(this.getActivity());
         geocoderSearch.setOnGeocodeSearchListener(this);
@@ -295,13 +334,278 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
      * Marker的InfoWindow
      */
     @Override
-    public View getInfoWindow(Marker marker) {
-        return null;
+    public View getInfoWindow(final Marker marker) {
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_watch_child_infowindow_new, null);
+        info_location = (TextView) view.findViewById(R.id.info_location);
+        info_location.setTag(null);
+        info_location.setText("");
+        phone = (TextView) view.findViewById(R.id.phone);
+        phone_line = (LinearLayout) view.findViewById(R.id.phone_line);
+        call_phone = (ImageView) view.findViewById(R.id.call_phone);
+        guide_line = (LinearLayout) view.findViewById(R.id.guide_line);
+        //TODO 临时对位置进行查询
+        getAddressByLatlng(marker.getPosition());
+
+        if(watchInfoEntityList.get(Integer.parseInt(marker.getTitle()))!=null &&
+                watchInfoEntityList.get(Integer.parseInt(marker.getTitle())).getPhone()!=null &&
+                StringCheckUtil.isPhoneNumber(watchInfoEntityList.get(Integer.parseInt(marker.getTitle())).getPhone())){
+            phone.setText("电话:" + watchInfoEntityList.get(Integer.parseInt(marker.getTitle())).getPhone());
+            phone_line.setVisibility(View.VISIBLE);
+        }else{
+            phone_line.setVisibility(View.GONE);
+        }
+
+        call_phone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (watchInfoEntityList.get(Integer.parseInt(marker.getTitle())).getPhone() != null &&
+                        watchInfoEntityList.get(Integer.parseInt(marker.getTitle())).getPhone().length() > 0) {
+                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phone.getText().toString().substring(phone.getText().toString().indexOf(":") + 1)));
+                    startActivity(intent);
+                } else {
+                    showSetNumDialog();
+                }
+            }
+        });
+        guide_line.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //导航
+                openGudieDialog(marker.getPosition());
+            }
+        });
+        return view;
     }
 
     @Override
-    public View getInfoContents(Marker marker) {
-        return null;
+    public View getInfoContents(final Marker marker) {
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_watch_child_infowindow_new, null);
+        info_location = (TextView) view.findViewById(R.id.info_location);
+        info_location.setTag(null);
+        info_location.setText("");
+
+        phone = (TextView) view.findViewById(R.id.phone);
+        call_phone = (ImageView) view.findViewById(R.id.call_phone);
+        guide_line = (LinearLayout) view.findViewById(R.id.guide_line);
+        //TODO 临时对位置进行查询
+        getAddressByLatlng(marker.getPosition());
+        if(watchInfoEntityList.get(Integer.parseInt(marker.getTitle()))!=null &&
+                watchInfoEntityList.get(Integer.parseInt(marker.getTitle())).getPhone()!=null &&
+                StringCheckUtil.isPhoneNumber(watchInfoEntityList.get(Integer.parseInt(marker.getTitle())).getPhone())){
+            phone.setText("电话:" + watchInfoEntityList.get(Integer.parseInt(marker.getTitle())).getPhone());
+            phone_line.setVisibility(View.VISIBLE);
+        }else{
+            phone_line.setVisibility(View.GONE);
+        }
+        call_phone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (watchInfoEntityList.get(Integer.parseInt(marker.getTitle())).getPhone() != null &&
+                        watchInfoEntityList.get(Integer.parseInt(marker.getTitle())).getPhone().length() > 0) {
+                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phone.getText().toString().substring(phone.getText().toString().indexOf(":") + 1)));
+                    startActivity(intent);
+                } else {
+                    showSetNumDialog();
+                }
+
+            }
+        });
+        guide_line.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //导航
+                openGudieDialog(marker.getPosition());
+            }
+        });
+        return view;
+    }
+
+    private ExecutorService mExecutorService;
+
+    public void getAddressByLatlng(final LatLng latlng) {
+        final LatLonPoint point = new LatLonPoint(latlng.latitude, latlng.longitude);
+
+        if (mExecutorService == null) {
+            mExecutorService = Executors.newSingleThreadExecutor();
+        }
+
+        mExecutorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    RegeocodeQuery query = new RegeocodeQuery(point, 200,
+                            GeocodeSearch.AMAP);// 第一个参数表示一个Latlng，第二参数表示范围多少米，第三个参数表示是火系坐标系还是GPS原生坐标系
+                    RegeocodeAddress result = geocoderSearch.getFromLocation(query);// 设置同步逆地理编码请求
+                    if (result != null && result.getFormatAddress() != null) {
+                        String addressName = result.getFormatAddress();
+                        String province = result.getProvince();
+                        Message message = new Message();
+                        message.what = INFOR_ADDRESS;
+                        Bundle bundle = new Bundle();
+                        bundle.putString("province", province);
+                        bundle.putString("addressName", addressName);
+                        message.setData(bundle);
+                        mHandler.sendMessage(message);
+
+                    }
+                } catch (AMapException e) {
+                    Message msg = msgHandler.obtainMessage();
+                    msg.arg1 = e.getErrorCode();
+                    msgHandler.sendMessage(msg);
+                }
+            }
+        });
+    }
+    public static final int FRESH_MARK_LIST = 16;
+    public static final int INFOR_ADDRESS = 101;
+    private Handler msgHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            ToastUtil.showerror(getActivity(), msg.arg1);
+        }
+    };
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case FRESH_MARK_LIST: {
+                    showMarkerOnMap(markerList, currentClickPosition);
+                    break;
+                }
+                case INFOR_ADDRESS:
+                    Bundle data = msg.getData();
+                    String province = data.getString("province");
+                    String addressName = data.getString("addressName");
+                    info_location.setText(getString(R.string.hint_addr) + addressName.replace(province, ""));
+                    info_location.setTag(addressName.replace(province, ""));
+
+                    break;
+            }
+        }
+    };
+
+    private void showSetNumDialog() {
+        final Dialog dialog = new Dialog(getActivity(), R.style.dialog_loading);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_delete_manager, null);
+
+        TextView title = (TextView) view.findViewById(R.id.tv_dialog_title);
+        title.setText("SIM卡读取异常");
+
+        view.findViewById(R.id.btn_sure).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                // TODO: 2017/6/6 去设置电话号码
+            }
+        });
+
+        view.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                CommonDialogHint.getInstance().showHint(getActivity(), getString(R.string.cancel));
+
+            }
+        });
+        TextView content = (TextView) view.findViewById(R.id.tv_content);
+        content.setText("SIM卡读取异常，是否需要重设资料！");
+        content.setGravity(Gravity.CENTER);
+
+
+        WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();
+        lp.width = UnitExchangeUtil.dip2px(getActivity(), 300);
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
+        dialog.setContentView(view, lp);
+        dialog.show();
+    }
+
+    public void openGudieDialog(final LatLng latLng) {
+
+        final Dialog selectNaviDialog = QuanjiakanDialog.getInstance().getCardDialog(getActivity());
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_select_navimap, null);
+
+        //判断是否安装高德地图,处理点击事件
+        if (NaviMapUtil.isAvilible(getActivity(), "com.autonavi.minimap")) {
+            TextView gaodeNavi = (TextView) view.findViewById(R.id.tv_gaodenavi);
+            View view1 = view.findViewById(R.id.line1);
+            view1.setVisibility(View.VISIBLE);
+            gaodeNavi.setVisibility(View.VISIBLE);
+            gaodeNavi.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (selfLatitude != -1000 && selfLongitude != -1000) {
+                        NaviMapUtil.GotoGaoDeNaviMap(getActivity(), "全家康用户端", selfLatitude + "", selfLongitude + "", selfAdress, latLng.latitude + "", latLng.longitude + "",
+                                (info_location.getTag() != null ? info_location.getTag().toString() : ""), "1", "0", "2");
+                    } else {
+                        BaseApplication.getInstances().toast(getActivity(), "暂未获取到自己的定位信息,请稍后重试!");
+                        locateSelf(LOCATION_TYPE_GET_POSITION);
+                    }
+                    selectNaviDialog.dismiss();
+                }
+
+            });
+        }
+
+        //判断是否安装百度地图,并处理点击事件
+        if (NaviMapUtil.isAvilible(getActivity(), "com.baidu.BaiduMap")) {
+            TextView baiduNavi = (TextView) view.findViewById(R.id.tv_baidunavi);
+            baiduNavi.setVisibility(View.VISIBLE);
+            View view2 = view.findViewById(R.id.line2);
+            view2.setVisibility(View.VISIBLE);
+            //先将火星坐标转换为百度坐标
+
+            baiduNavi.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (selfLatitude != -1000 && selfLongitude != -1000) {
+                        Map<String, String> selfPoint = MapUtil.bd_encrypt(selfLatitude, selfLongitude);
+                        Map<String, String> patitentPoint = MapUtil.bd_encrypt(latLng.latitude, latLng.longitude);
+                        final String selfBdlat = selfPoint.get("mgLat");
+                        final String selfBdlon = selfPoint.get("mgLon");
+                        final String patitentBdLat = patitentPoint.get("mgLat");
+                        final String patitentBdLon = patitentPoint.get("mgLon");
+                        NaviMapUtil.GotoBaiDuNaviMap(getActivity(), selfBdlat + "," + selfBdlon, patitentBdLat + "," + patitentBdLon, "driving", null, null, null, null, null, "thirdapp.navi." + "巨硅科技" + R.string.app_name);
+                    } else {
+                        BaseApplication.getInstances().toast(getActivity(), "暂未获取到自己的定位信息,请稍后重试!");
+                    }
+                    selectNaviDialog.dismiss();
+                }
+            });
+
+        }
+
+        //没有百度和高德地图
+        if (!(NaviMapUtil.isAvilible(getActivity(), "com.baidu.BaiduMap") || NaviMapUtil.isAvilible(getActivity(), "com.autonavi.minimap"))) {
+            TextView no_map = (TextView) view.findViewById(R.id.tv_no_map);
+            View view3 = view.findViewById(R.id.line3);
+            view3.setVisibility(View.VISIBLE);
+            no_map.setVisibility(View.VISIBLE);
+            no_map.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    selectNaviDialog.dismiss();
+                }
+            });
+        }
+
+        view.findViewById(R.id.tv_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectNaviDialog.dismiss();
+            }
+        });
+
+        WindowManager.LayoutParams params = selectNaviDialog.getWindow().getAttributes();
+        params.width = UnitExchangeUtil.dip2px(getActivity(), 300);
+        params.height = params.WRAP_CONTENT;
+        params.gravity = Gravity.BOTTOM;
+
+        selectNaviDialog.setContentView(view, params);
+        selectNaviDialog.setCanceledOnTouchOutside(false);
+        selectNaviDialog.show();
+
     }
 
     @Override
@@ -316,7 +620,7 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        return false;
+        return true;
     }
 
     /**
@@ -445,10 +749,10 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
                 for (GetWatchListEntity.ListBean temp : entity.getList()) {
                     list.add(transformToDBEntity(temp));
                 }
-                //TODO 更新ListView中的数据
-                refreshNetData(list);
+                //TODO ----融合更新后的数据（可以存储到数据库中的）
+                List<BindWatchInfoEntity> newRestoreBindWatchList = refreshNetData(list);
 
-                //TODO 将更新的数据保存进去
+                //TODO 将更新的数据保存进去----删除原有数据，将上一步更新的数据保存进去
                 /*
                 先删除原有的部分
                  */
@@ -460,27 +764,35 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
                 将新数据保存进去
                  */
                 DaoManager.getInstances(getActivity()).getDaoSession().
-                        getBindWatchInfoEntityDao().insertOrReplaceInTx(list);
+                        getBindWatchInfoEntityDao().insertOrReplaceInTx(newRestoreBindWatchList);
 
 
-                //TODO 更新原有的数据
+                //TODO 清除原有数据引用
                 if(watchInfoEntityList.size()>0){
                     watchInfoEntityList.clear();
                 }else{
                     watchInfoEntityList = new ArrayList<>();
                 }
                 //TODO 存入最新的数据
-                watchInfoEntityList.addAll(list);
+                watchInfoEntityList.addAll(newRestoreBindWatchList);
+
+                //TODO 将数据展示到ListView中
+
+                loadDataIntoListView();
+                resetMarkerData(true);
+                showMarkerOnMap(markerList,currentClickPosition);
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
+        }else{
+            //TODO 展示提示人进行绑定的Dialog
         }
     }
 
     /**
-     * 获取当前用户绑定的手表列表(从本地数据库中获取)
+     * TODO <B>获取当前用户绑定的手表列表</B>   (从本地数据库中获取)
      * @return
      */
     public List<BindWatchInfoEntity> getMyBindWatchListFromDB(){
@@ -494,14 +806,13 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
     }
 
     /**
-     * 更新ListView中的数据
+     * TODO 更新ListView中的数据
      *
      * @param list
      * @return
      */
     public List<BindWatchInfoEntity> refreshNetData(List<BindWatchInfoEntity> list){
         List<BindWatchInfoEntity> tempList = new ArrayList<>();
-        List<BindWatchInfoEntity> saveList = new ArrayList<>();
         tempList.addAll(watchInfoEntityList);
         for(BindWatchInfoEntity netData:list){
             int size = tempList.size();
@@ -509,33 +820,428 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
                 BindWatchInfoEntity localData = tempList.get(i);
                 //TODO 同一个设备，则更新网络数据
                 if(localData.getImei().equals(netData.getImei())){
+                    //TODO 主要更新数据为---报警时间与语音未读数
                     netData.setAlarmTime(localData.getAlarmTime());
+                    netData.setUnreadMessageNumber(localData.getUnreadMessageNumber());
+                    tempList.remove(i);//TODO 更新完后删除该数据
                 }
             }
         }
-        return saveList;
+        return list;
     }
 
     //TODO 将接口对象转化成数据库持久化对象
     public BindWatchInfoEntity transformToDBEntity(GetWatchListEntity.ListBean entity) throws JSONException, UnsupportedEncodingException {
         BindWatchInfoEntity watchInfoEntity = new BindWatchInfoEntity();
 
-        watchInfoEntity.setAlarmTime("0");
-        watchInfoEntity.setHeadImage(entity.getImage());
         watchInfoEntity.setImei(entity.getImei());
+        watchInfoEntity.setHeadImage(entity.getImage());
+        watchInfoEntity.setName(entity.getFormatName());
         watchInfoEntity.setLocation(entity.getLocation());
         watchInfoEntity.setLocationTime(entity.getLocationTime());
 
+        watchInfoEntity.setPhone(entity.getPhone());
         watchInfoEntity.setOnline(entity.getOnline() + "");
-        watchInfoEntity.setType(entity.getType() + "");
-        watchInfoEntity.setUnreadMessageNumber(0);
         watchInfoEntity.setRelationlist(entity.getRelationListToJSONArray().toString());
-        watchInfoEntity.setName(entity.getFormatName());
+        watchInfoEntity.setType(entity.getType() + "");
+        watchInfoEntity.setAlarmTime("0");
+
+        watchInfoEntity.setUnreadMessageNumber(0);
+        //TODO 设置绑定的用户
+        watchInfoEntity.setBindUserID(BaseApplication.getInstances().getLoginInfo().getUserId());
         return watchInfoEntity;
     }
 
+    /**
+     * 将watchInfoEntityList中的数据在ListView中展示出来
+     */
     public void loadDataIntoListView(){
-
+//        watchInfoEntityList
+        if(bindWatchListAdapter==null){
+            bindWatchListAdapter = new DeviceContainerAdapter(getActivity(),watchInfoEntityList);
+            deviceContainer.setAdapter(bindWatchListAdapter);
+            bindWatchListAdapter.setSelectedPosition(currentClickPosition);
+            deviceContainer.setOnItemClickListener(itemClickListener);
+        }else{
+            bindWatchListAdapter.setDevices(watchInfoEntityList);
+            bindWatchListAdapter.setSelectedPosition(currentClickPosition);
+            bindWatchListAdapter.notifyDataSetChanged();
+        }
     }
+
+    //TODO 展示特定IMEI号的点---报警点---(由MainActivity收到SOS等报警广播后调用展示数据)
+    public void showAlarmWatchPoint(String imei,double lat,double lng){
+        //TODO
+        if(imei!=null && imei.length()!= ICommonData.VALID_IMEI_LENGTH && lat>0 && lng>0){//TODO 控制参数的有效性
+            int size = watchInfoEntityList.size();
+            for(int i=0;i<size;i++){
+                if(imei.equals(watchInfoEntityList.get(i).getImei())){//TODO 找到对应的设备
+                    //TODO 更新设备定位与报警时间信息
+                    watchInfoEntityList.get(i).setLocation(lng+","+lat);
+                    watchInfoEntityList.get(i).setAlarmTime(System.currentTimeMillis()+"");
+                    //TODO 更新当前点为报警点
+                    currentClickPosition = i;
+                    //TODO 更新持久化数据信息
+                    DaoManager.getInstances(getActivity()).getDaoSession().getBindWatchInfoEntityDao().insertOrReplace(watchInfoEntityList.get(i));
+                    break;
+                }
+            }
+            //TODO 刷新ListView
+            bindWatchListAdapter.notifyDataSetChanged();
+            //TODO 刷新地图的各个Marker
+            resetMarkerData(true);
+            showAlarmMarkerOnMap(markerList,currentClickPosition);
+        }
+    }
+
+    //TODO 开始警报计时，若存在其他响应时，则先取消当前的定时器
+    private Timer sosTimer;
+    private TimerTask timerTask;
+    //TODO
+    public void startAlarmTimer(){
+        if (sosTimer != null) {
+            sosTimer.cancel();
+            sosTimer = null;
+        }
+        sosTimer = new Timer();
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        showMarkerOnMap(markerList,currentClickPosition);
+                    }
+                });
+                sosTimer.cancel();
+                sosTimer = null;
+            }
+        };
+        sosTimer.schedule(timerTask, 15000);//TODO 展示15秒的的
+    }
+
+    public void resetMarkerData(boolean isClearOriginalData){
+        //TODO 若需要，则清除地图原有的数据
+        if(isClearOriginalData){
+            clearMapMarker();
+        }
+
+        if(watchInfoEntityList!=null && watchInfoEntityList.size()>0){
+            //TODO 根据 实际绑定的用户地址，对应出Marker的位置
+
+            //TODO 清理原来的数据地址
+            if(markerList==null){
+                markerList = new ArrayList<>();
+            }else{
+                markerList.clear();
+            }
+            //TODO
+
+            for (BindWatchInfoEntity dataTemp : watchInfoEntityList) {
+                if (dataTemp != null) {
+                    if (dataTemp.getLocation() != null && dataTemp.getLocation().split(",").length == 2) {
+                        String[] location = dataTemp.getLocation().split(",");
+                        try {
+                            LatLng locTemp = new LatLng(Double.parseDouble(location[1]), Double.parseDouble(location[0]));
+                            markerList.add(locTemp);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            markerList.add(null);
+                        }
+
+                    } else {
+                        markerList.add(null);
+                    }
+                }else{
+                    markerList.add(null);
+                }
+            }
+        }else{
+            locateSelf(LOCATION_TYPE_SHOW_AND_MOVE_POSITION);//TODO 若没有绑定数据，则展示自己的定位位置
+        }
+    }
+
+    public void showMarkerOnMap(List<LatLng> list, int infoWindowPosition){
+        if (list != null && list.size() > 0) {
+            initMarkerImageContainerList();
+            if (clickedMarker != null && clickedMarker.isInfoWindowShown()) {
+                clickedMarker.hideInfoWindow();
+            }
+            addMarker(infoWindowPosition);
+        }else{//TODO 若没有绑定则展示自己的位置
+            return;
+        }
+    }
+
+    public void addMarker(int infoWindowPosition){
+        if(aMap!=null){
+            int size = markerList.size();
+            for (int i = 0; i < size; i++) {
+                final LatLng temp = markerList.get(i);
+                if (temp != null) {
+                    if (i == infoWindowPosition) {
+                        //TODO 需要区分下是老人还是儿童
+                        if (ICommonData.DEVICE_TYPE_OLD.equals(watchInfoEntityList.get(i).getType())) {
+                            clickedMarker = aMap.addMarker(new MarkerOptions()
+                                    .position(temp)
+                                    .title("" + i)
+                                    .icons(iconOldList)
+                                    .period(2)
+                                    .draggable(false));
+                        } else if (ICommonData.DEVICE_TYPE_CHILD.equals(watchInfoEntityList.get(i).getType())) {
+                            clickedMarker = aMap.addMarker(new MarkerOptions()
+                                    .position(temp)
+                                    .title("" + i)
+                                    .icons(iconChildList)
+                                    .period(2)
+                                    .draggable(false));
+                        } else {
+                            clickedMarker = aMap.addMarker(new MarkerOptions()
+                                    .position(temp)
+                                    .title("" + i)
+                                    .icons(iconOldList)
+                                    .draggable(false));
+                        }
+                        if(clickedMarker!=null){
+                            clickedMarker.showInfoWindow();
+                        }
+                    } else {
+
+                        if (ICommonData.DEVICE_TYPE_OLD.equals(watchInfoEntityList.get(i).getType())) {
+                            aMap.addMarker(new MarkerOptions()
+                                    .position(temp)
+                                    .title("" + i)
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.main_map_marker_old))
+                                    .draggable(false));
+                        } else if (ICommonData.DEVICE_TYPE_CHILD.equals(watchInfoEntityList.get(i).getType())) {
+                            aMap.addMarker(new MarkerOptions()
+                                    .position(temp)
+                                    .title("" + i)
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.main_map_marker_child))
+                                    .draggable(false));
+                        } else {
+                            aMap.addMarker(new MarkerOptions()
+                                    .position(temp)
+                                    .title("" + i)
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.main_map_marker_old))
+                                    .draggable(false));
+                        }
+                    }
+                    if (infoWindowPosition == i) {
+                        moveCamera(temp);
+                    }
+                } else {
+                    //TODO 经纬度为空，无效的定位点，不进行处理
+                }
+            }
+        }
+    }
+
+    public void showAlarmMarkerOnMap(List<LatLng> list, int infoWindowPosition){
+        if (list != null && list.size() > 0) {
+            initMarkerAlarmImageContainerList();
+            //TODO 当前展示的InfoWindow如果展示的话
+            if (clickedMarker != null && clickedMarker.isInfoWindowShown()) {
+                clickedMarker.hideInfoWindow();
+            }
+            addAlarmMarker(infoWindowPosition);
+        }else{//TODO 若没有绑定则展示自己的位置
+            return;
+        }
+    }
+    public void addAlarmMarker(int infoWindowPosition){
+        if(aMap!=null){
+            int size = markerList.size();
+            for (int i = 0; i < size; i++) {
+                final LatLng temp = markerList.get(i);
+                if (temp != null) {
+                    if (i == infoWindowPosition) {
+                        //TODO 需要区分下是老人还是儿童
+                        if (ICommonData.DEVICE_TYPE_OLD.equals(watchInfoEntityList.get(i).getType())) {
+                            clickedMarker = aMap.addMarker(new MarkerOptions()
+                                    .position(temp)
+                                    .title("" + i)
+                                    .icons(iconOldList)
+                                    .period(2)
+                                    .draggable(false));
+                        } else if (ICommonData.DEVICE_TYPE_CHILD.equals(watchInfoEntityList.get(i).getType())) {
+                            clickedMarker = aMap.addMarker(new MarkerOptions()
+                                    .position(temp)
+                                    .title("" + i)
+                                    .icons(iconChildList)
+                                    .period(2)
+                                    .draggable(false));
+                        } else {
+                            clickedMarker = aMap.addMarker(new MarkerOptions()
+                                    .position(temp)
+                                    .title("" + i)
+                                    .icons(iconOldList)
+                                    .draggable(false));
+                        }
+                        if(clickedMarker!=null){
+                            clickedMarker.showInfoWindow();
+                        }
+                    } else {
+
+                        if (ICommonData.DEVICE_TYPE_OLD.equals(watchInfoEntityList.get(i).getType())) {
+                            aMap.addMarker(new MarkerOptions()
+                                    .position(temp)
+                                    .title("" + i)
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.main_map_marker_old))
+                                    .draggable(false));
+                        } else if (ICommonData.DEVICE_TYPE_CHILD.equals(watchInfoEntityList.get(i).getType())) {
+                            aMap.addMarker(new MarkerOptions()
+                                    .position(temp)
+                                    .title("" + i)
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.main_map_marker_child))
+                                    .draggable(false));
+                        } else {
+                            aMap.addMarker(new MarkerOptions()
+                                    .position(temp)
+                                    .title("" + i)
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.main_map_marker_old))
+                                    .draggable(false));
+                        }
+                    }
+                    if (infoWindowPosition == i) {
+                        moveCamera(temp);
+                    }
+                } else {
+                    //TODO 经纬度为空，无效的定位点，不进行处理
+                }
+            }
+
+            startAlarmTimer();
+        }
+    }
+
+
+    private Marker clickedMarker;
+    private ArrayList<BitmapDescriptor> iconChildList = new ArrayList<>();
+    private ArrayList<BitmapDescriptor> iconOldList = new ArrayList<>();
+    //TODO 初始化Marker图标容器(普通)
+    public void initMarkerImageContainerList(){
+        if (iconChildList == null || iconChildList.size() < 1) {
+            iconChildList = new ArrayList<>();
+        } else {
+            iconChildList.clear();
+        }
+        iconChildList.add(BitmapDescriptorFactory.fromResource(R.drawable.map_location_child_1));
+        iconChildList.add(BitmapDescriptorFactory.fromResource(R.drawable.map_location_child_2));
+        iconChildList.add(BitmapDescriptorFactory.fromResource(R.drawable.map_location_child_3));
+        iconChildList.add(BitmapDescriptorFactory.fromResource(R.drawable.map_location_child_4));
+        iconChildList.add(BitmapDescriptorFactory.fromResource(R.drawable.map_location_child_5));
+        iconChildList.add(BitmapDescriptorFactory.fromResource(R.drawable.map_location_child_6));
+        iconChildList.add(BitmapDescriptorFactory.fromResource(R.drawable.map_location_child_7));
+        iconChildList.add(BitmapDescriptorFactory.fromResource(R.drawable.map_location_child_8));
+        iconChildList.add(BitmapDescriptorFactory.fromResource(R.drawable.map_location_child_9));
+        iconChildList.add(BitmapDescriptorFactory.fromResource(R.drawable.map_location_child_10));
+        iconChildList.add(BitmapDescriptorFactory.fromResource(R.drawable.map_location_child_11));
+        iconChildList.add(BitmapDescriptorFactory.fromResource(R.drawable.map_location_child_12));
+        iconChildList.add(BitmapDescriptorFactory.fromResource(R.drawable.map_location_child_13));
+        iconChildList.add(BitmapDescriptorFactory.fromResource(R.drawable.map_location_child_14));
+        iconChildList.add(BitmapDescriptorFactory.fromResource(R.drawable.map_location_child_15));
+        iconChildList.add(BitmapDescriptorFactory.fromResource(R.drawable.map_location_child_16));
+
+        if (iconOldList == null || iconOldList.size() < 1) {
+            iconOldList = new ArrayList<>();
+        } else {
+            iconOldList.clear();
+        }
+        iconOldList.add(BitmapDescriptorFactory.fromResource(R.drawable.map_location_old_1));
+        iconOldList.add(BitmapDescriptorFactory.fromResource(R.drawable.map_location_old_2));
+        iconOldList.add(BitmapDescriptorFactory.fromResource(R.drawable.map_location_old_3));
+        iconOldList.add(BitmapDescriptorFactory.fromResource(R.drawable.map_location_old_4));
+        iconOldList.add(BitmapDescriptorFactory.fromResource(R.drawable.map_location_old_5));
+        iconOldList.add(BitmapDescriptorFactory.fromResource(R.drawable.map_location_old_6));
+        iconOldList.add(BitmapDescriptorFactory.fromResource(R.drawable.map_location_old_7));
+        iconOldList.add(BitmapDescriptorFactory.fromResource(R.drawable.map_location_old_8));
+        iconOldList.add(BitmapDescriptorFactory.fromResource(R.drawable.map_location_old_9));
+        iconOldList.add(BitmapDescriptorFactory.fromResource(R.drawable.map_location_old_10));
+        iconOldList.add(BitmapDescriptorFactory.fromResource(R.drawable.map_location_old_11));
+        iconOldList.add(BitmapDescriptorFactory.fromResource(R.drawable.map_location_old_12));
+        iconOldList.add(BitmapDescriptorFactory.fromResource(R.drawable.map_location_old_13));
+        iconOldList.add(BitmapDescriptorFactory.fromResource(R.drawable.map_location_old_14));
+        iconOldList.add(BitmapDescriptorFactory.fromResource(R.drawable.map_location_old_15));
+        iconOldList.add(BitmapDescriptorFactory.fromResource(R.drawable.map_location_old_16));
+    }
+
+    //TODO 初始化Marker图标容器(报警)
+    public void initMarkerAlarmImageContainerList(){
+        if (iconChildList == null || iconChildList.size() < 1) {
+            iconChildList = new ArrayList<>();
+        } else {
+            iconChildList.clear();
+        }
+        iconChildList.add(BitmapDescriptorFactory.fromResource(R.drawable.alarm_child_point_1));
+        iconChildList.add(BitmapDescriptorFactory.fromResource(R.drawable.alarm_child_point_2));
+        iconChildList.add(BitmapDescriptorFactory.fromResource(R.drawable.alarm_child_point_3));
+        iconChildList.add(BitmapDescriptorFactory.fromResource(R.drawable.alarm_child_point_4));
+        iconChildList.add(BitmapDescriptorFactory.fromResource(R.drawable.alarm_child_point_5));
+        iconChildList.add(BitmapDescriptorFactory.fromResource(R.drawable.alarm_child_point_6));
+        iconChildList.add(BitmapDescriptorFactory.fromResource(R.drawable.alarm_child_point_7));
+        iconChildList.add(BitmapDescriptorFactory.fromResource(R.drawable.alarm_child_point_8));
+        iconChildList.add(BitmapDescriptorFactory.fromResource(R.drawable.alarm_child_point_9));
+        iconChildList.add(BitmapDescriptorFactory.fromResource(R.drawable.alarm_child_point_10));
+        iconChildList.add(BitmapDescriptorFactory.fromResource(R.drawable.alarm_child_point_11));
+        iconChildList.add(BitmapDescriptorFactory.fromResource(R.drawable.alarm_child_point_12));
+        iconChildList.add(BitmapDescriptorFactory.fromResource(R.drawable.alarm_child_point_13));
+        iconChildList.add(BitmapDescriptorFactory.fromResource(R.drawable.alarm_child_point_14));
+        iconChildList.add(BitmapDescriptorFactory.fromResource(R.drawable.alarm_child_point_15));
+        iconChildList.add(BitmapDescriptorFactory.fromResource(R.drawable.alarm_child_point_16));
+
+        if (iconOldList == null || iconOldList.size() < 1) {
+            iconOldList = new ArrayList<>();
+        } else {
+            iconOldList.clear();
+        }
+        iconOldList.add(BitmapDescriptorFactory.fromResource(R.drawable.alarm_old_point_1));
+        iconOldList.add(BitmapDescriptorFactory.fromResource(R.drawable.alarm_old_point_2));
+        iconOldList.add(BitmapDescriptorFactory.fromResource(R.drawable.alarm_old_point_3));
+        iconOldList.add(BitmapDescriptorFactory.fromResource(R.drawable.alarm_old_point_4));
+        iconOldList.add(BitmapDescriptorFactory.fromResource(R.drawable.alarm_old_point_5));
+        iconOldList.add(BitmapDescriptorFactory.fromResource(R.drawable.alarm_old_point_6));
+        iconOldList.add(BitmapDescriptorFactory.fromResource(R.drawable.alarm_old_point_7));
+        iconOldList.add(BitmapDescriptorFactory.fromResource(R.drawable.alarm_old_point_8));
+        iconOldList.add(BitmapDescriptorFactory.fromResource(R.drawable.alarm_old_point_9));
+        iconOldList.add(BitmapDescriptorFactory.fromResource(R.drawable.alarm_old_point_10));
+        iconOldList.add(BitmapDescriptorFactory.fromResource(R.drawable.alarm_old_point_11));
+        iconOldList.add(BitmapDescriptorFactory.fromResource(R.drawable.alarm_old_point_12));
+        iconOldList.add(BitmapDescriptorFactory.fromResource(R.drawable.alarm_old_point_13));
+        iconOldList.add(BitmapDescriptorFactory.fromResource(R.drawable.alarm_old_point_14));
+        iconOldList.add(BitmapDescriptorFactory.fromResource(R.drawable.alarm_old_point_15));
+        iconOldList.add(BitmapDescriptorFactory.fromResource(R.drawable.alarm_old_point_16));
+    }
+
+    public void clearMapMarker(){
+        if (aMap != null) {
+            aMap.clear();
+        }
+    }
+
+    private AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            currentClickPosition = (int)l;
+            if(watchInfoEntityList.size()>currentClickPosition){//TODO 确保点击的部分有效
+                //TODO
+                if (30000 > (System.currentTimeMillis() - Long.parseLong(watchInfoEntityList.get(currentClickPosition).getAlarmTime()))) {
+                    showAlarmMarkerOnMap(markerList, currentClickPosition);
+                } else {
+                    showMarkerOnMap(markerList, currentClickPosition);
+                }
+                //TODO 切换点击
+                bindWatchListAdapter.setSelectedPosition(currentClickPosition);//TODO 这个用于显示点击时的切换效果
+                bindWatchListAdapter.notifyDataSetChanged();
+
+                //TODO 重新展示Marker并
+                if(markerList.get(currentClickPosition)!=null){
+                    moveCamera(markerList.get(currentClickPosition));
+                }else{
+                    locateSelf(LOCATION_TYPE_SHOW_AND_MOVE_POSITION);
+                }
+            }
+        }
+    };
 
 }

@@ -48,14 +48,12 @@ public class FindPasswordPresenter implements IBasePresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        LogUtil.e(" -- Http FindPasswordPresenter SMS onError:"+e.getMessage());
                         activityMvp.dismissMyDialog(IPresenterBusinessCode.SMS_CODE);
                         activityMvp.onError(IPresenterBusinessCode.SMS_CODE,200,e.getMessage());
                     }
 
                     @Override
                     public void onNext(PostSMSEntity response) {
-                        LogUtil.e(" -- Http FindPasswordPresenter SMS onSuccess:"+response.toString());
                         activityMvp.dismissMyDialog(IPresenterBusinessCode.SMS_CODE);
                         activityMvp.onSuccess(IPresenterBusinessCode.SMS_CODE,200,response);
                     }

@@ -36,6 +36,16 @@ public class BindWatchInfoEntity {
     private String online;//TODO 在线状态
     @NotNull
     private String relationlist; //TODO 关联关系0 relationlist
+    /**
+     * type 可能的值
+     0.老人手表
+     1.儿童手表
+     2.定位器
+     3.睡眠监测仪
+     4.拐杖
+     5 呼吸监测仪
+     6 体态监测仪
+     */
     @NotNull
     private String type;//TODO 设备类型
     @NotNull

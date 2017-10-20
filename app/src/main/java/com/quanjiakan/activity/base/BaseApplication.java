@@ -177,6 +177,14 @@ public class BaseApplication extends MultiDexApplication {
         DaoManager.getInstances(this);
     }
 
+    public void toast(Context context,String message) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+    }
+
+    public void toastLong(Context context,String message) {
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+    }
+
     /**
      * *********************************************************************************************
      * 可能会较常用到的一些数据
