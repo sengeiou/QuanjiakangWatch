@@ -42,12 +42,14 @@ import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
 import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.activity.base.BaseFragment;
+import com.quanjiakan.activity.base.ICommonActivityRequestCode;
 import com.quanjiakan.activity.base.ICommonData;
+import com.quanjiakan.activity.common.index.devices.WatchEntryActivity_old;
 import com.quanjiakan.activity.common.main.MainActivity;
 import com.quanjiakan.adapter.DeviceContainerAdapter;
-import com.quanjiakan.broadcast.entity.CommonNattyData;
 import com.quanjiakan.db.entity.BindWatchInfoEntity;
 import com.quanjiakan.db.manager.DaoManager;
+import com.quanjiakan.device.entity.CommonNattyData;
 import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.IResponseResultCode;
 import com.quanjiakan.net.retrofit.result_entity.GetWatchListEntity;
@@ -470,6 +472,7 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
             super.handleMessage(msg);
             switch (msg.what) {
                 case FRESH_MARK_LIST: {
+                    clearMapMarker();
                     showMarkerOnMap(markerList, currentClickPosition);
                     break;
                 }
@@ -539,7 +542,7 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
                         NaviMapUtil.GotoGaoDeNaviMap(getActivity(), "全家康用户端", selfLatitude + "", selfLongitude + "", selfAdress, latLng.latitude + "", latLng.longitude + "",
                                 (info_location.getTag() != null ? info_location.getTag().toString() : ""), "1", "0", "2");
                     } else {
-                        BaseApplication.getInstances().toast(getActivity(), "暂未获取到自己的定位信息,请稍后重试!");
+                        CommonDialogHint.getInstance().showHint(getActivity(), "暂未获取到自己的定位信息,请稍后重试!");
                         locateSelf(LOCATION_TYPE_GET_POSITION);
                     }
                     selectNaviDialog.dismiss();
@@ -568,7 +571,7 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
                         final String patitentBdLon = patitentPoint.get("mgLon");
                         NaviMapUtil.GotoBaiDuNaviMap(getActivity(), selfBdlat + "," + selfBdlon, patitentBdLat + "," + patitentBdLon, "driving", null, null, null, null, null, "thirdapp.navi." + "巨硅科技" + R.string.app_name);
                     } else {
-                        BaseApplication.getInstances().toast(getActivity(), "暂未获取到自己的定位信息,请稍后重试!");
+                        CommonDialogHint.getInstance().showHint(getActivity(), "暂未获取到自己的定位信息,请稍后重试!");
                     }
                     selectNaviDialog.dismiss();
                 }
@@ -620,6 +623,15 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+        //TODO 跳转至手表首页---根据对应的Marker
+        int markIndex = Integer.parseInt(marker.getTitle());
+        if(ICommonData.DEVICE_TYPE_OLD.equals(watchInfoEntityList.get(markIndex).getType())){
+            Intent intent = new Intent(getActivity(), WatchEntryActivity_old.class);
+            startActivityForResult(intent,ICommonActivityRequestCode.MAP_TO_DEVICE_OLD);
+        }else if(ICommonData.DEVICE_TYPE_CHILD.equals(watchInfoEntityList.get(markIndex).getType())){
+            Intent intent = new Intent(getActivity(), WatchEntryActivity_old.class);
+            startActivityForResult(intent,ICommonActivityRequestCode.MAP_TO_DEVICE_CHILD);
+        }
         return true;
     }
 
@@ -636,6 +648,21 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
     @Override
     public void onGeocodeSearched(GeocodeResult geocodeResult, int i) {
 
+    }
+
+    /**
+     * ************************************************************************************************************************
+     * 获取查询地理编码，反地理编码结果
+     */
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode){
+            case ICommonActivityRequestCode.MAP_TO_DEVICE_CHILD:
+                break;
+            case ICommonActivityRequestCode.MAP_TO_DEVICE_OLD:
+                break;
+        }
     }
 
     /**
@@ -733,6 +760,8 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
                 break;
             }
         }
+        //TODO 由于仅一个
+        locateSelf(LOCATION_TYPE_SHOW_AND_MOVE_POSITION);
     }
 
     /**
@@ -780,6 +809,7 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
 
                 loadDataIntoListView();
                 resetMarkerData(true);
+                clearMapMarker();
                 showMarkerOnMap(markerList,currentClickPosition);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -890,6 +920,7 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
             bindWatchListAdapter.notifyDataSetChanged();
             //TODO 刷新地图的各个Marker
             resetMarkerData(true);
+            clearMapMarker();
             showAlarmMarkerOnMap(markerList,currentClickPosition);
         }
     }
@@ -910,6 +941,7 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        clearMapMarker();
                         showMarkerOnMap(markerList,currentClickPosition);
                     }
                 });
@@ -961,6 +993,12 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
         }
     }
 
+    /**
+     * 刷新前需要删除已经存在数据---地图上的marker
+     *
+     * @param list
+     * @param infoWindowPosition
+     */
     public void showMarkerOnMap(List<LatLng> list, int infoWindowPosition){
         if (list != null && list.size() > 0) {
             initMarkerImageContainerList();
@@ -1037,6 +1075,11 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
         }
     }
 
+    /**
+     * 刷新前需要删除已经存在数据
+     * @param list
+     * @param infoWindowPosition
+     */
     public void showAlarmMarkerOnMap(List<LatLng> list, int infoWindowPosition){
         if (list != null && list.size() > 0) {
             initMarkerAlarmImageContainerList();
@@ -1226,8 +1269,10 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
             if(watchInfoEntityList.size()>currentClickPosition){//TODO 确保点击的部分有效
                 //TODO
                 if (30000 > (System.currentTimeMillis() - Long.parseLong(watchInfoEntityList.get(currentClickPosition).getAlarmTime()))) {
+                    clearMapMarker();
                     showAlarmMarkerOnMap(markerList, currentClickPosition);
                 } else {
+                    clearMapMarker();
                     showMarkerOnMap(markerList, currentClickPosition);
                 }
                 //TODO 切换点击

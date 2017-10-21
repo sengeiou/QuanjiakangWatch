@@ -1,7 +1,7 @@
-package com.quanjiakan.broadcast.entity;
+package com.quanjiakan.device.entity;
 
 /**
- * Created by Administrator on 2017/10/17.
+ * Created by Administrator on 2017/4/18 0018.
  */
 
 public class CommonNattyData {

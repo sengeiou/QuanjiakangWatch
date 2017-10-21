@@ -6,23 +6,10 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.ListView;
-import android.widget.TextView;
 
-import com.amap.api.maps.MapView;
-import com.quanjiakan.broadcast.entity.CommonNattyData;
-import com.quanjiakan.watch.R;
 import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
 
 /**
  * Created by Administrator on 2017/10/17.

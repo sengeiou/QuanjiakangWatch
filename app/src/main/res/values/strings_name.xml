@@ -19,7 +19,8 @@
     <string name="main_slide_item_referral">咨询转介</string>
     <string name="main_slide_item_housekeeper">家政护理</string>
 
-
+    <string name="device_entry_old_title">老人首页</string>
+    <string name="device_entry_child_title">儿童首页</string>
 
 </resources>
 

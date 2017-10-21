@@ -10,7 +10,7 @@ import android.widget.ListView;
 
 import com.amap.api.maps.MapView;
 import com.quanjiakan.activity.base.BaseFragment;
-import com.quanjiakan.broadcast.entity.CommonNattyData;
+import com.quanjiakan.device.entity.CommonNattyData;
 import com.quanjiakan.watch.R;
 import com.umeng.analytics.MobclickAgent;
 

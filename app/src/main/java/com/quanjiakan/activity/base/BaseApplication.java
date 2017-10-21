@@ -43,6 +43,8 @@ public class BaseApplication extends MultiDexApplication {
         initUmeng();
         //TODO 初始化数据库
         initDB();
+        //TODO
+        startSDK();
     }
 
     /**
@@ -129,10 +131,12 @@ public class BaseApplication extends MultiDexApplication {
 
     /**
      * ****************************************************
-     *
      * 检测SDK状态
-     *
      */
+    public void startSDK(){
+
+    }
+
     public String getSDKServerStatus() {
         return SharePreferencesSetting.getInstance().getSDKServerStatus() + "";
     }
