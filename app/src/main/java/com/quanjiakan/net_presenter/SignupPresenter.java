@@ -1,6 +1,7 @@
 package com.quanjiakan.net_presenter;
 
 import com.quanjiakan.activity.common.login.SignupActivity;
+import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.Retrofit2Util;
 import com.quanjiakan.net.retrofit.result_entity.PostSMSEntity;
@@ -69,11 +70,11 @@ public class SignupPresenter implements IBasePresenter {
         //TODO
         Retrofit retrofit = Retrofit2Util.getRetrofit(IHttpUrlConstants.BASEURL_QUANJIAKANG);
         RxPostSignupService rxGetRequest = retrofit.create(RxPostSignupService.class);
-        rxGetRequest.doLogin(params.get("mobile"),
-                params.get("password"),
-                params.get("validateCode"),
-                params.get("nickname"),
-                params.get("platform"))
+        rxGetRequest.doLogin(params.get(IParamsName.PARAMS_COMMON_MOBILE),
+                params.get(IParamsName.PARAMS_COMMON_PASSWORD),
+                params.get(IParamsName.PARAMS_COMMON_VALIDATE_CODE),
+                params.get(IParamsName.PARAMS_COMMON_NICKNAME),
+                params.get(IParamsName.PARAMS_COMMON_PLATFORM))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<PostSignupEntity>() {
@@ -84,14 +85,12 @@ public class SignupPresenter implements IBasePresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        LogUtil.e(" -- Http RxPostSignupService onError:"+e.getMessage());
                         activityMvp.dismissMyDialog(IPresenterBusinessCode.SIGNUP);
                         activityMvp.onError(IPresenterBusinessCode.SIGNUP,200,e.getMessage());
                     }
 
                     @Override
                     public void onNext(PostSignupEntity response) {
-                        LogUtil.e(" -- Http RxPostSignupService onSuccess:"+response);
                         activityMvp.dismissMyDialog(IPresenterBusinessCode.SIGNUP);
                         activityMvp.onSuccess(IPresenterBusinessCode.SIGNUP,200,response);
                     }

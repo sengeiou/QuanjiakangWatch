@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.quanjiakan.activity.base.ICommonData;
 import com.quanjiakan.adapterholder.DeviceContainerHolder;
 import com.quanjiakan.db.entity.BindWatchInfoEntity;
 import com.quanjiakan.view.MaterialBadgeTextView;
@@ -91,7 +92,6 @@ public class DeviceContainerAdapter extends BaseAdapter {
             } else {
                 setNormal(holder);
             }
-            //.transform(new RoundTransformDesign(15))
             Picasso.with(mContext).load(devices.get(position).getHeadImage()).placeholder(R.drawable.ic_launcher).into(holder.bg);
         } else {
             if (position == selectedPosition) {
@@ -99,18 +99,17 @@ public class DeviceContainerAdapter extends BaseAdapter {
             } else {
                 setNormal(holder);
             }
-            //.transform(new RoundTransform())
-            if ("1".equals(devices.get(position).getType())) {//TODO 儿童
+            if (ICommonData.DEVICE_TYPE_CHILD.equals(devices.get(position).getType())) {//TODO 儿童
                 Picasso.with(mContext).load(R.drawable.device_type_holder_children).into(holder.bg);
-            } else if ("0".equals(devices.get(position).getType())) {
+            } else if (ICommonData.DEVICE_TYPE_OLD.equals(devices.get(position).getType())) {
                 Picasso.with(mContext).load(R.drawable.device_type_holder_old).into(holder.bg);
             } else {
                 Picasso.with(mContext).load(R.drawable.device_type_holder_old).into(holder.bg);
             }
         }
-        if (devices.get(position).getName() != null && devices.get(position).getName().contains("%")) {
+        if (devices.get(position).getName() != null && devices.get(position).getName().contains(ICommonData.ENCODE_DECODE_URL_PREFIX)) {
             try {
-                holder.name.setText(URLDecoder.decode(devices.get(position).getName(), "utf-8"));
+                holder.name.setText(URLDecoder.decode(devices.get(position).getName(), ICommonData.ENCODE_DECODE_UTF_8));
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }

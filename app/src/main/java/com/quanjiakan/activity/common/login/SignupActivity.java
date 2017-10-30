@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
+import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.IResponseResultCode;
 import com.quanjiakan.net.retrofit.result_entity.PostSMSEntity;
@@ -341,18 +342,18 @@ public class SignupActivity extends BaseActivity {
             switch (type) {
                 case IPresenterBusinessCode.SMS_CODE: {
                     HashMap<String, String> params = new HashMap<>();
-                    params.put("mobile", etUsername.getText().toString());
-                    params.put("validateType", IHttpUrlConstants.SMS_TYPE_SIGNIN);
-                    params.put("platform", IHttpUrlConstants.PLATFORM_ANDROID);
+                    params.put(IParamsName.PARAMS_COMMON_MOBILE, etUsername.getText().toString());
+                    params.put(IParamsName.PARAMS_COMMON_VALIDATE_TYPE, IHttpUrlConstants.SMS_TYPE_SIGNIN);
+                    params.put(IParamsName.PARAMS_COMMON_PLATFORM, IHttpUrlConstants.PLATFORM_ANDROID);
                     return params;
                 }
                 case IPresenterBusinessCode.SIGNUP: {
                     HashMap<String, String> params_signup = new HashMap<>();
-                    params_signup.put("mobile", etUsername.getText().toString());
-                    params_signup.put("password", BaseApplication.getInstances().getFormatPWString(etPassword.getText().toString()));
-                    params_signup.put("validateCode", etCode.getText().toString());
-                    params_signup.put("nickname", etName.getText().toString());
-                    params_signup.put("platform",IHttpUrlConstants.PLATFORM_ANDROID);
+                    params_signup.put(IParamsName.PARAMS_COMMON_MOBILE, etUsername.getText().toString());
+                    params_signup.put(IParamsName.PARAMS_COMMON_PASSWORD, BaseApplication.getInstances().getFormatPWString(etPassword.getText().toString()));
+                    params_signup.put(IParamsName.PARAMS_COMMON_VALIDATE_CODE, etCode.getText().toString());
+                    params_signup.put(IParamsName.PARAMS_COMMON_NICKNAME, etName.getText().toString());
+                    params_signup.put(IParamsName.PARAMS_COMMON_PLATFORM,IHttpUrlConstants.PLATFORM_ANDROID);
                     return params_signup;
                 }
             }

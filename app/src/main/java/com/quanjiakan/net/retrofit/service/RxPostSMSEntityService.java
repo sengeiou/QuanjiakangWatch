@@ -1,5 +1,7 @@
 package com.quanjiakan.net.retrofit.service;
 
+import com.quanjiakan.constants.IParamsName;
+import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.retrofit.result_entity.PostSMSEntity;
 
 import retrofit2.http.Field;
@@ -15,8 +17,8 @@ import retrofit2.http.POST;
 public interface RxPostSMSEntityService {
 
     @FormUrlEncoded
-    @POST("/pingan/v1?handler=member&action=validatecode")
-    rx.Observable<PostSMSEntity> doGetSMSCode(@Field("mobile") String mobile ,
-                                              @Field("validateType") String validateType,
-                                              @Field("platform") String platform);
+    @POST("/"+ IHttpUrlConstants.PROJECT_PINGAN+"/"+IHttpUrlConstants.REQUEST_POST_V1+"?handler=member&action=validatecode")
+    rx.Observable<PostSMSEntity> doGetSMSCode(@Field(IParamsName.PARAMS_COMMON_MOBILE) String mobile ,
+                                              @Field(IParamsName.PARAMS_COMMON_VALIDATE_TYPE) String validateType,
+                                              @Field(IParamsName.PARAMS_COMMON_PLATFORM) String platform);
 }

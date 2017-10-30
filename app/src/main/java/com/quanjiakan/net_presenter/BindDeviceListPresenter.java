@@ -1,6 +1,7 @@
 package com.quanjiakan.net_presenter;
 
 import com.quanjiakan.activity.common.main.fragment.MainMapFragment;
+import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.entity.LoginInfoEntity;
 import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.Retrofit2Util;
@@ -40,9 +41,9 @@ public class BindDeviceListPresenter implements IBasePresenter {
 
         Retrofit retrofit = Retrofit2Util.getRetrofit(IHttpUrlConstants.BASEURL_DEVICE);
         RxGetWatchListService rxGetRequest = retrofit.create(RxGetWatchListService.class);
-        rxGetRequest.doGetWatchList(params.get("memberId"),
-                params.get("platform"),
-                params.get("token"))
+        rxGetRequest.doGetWatchList(params.get(IParamsName.PARAMS_DEVICE_MEMBER_ID),
+                params.get(IParamsName.PARAMS_COMMON_PLATFORM),
+                params.get(IParamsName.PARAMS_COMMON_TOKEN))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<GetWatchListEntity>() {

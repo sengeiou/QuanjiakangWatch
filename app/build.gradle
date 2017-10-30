@@ -106,5 +106,8 @@ dependencies {
     compile 'com.amap.api:navi-3dmap:latest.integration'//TODO 导航里存在3Dmap，若再次引入map将出现重复引用异常
     //************************* Picasso 图片加载
     compile 'com.squareup.picasso:picasso:2.5.2'
+    //************************* 图片放大
+    compile 'com.commit451:PhotoView:1.2.4'
 
+    compile project(path: ':pulltorefresh')
 }

@@ -2,6 +2,7 @@ package com.quanjiakan.net_presenter;
 
 import com.quanjiakan.activity.common.login.FindPasswordActivity;
 import com.quanjiakan.activity.common.login.SignupActivity;
+import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.Retrofit2Util;
 import com.quanjiakan.net.retrofit.result_entity.PostResetPasswordEntity;
@@ -37,7 +38,9 @@ public class FindPasswordPresenter implements IBasePresenter {
         //TODO
         Retrofit retrofit = Retrofit2Util.getRetrofit(IHttpUrlConstants.BASEURL_QUANJIAKANG);
         RxPostSMSEntityService rxGetRequest = retrofit.create(RxPostSMSEntityService.class);
-        rxGetRequest.doGetSMSCode(params.get("mobile"),params.get("validateType"),params.get("platform"))
+        rxGetRequest.doGetSMSCode(params.get(IParamsName.PARAMS_COMMON_MOBILE),
+                params.get(IParamsName.PARAMS_COMMON_VALIDATE_TYPE),
+                params.get(IParamsName.PARAMS_COMMON_PLATFORM))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<PostSMSEntity>() {
@@ -72,10 +75,10 @@ public class FindPasswordPresenter implements IBasePresenter {
         //TODO
         Retrofit retrofit = Retrofit2Util.getRetrofit(IHttpUrlConstants.BASEURL_QUANJIAKANG);
         RxPostResetPasswordService rxGetRequest = retrofit.create(RxPostResetPasswordService.class);
-        rxGetRequest.doLogin(params.get("mobile"),
-                params.get("password"),
-                params.get("validateCode"),
-                params.get("platform"))
+        rxGetRequest.doLogin(params.get(IParamsName.PARAMS_COMMON_MOBILE),
+                params.get(IParamsName.PARAMS_COMMON_PASSWORD),
+                params.get(IParamsName.PARAMS_COMMON_VALIDATE_CODE),
+                params.get(IParamsName.PARAMS_COMMON_PLATFORM))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<PostResetPasswordEntity>() {
@@ -86,14 +89,12 @@ public class FindPasswordPresenter implements IBasePresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        LogUtil.e(" -- Http FindPasswordPresenter onError:"+e.getMessage());
                         activityMvp.dismissMyDialog(IPresenterBusinessCode.PASSWORD_RESET);
                         activityMvp.onError(IPresenterBusinessCode.PASSWORD_RESET,200,e.getMessage());
                     }
 
                     @Override
                     public void onNext(PostResetPasswordEntity response) {
-                        LogUtil.e(" -- Http FindPasswordPresenter onSuccess:"+response);
                         activityMvp.dismissMyDialog(IPresenterBusinessCode.PASSWORD_RESET);
                         activityMvp.onSuccess(IPresenterBusinessCode.PASSWORD_RESET,200,response);
                     }

@@ -1,5 +1,6 @@
 package com.quanjiakan.net.retrofit.service;
 
+import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.net.retrofit.result_entity.PostSignupEntity;
 
 import retrofit2.http.Field;
@@ -16,9 +17,9 @@ public interface RxPostSignupService {
 
     @FormUrlEncoded
     @POST("/pingan/v1?handler=member&action=signup")
-    rx.Observable<PostSignupEntity> doLogin(@Field("mobile") String mobile,
-                                            @Field("password") String password,
-                                            @Field("validateCode") String c_password,
-                                            @Field("nickname") String nickname,
-                                            @Field("platform") String client);
+    rx.Observable<PostSignupEntity> doLogin(@Field(IParamsName.PARAMS_COMMON_MOBILE) String mobile,
+                                            @Field(IParamsName.PARAMS_COMMON_PASSWORD) String password,
+                                            @Field(IParamsName.PARAMS_COMMON_VALIDATE_CODE) String c_password,
+                                            @Field(IParamsName.PARAMS_COMMON_NICKNAME) String nickname,
+                                            @Field(IParamsName.PARAMS_COMMON_PLATFORM) String client);
 }

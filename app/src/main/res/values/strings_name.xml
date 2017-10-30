@@ -22,5 +22,12 @@
     <string name="device_entry_old_title">老人首页</string>
     <string name="device_entry_child_title">儿童首页</string>
 
+
+    <!--  家政 -->
+    <string name="housekeeper_list_title">家政护理</string>
+    <string name="housekeeper_list_condition_position">位置</string>
+    <string name="housekeeper_list_condition_type">类型</string>
+    <string name="housekeeper_list_condition_type_housekeeper">保姆</string>
+
 </resources>
 

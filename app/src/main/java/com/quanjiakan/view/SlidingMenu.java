@@ -230,6 +230,12 @@ public class SlidingMenu extends HorizontalScrollView implements NestedScrolling
         }
     }
 
+    public void closeToggleMenu(){
+        if(mMenuIsOpen){
+            closeMenu();
+        }
+    }
+
     // 8.处理菜单的抽屉效果
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {

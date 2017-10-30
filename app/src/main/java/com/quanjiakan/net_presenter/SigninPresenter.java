@@ -1,6 +1,7 @@
 package com.quanjiakan.net_presenter;
 
 import com.quanjiakan.activity.common.login.SigninActivity_mvp;
+import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.entity.LoginInfoEntity;
 import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.Retrofit2Util;
@@ -33,9 +34,9 @@ public class SigninPresenter implements IBasePresenter {
         //TODO 使用 getRetrofitStringResult 方法在获取JSON格式的数据返回时会现JSON转换的异常
         Retrofit retrofit = Retrofit2Util.getRetrofit(IHttpUrlConstants.BASEURL_QUANJIAKANG);
         RxPostLoginEntityService rxGetRequest = retrofit.create(RxPostLoginEntityService.class);
-        rxGetRequest.doLogin(params.get("password"),
-                params.get("platform"),
-                params.get("mobile"))
+        rxGetRequest.doLogin(params.get(IParamsName.PARAMS_COMMON_PASSWORD),
+                params.get(IParamsName.PARAMS_COMMON_PLATFORM),
+                params.get(IParamsName.PARAMS_COMMON_MOBILE))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<PostLoginEntity>() {

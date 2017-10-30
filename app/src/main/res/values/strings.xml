@@ -805,6 +805,8 @@
     <string name="error_empty_content">内容为空!</string>
     <string name="error_for_get_theme">获取话题列表失败，请重新进入此页面!</string>
     <string name="error_net_connection">网络连接错误!</string>
+
+    <string name="error_image_path">无效的图片路径!</string>
     <!--
     **************************************************************************************************************
     -->

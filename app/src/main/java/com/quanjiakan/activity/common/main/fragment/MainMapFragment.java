@@ -47,6 +47,7 @@ import com.quanjiakan.activity.base.ICommonData;
 import com.quanjiakan.activity.common.index.devices.WatchEntryActivity_old;
 import com.quanjiakan.activity.common.main.MainActivity;
 import com.quanjiakan.adapter.DeviceContainerAdapter;
+import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.db.entity.BindWatchInfoEntity;
 import com.quanjiakan.db.manager.DaoManager;
 import com.quanjiakan.device.entity.CommonNattyData;
@@ -690,9 +691,9 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
         switch (type) {
             case IPresenterBusinessCode.DEVICE_WATCH_LIST: {
                 HashMap<String, String> params = new HashMap<>();
-                params.put("memberId", BaseApplication.getInstances().getLoginInfo().getUserId());
-                params.put("platform", IHttpUrlConstants.PLATFORM_ANDROID);
-                params.put("token", BaseApplication.getInstances().getLoginInfo().getToken());
+                params.put(IParamsName.PARAMS_DEVICE_MEMBER_ID, BaseApplication.getInstances().getLoginInfo().getUserId());
+                params.put(IParamsName.PARAMS_COMMON_PLATFORM, IHttpUrlConstants.PLATFORM_ANDROID);
+                params.put(IParamsName.PARAMS_COMMON_TOKEN, BaseApplication.getInstances().getLoginInfo().getToken());
                 return params;
             }
         }

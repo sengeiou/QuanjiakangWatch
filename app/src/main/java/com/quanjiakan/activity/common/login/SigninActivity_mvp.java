@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.activity.common.main.MainActivity;
+import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.db.entity.LoginUserInfoEntity;
 import com.quanjiakan.db.manager.DaoManager;
 import com.quanjiakan.net.IHttpUrlConstants;
@@ -169,9 +170,9 @@ public class SigninActivity_mvp extends BaseActivity {
                     return null;
                 }
                 HashMap<String, String> params = new HashMap<>();
-                params.put("mobile", etUsername.getText().toString());
-                params.put("password", BaseApplication.getInstances().getFormatPWString(etPassword.getText().toString()));
-                params.put("platform", IHttpUrlConstants.PLATFORM_ANDROID);
+                params.put(IParamsName.PARAMS_COMMON_MOBILE, etUsername.getText().toString());
+                params.put(IParamsName.PARAMS_COMMON_PASSWORD, BaseApplication.getInstances().getFormatPWString(etPassword.getText().toString()));
+                params.put(IParamsName.PARAMS_COMMON_PLATFORM, IHttpUrlConstants.PLATFORM_ANDROID);
                 return params;
             default:
                 break;

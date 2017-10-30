@@ -9,6 +9,9 @@ public interface ICommonData {
     //TODO 公共 String 类型数据
 
     String ENCODE_DECODE_UTF_8 = "utf-8";
+    String ENCODE_DECODE_UTF_8_BIG = "UTF-8";
+    String ENCODE_DECODE_URL_PREFIX = "%";
+
 
     String FORBID_USER = "0";
 
@@ -19,6 +22,16 @@ public interface ICommonData {
 
     String DEVICE_TYPE_OLD = "0";
     String DEVICE_TYPE_CHILD = "1";
+
+
+    String PICTURE_COMMON_PREFIX = "http";
+    String ENCODE_ALLOW = "@#&=*+-_.,:!?()/~\'%";
+    String HTTP_HEADER_LOCATION = "Location";
+    String HTTP_HEADER_ENCODE_GZIP = "gzip";
+    String EMPTY = "";
+    String FILE_PATH_PREFIX1 = "file:///";
+    String FILE_PATH_PREFIX2 = "file://";
+    String FILE_PATH_PREFIX3 = "file:/";
 
 
     //TODO ************************************************
@@ -32,5 +45,7 @@ public interface ICommonData {
     int MAIN_TAB_ITEM_SETTING = 3;
 
     int VALID_IMEI_LENGTH = 15;
+
+
 
 }

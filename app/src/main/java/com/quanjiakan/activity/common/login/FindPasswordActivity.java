@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
+import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.IResponseResultCode;
 import com.quanjiakan.net.retrofit.result_entity.PostResetPasswordEntity;
@@ -249,17 +250,17 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
 		switch (type){
 			case IPresenterBusinessCode.SMS_CODE: {
 				HashMap<String, String> params = new HashMap<>();
-				params.put("mobile", etUsername.getText().toString());
-				params.put("validateType", IHttpUrlConstants.SMS_TYPE_FORGET_PW);//TODO
-				params.put("platform", IHttpUrlConstants.PLATFORM_ANDROID);
+				params.put(IParamsName.PARAMS_COMMON_MOBILE, etUsername.getText().toString());
+				params.put(IParamsName.PARAMS_COMMON_VALIDATE_TYPE, IHttpUrlConstants.SMS_TYPE_FORGET_PW);//TODO
+				params.put(IParamsName.PARAMS_COMMON_PLATFORM, IHttpUrlConstants.PLATFORM_ANDROID);
 				return params;
 			}
 			case IPresenterBusinessCode.PASSWORD_RESET: {
 				HashMap<String, String> params = new HashMap<>();
-				params.put("mobile", etUsername.getText().toString());
-				params.put("password", BaseApplication.getInstances().getFormatPWString(etNewpassword.getText().toString()));
-				params.put("validateCode", etCode.getText().toString());
-				params.put("platform", IHttpUrlConstants.PLATFORM_ANDROID);
+				params.put(IParamsName.PARAMS_COMMON_MOBILE, etUsername.getText().toString());
+				params.put(IParamsName.PARAMS_COMMON_PASSWORD, BaseApplication.getInstances().getFormatPWString(etNewpassword.getText().toString()));
+				params.put(IParamsName.PARAMS_COMMON_VALIDATE_CODE, etCode.getText().toString());
+				params.put(IParamsName.PARAMS_COMMON_PLATFORM, IHttpUrlConstants.PLATFORM_ANDROID);
 				return params;
 			}
 			default: {

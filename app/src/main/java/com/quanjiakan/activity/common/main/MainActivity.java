@@ -4,6 +4,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -17,9 +18,12 @@ import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.activity.base.ICommonData;
 import com.quanjiakan.activity.base.ISetFragmentBeforeShow;
+import com.quanjiakan.activity.common.image.ImageViewerActivity;
+import com.quanjiakan.activity.common.index.housekeeper.HouseKeeperListActivity;
 import com.quanjiakan.activity.common.main.fragment.MainMapFragment;
 import com.quanjiakan.activity.common.main.fragment.MessageListFragment;
 import com.quanjiakan.activity.common.main.fragment.SettingFragment;
+import com.quanjiakan.constants.IActivityRequestValue;
 import com.quanjiakan.constants.IParamsIntValue;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.device.entity.CommonNattyData;
@@ -84,11 +88,11 @@ public class MainActivity extends BaseActivity {
     ImageButton ibtnMenu;
     @BindView(R.id.menu_text)
     TextView menuText;
-    /**
-     * TODO 关于相同标题栏显示存在与其他页面在显示上存在色差的问题：
-     *  猜想是由于本身这个MainActivity的特殊性，最外层是SlideMenu，在滑动时会
-     */
 
+
+    /**
+     */
+    private Handler mHandler = new Handler();
 
     private int newIntentType;
 
@@ -109,6 +113,12 @@ public class MainActivity extends BaseActivity {
 
 
         initView();
+
+        startNattySDK();
+    }
+
+    public void startNattySDK(){
+        BaseApplication.getInstances().startSDK();
     }
 
 
@@ -553,9 +563,92 @@ public class MainActivity extends BaseActivity {
         slidingMenu.toggleMenu();
     }
 
+    public void closeSlidemenu(){
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                slidingMenu.closeToggleMenu();
+            }
+        },400);
+    }
+
+    /**
+     * *****************************************************************************************************************************
+     * 跳转
+     */
+
     //TODO
     public void goToBindDevice(){
 
+    }
+
+    public void testToImageViewer(){
+        Intent intent = new Intent(this, ImageViewerActivity.class);
+        // test url :  http://picture.quanjiakan.com:9080/quanjiakan/resources/housekeeper/20161109200708_v5wdnp.jpg
+        intent.putExtra(IParamsName.PARAMS_URL,"http://picture.quanjiakan.com:9080/quanjiakan/resources/housekeeper/20161109200708_v5wdnp.jpg");
+        startActivityForResult(intent, IActivityRequestValue.REQUEST_TO_IMAGE_VIEWER);
+    }
+
+    public void toHealthConsult(){
+        Intent intent = new Intent(this, HouseKeeperListActivity.class);
+        startActivityForResult(intent,IActivityRequestValue.REQUEST_TO_HEALTH_CONSULT);
+    }
+
+    public void toHouseKeeper(){
+        Intent intent = new Intent(this, HouseKeeperListActivity.class);
+        startActivityForResult(intent,IActivityRequestValue.REQUEST_TO_HOUSE_KEEPER);
+    }
+
+    public void toRefferal(){
+        Intent intent = new Intent(this, HouseKeeperListActivity.class);
+        startActivityForResult(intent,IActivityRequestValue.REQUEST_TO_REFERRAL);
+    }
+
+    public void toMiss(){
+        Intent intent = new Intent(this, HouseKeeperListActivity.class);
+        startActivityForResult(intent,IActivityRequestValue.REQUEST_TO_MISS);
+    }
+
+    public void toBabyGoHome(){
+        Intent intent = new Intent(this, HouseKeeperListActivity.class);
+        startActivityForResult(intent,IActivityRequestValue.REQUEST_TO_BABY_GO_HOME);
+    }
+
+    public void toMall(){
+        Intent intent = new Intent(this, HouseKeeperListActivity.class);
+        startActivityForResult(intent,IActivityRequestValue.REQUEST_TO_MALL);
+    }
+
+    /**
+     * *****************************************************************************************************************************
+     */
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode){
+            case IActivityRequestValue.REQUEST_TO_IMAGE_VIEWER: {
+                break;
+            }
+            case IActivityRequestValue.REQUEST_TO_HEALTH_CONSULT: {
+                break;
+            }
+            case IActivityRequestValue.REQUEST_TO_HOUSE_KEEPER: {
+                break;
+            }
+            case IActivityRequestValue.REQUEST_TO_REFERRAL: {
+                break;
+            }
+            case IActivityRequestValue.REQUEST_TO_MISS: {
+                break;
+            }
+            case IActivityRequestValue.REQUEST_TO_BABY_GO_HOME: {
+                break;
+            }
+            case IActivityRequestValue.REQUEST_TO_MALL: {
+                break;
+            }
+        }
+        closeSlidemenu();
     }
 
     @OnClick({R.id.main_tab_item_main, R.id.main_tab_item_msg, R.id.main_tab_item_setting,
@@ -566,9 +659,12 @@ public class MainActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_title:{
-                if(currentFragment==ICommonData.MAIN_TAB_ITEM_MAIN){
-                    fragmentMain.getBindWatchListFromNet();
-                }
+                //TODO 测试性调用
+//                if(currentFragment==ICommonData.MAIN_TAB_ITEM_MAIN){
+//                    fragmentMain.getBindWatchListFromNet();
+//                }
+                testToImageViewer();
+
                 break;
             }
             case R.id.ibtn_back: {
@@ -599,43 +695,37 @@ public class MainActivity extends BaseActivity {
             //TODO **********************************
             //当处理完侧滑菜单点击事件后，先关闭菜单，然后执行
             case R.id.hint: {
-                openSlideMenu();
+                openSlideMenu();//TODO 直接关闭
                 break;
             }
             case R.id.inquiry: {
-                openSlideMenu();
                 //TODO 免费问诊（健康咨询）
-
+                toHealthConsult();
                 break;
             }
             case R.id.housekeeper: {
-                openSlideMenu();
                 //TODO 家政
-
+                toHouseKeeper();
                 break;
             }
             case R.id.old_care: {
-                openSlideMenu();
                 //TODO 咨询转介
-
+                toRefferal();
                 break;
             }
             case R.id.child_missing: {
-                openSlideMenu();
                 //TODO 防走失
-
+                toMiss();
                 break;
             }
             case R.id.go_home: {
-                openSlideMenu();
                 //TODO 宝贝回家
-
+                toBabyGoHome();
                 break;
             }
             case R.id.shop: {
-                openSlideMenu();
                 //TODO 商城
-
+                toMall();
 
                 break;
             }

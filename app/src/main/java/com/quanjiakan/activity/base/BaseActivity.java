@@ -8,6 +8,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.quanjiakan.util.common.UnitExchangeUtil;
 import com.quanjiakan.watch.R;
@@ -61,6 +62,30 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseAct
         }
         mDialog = new Dialog(context, R.style.dialog_loading);
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_loading, null);
+        WindowManager.LayoutParams lp = mDialog.getWindow().getAttributes();
+        lp.width = UnitExchangeUtil.dip2px(context, 80);
+        lp.height = UnitExchangeUtil.dip2px(context, 80);
+        lp.gravity = Gravity.CENTER;
+        mDialog.setContentView(view, lp);
+        mDialog.setCanceledOnTouchOutside(false);
+        mDialog.show();
+        return mDialog;
+    }
+
+    public Dialog getDialog(Context context,String msg) {
+        if (mDialog != null && mDialog.isShowing()) {
+            mDialog.dismiss();
+            mDialog = null;
+        }
+        mDialog = new Dialog(context, R.style.dialog_loading);
+        View view = LayoutInflater.from(context).inflate(R.layout.dialog_loading, null);
+        TextView tv = (TextView) view.findViewById(R.id.tv);
+        if(msg!=null && msg.length()>0){
+            tv.setVisibility(View.VISIBLE);
+            tv.setText(msg);
+        }else{
+            tv.setVisibility(View.GONE);
+        }
         WindowManager.LayoutParams lp = mDialog.getWindow().getAttributes();
         lp.width = UnitExchangeUtil.dip2px(context, 80);
         lp.height = UnitExchangeUtil.dip2px(context, 80);

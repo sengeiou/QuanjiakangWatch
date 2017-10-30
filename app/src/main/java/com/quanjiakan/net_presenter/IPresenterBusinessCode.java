@@ -18,4 +18,9 @@ public interface IPresenterBusinessCode {
     int PASSWORD_RESET = 30007;
 
     int DEVICE_WATCH_LIST = 30100;
+
+
+    int HOUSE_KEEPER_LIST = 30101;
+    int HOUSE_KEEPER_LOCATE = 30102;
+    int HOUSE_KEEPER_LIST_WITH_LOCATION = 30103;
 }

@@ -9,9 +9,11 @@ import android.widget.Toast;
 import com.quanjiakan.activity.common.login.SigninActivity_mvp;
 import com.quanjiakan.db.entity.LoginUserInfoEntity;
 import com.quanjiakan.db.manager.DaoManager;
+import com.quanjiakan.service.DevicesService;
 import com.quanjiakan.util.common.MessageDigestUtil;
 import com.quanjiakan.util.notification.NotificationUtil;
 import com.umeng.analytics.MobclickAgent;
+import com.wbj.ndk.natty.client.NattyClient;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,6 +27,8 @@ public class BaseApplication extends MultiDexApplication {
     /**
      * 打包时需要变更
      */
+
+    NattyClient nattyClient;
 
     private static BaseApplication instances;
 
@@ -43,8 +47,6 @@ public class BaseApplication extends MultiDexApplication {
         initUmeng();
         //TODO 初始化数据库
         initDB();
-        //TODO
-        startSDK();
     }
 
     /**
@@ -134,7 +136,26 @@ public class BaseApplication extends MultiDexApplication {
      * 检测SDK状态
      */
     public void startSDK(){
+        Intent intent = new Intent(this, DevicesService.class);
+        startService(intent);
+    }
 
+    public void stopSDK(){
+        Intent intent = new Intent(this, DevicesService.class);
+        stopService(intent);
+        //TODO 关闭Natty 的连接
+        nattyClient.ntyShutdownClient();
+    }
+
+    public void initNattyClient(){
+        nattyClient = new NattyClient();
+        long appid = Long.parseLong(getLoginInfo().getUserId());
+        nattyClient.ntyClientInitilize();
+        nattyClient.ntySetSelfId(appid);
+    }
+
+    public NattyClient getNattyClient(){
+        return nattyClient;
     }
 
     public String getSDKServerStatus() {
@@ -207,6 +228,9 @@ public class BaseApplication extends MultiDexApplication {
         Intent intent = new Intent(context, SigninActivity_mvp.class);
         context.startActivity(intent);
         context.finish();
+
+        //TODO 关闭SDK的连接
+        stopSDK();
     }
 
     //TODO 登录信息 获取
