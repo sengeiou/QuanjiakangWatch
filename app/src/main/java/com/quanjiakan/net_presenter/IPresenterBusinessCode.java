@@ -23,4 +23,5 @@ public interface IPresenterBusinessCode {
     int HOUSE_KEEPER_LIST = 30101;
     int HOUSE_KEEPER_LOCATE = 30102;
     int HOUSE_KEEPER_LIST_WITH_LOCATION = 30103;
+    int HOUSE_KEEPER_TYPE_LIST = 30104;
 }

@@ -21,7 +21,8 @@
     <string name="hint_addr">地址:</string>
 
     <string name="hint_locating">正在获取定位...</string>
-    <string name="hint_get_house_keeper_data">正在获取家政数据...</string>
+    <string name="hint_get_house_keeper_data">正在获取家政\n数据...</string>
+    <string name="hint_get_house_keeper_type_data">正在获取服务类型\n数据...</string>
 
     <string name="hint_house_keeper_item_language_default">粤语</string>
     <string name="hint_house_keeper_item_price_unit">元/月</string>

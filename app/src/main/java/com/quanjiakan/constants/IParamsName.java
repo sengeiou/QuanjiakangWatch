@@ -31,6 +31,7 @@ public interface IParamsName {
     String PARAMS_COMMON_PLATFORM = "platform";
     String PARAMS_COMMON_TOKEN = "token";
     String PARAMS_COMMON_PAGE = "page";
+    String PARAMS_COMMON_MEMBERID = "memberId";
 
     String PARAMS_COMMON_MOBILE = "mobile";
     String PARAMS_COMMON_PASSWORD = "password";
@@ -44,6 +45,7 @@ public interface IParamsName {
     String PARAMS_HOUSE_KEEPER_PROVINCE = "serviceProvince";
     String PARAMS_HOUSE_KEEPER_CITY = "serviceCity";
     String PARAMS_HOUSE_KEEPER_DIST = "serviceDist";
+    String PARAMS_HOUSE_KEEPER_TYPE = "housekeeperType";
 
     //TODO 手表相关
     String PARAMS_DEVICE_MEMBER_ID = "memberId";

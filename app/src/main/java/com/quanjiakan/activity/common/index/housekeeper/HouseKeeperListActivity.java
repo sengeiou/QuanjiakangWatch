@@ -1,16 +1,15 @@
 package com.quanjiakan.activity.common.index.housekeeper;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationClient;
@@ -29,16 +28,15 @@ import com.quanjiakan.adapter.HouseKeeperListAdapter;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.retrofit.result_entity.GetHouseKeeperListEntity;
+import com.quanjiakan.net.retrofit.result_entity.GetHouseKeeperTypeListEntity;
 import com.quanjiakan.net_presenter.HouseKeeperListPresenter;
 import com.quanjiakan.net_presenter.IPresenterBusinessCode;
 import com.quanjiakan.util.common.LogUtil;
-import com.quanjiakan.util.common.URLUtil;
 import com.quanjiakan.util.dialog.ChangeAddressDetailDialog;
 import com.quanjiakan.util.dialog.CommonDialogHint;
 import com.quanjiakan.watch.R;
 import com.umeng.analytics.MobclickAgent;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -86,7 +84,7 @@ public class HouseKeeperListActivity extends BaseActivity implements GeocodeSear
 
     //TODO 无数据的提示
     @BindView(R.id.select_condition_list_position)
-    ListView selectConditionListPosition;
+    TextView selectConditionListPosition;
     @BindView(R.id.select_condition_list_type)
     ListView selectConditionListType;
     @BindView(R.id.select_condition_line)
@@ -121,6 +119,11 @@ public class HouseKeeperListActivity extends BaseActivity implements GeocodeSear
         }
     };
 
+    //TODO 服务类型
+    private boolean isShowTypeList = false;
+    private List<GetHouseKeeperTypeListEntity.ListBean> typeListData = null;
+    private String currentServiceType = null;
+
     private Handler mHandler = new Handler();
 
     @Override
@@ -130,6 +133,7 @@ public class HouseKeeperListActivity extends BaseActivity implements GeocodeSear
         ButterKnife.bind(this);
 
         initTitleBar();
+        initConditionDataView();
         initPositionFind();
 
 //        //TODO 加载我地址的数据列表
@@ -178,6 +182,13 @@ public class HouseKeeperListActivity extends BaseActivity implements GeocodeSear
     @Override
     public Object getParamter(int type) {
         switch (type){
+            case IPresenterBusinessCode.HOUSE_KEEPER_TYPE_LIST: {
+                HashMap<String,String> params = new HashMap<>();
+                params.put(IParamsName.PARAMS_COMMON_PLATFORM, IHttpUrlConstants.PLATFORM_ANDROID);
+                params.put(IParamsName.PARAMS_COMMON_TOKEN,BaseApplication.getInstances().getLoginInfo().getToken());
+                params.put(IParamsName.PARAMS_COMMON_MEMBERID,BaseApplication.getInstances().getLoginInfo().getUserId());
+                return params;
+            }
             case IPresenterBusinessCode.HOUSE_KEEPER_LOCATE: {
                 return null;
             }
@@ -187,6 +198,9 @@ public class HouseKeeperListActivity extends BaseActivity implements GeocodeSear
                 params.put(IParamsName.PARAMS_COMMON_PLATFORM, IHttpUrlConstants.PLATFORM_ANDROID);
                 params.put(IParamsName.PARAMS_COMMON_TOKEN, BaseApplication.getInstances().getLoginInfo().getToken());
                 params.put(IParamsName.PARAMS_COMMON_PAGE, currentPage+"");
+                if(currentServiceType!=null){
+                    params.put(IParamsName.PARAMS_HOUSE_KEEPER_TYPE, currentServiceType);
+                }
                 return params;
             }
             case IPresenterBusinessCode.HOUSE_KEEPER_LIST_WITH_LOCATION:{
@@ -196,22 +210,35 @@ public class HouseKeeperListActivity extends BaseActivity implements GeocodeSear
                 params.put(IParamsName.PARAMS_COMMON_TOKEN, BaseApplication.getInstances().getLoginInfo().getToken());
                 params.put(IParamsName.PARAMS_COMMON_PAGE, currentPage+"");
 
-                //TODO 插入地址信息
-                try {
-                    params.put(IParamsName.PARAMS_HOUSE_KEEPER_PROVINCE, URLUtil.urlEncode(mProvince));
-                    params.put(IParamsName.PARAMS_HOUSE_KEEPER_CITY, URLUtil.urlEncode(mCity));
-                    params.put(IParamsName.PARAMS_HOUSE_KEEPER_DIST, URLUtil.urlEncode(mSection));
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
+                //TODO 由于后台匹配的地址的问题，省份中不能够含有 省字，市的名字中，不能含有市字
+                if(mProvince != null){//(mProvince != null ? mProvince.replace("省", "")
+                    params.put(IParamsName.PARAMS_HOUSE_KEEPER_PROVINCE, mProvince.replace("省", ""));
                 }
-                if(!params.containsKey(IParamsName.PARAMS_HOUSE_KEEPER_PROVINCE)){
-                    params.put(IParamsName.PARAMS_HOUSE_KEEPER_PROVINCE, mProvince);
+                if(mCity != null){
+                    params.put(IParamsName.PARAMS_HOUSE_KEEPER_CITY, mCity.replace("市", ""));
                 }
-                if(!params.containsKey(IParamsName.PARAMS_HOUSE_KEEPER_CITY)){
-                    params.put(IParamsName.PARAMS_HOUSE_KEEPER_CITY, mCity);
-                }
-                if(!params.containsKey(IParamsName.PARAMS_HOUSE_KEEPER_DIST)){
-                    params.put(IParamsName.PARAMS_HOUSE_KEEPER_DIST, mSection);
+                params.put(IParamsName.PARAMS_HOUSE_KEEPER_DIST, mSection);
+
+                //TODO 插入地址信息----使用Encode的方式，似乎反而无法获得数据---【推测Retrofit 自动进行中文字符的URLEncode】
+//                try {
+//                    params.put(IParamsName.PARAMS_HOUSE_KEEPER_PROVINCE, URLUtil.urlEncode(mProvince));
+//                    params.put(IParamsName.PARAMS_HOUSE_KEEPER_CITY, URLUtil.urlEncode(mCity));
+//                    params.put(IParamsName.PARAMS_HOUSE_KEEPER_DIST, URLUtil.urlEncode(mSection));
+//                } catch (UnsupportedEncodingException e) {
+//                    e.printStackTrace();
+//                }
+//                if(!params.containsKey(IParamsName.PARAMS_HOUSE_KEEPER_PROVINCE)){
+//                    params.put(IParamsName.PARAMS_HOUSE_KEEPER_PROVINCE, mProvince);
+//                }
+//                if(!params.containsKey(IParamsName.PARAMS_HOUSE_KEEPER_CITY)){
+//                    params.put(IParamsName.PARAMS_HOUSE_KEEPER_CITY, mCity);
+//                }
+//                if(!params.containsKey(IParamsName.PARAMS_HOUSE_KEEPER_DIST)){
+//                    params.put(IParamsName.PARAMS_HOUSE_KEEPER_DIST, mSection);
+//                }
+
+                if(currentServiceType!=null){
+                    params.put(IParamsName.PARAMS_HOUSE_KEEPER_TYPE, currentServiceType);
                 }
                 return params;
             }
@@ -234,6 +261,10 @@ public class HouseKeeperListActivity extends BaseActivity implements GeocodeSear
                 getDialog(this,getString(R.string.hint_get_house_keeper_data));
                 break;
             }
+            case IPresenterBusinessCode.HOUSE_KEEPER_TYPE_LIST: {
+                getDialog(this,getString(R.string.hint_get_house_keeper_type_data));
+                break;
+            }
         }
     }
 
@@ -247,6 +278,9 @@ public class HouseKeeperListActivity extends BaseActivity implements GeocodeSear
                 break;
             }
             case IPresenterBusinessCode.HOUSE_KEEPER_LIST_WITH_LOCATION: {
+                break;
+            }
+            case IPresenterBusinessCode.HOUSE_KEEPER_TYPE_LIST: {
                 break;
             }
         }
@@ -267,6 +301,10 @@ public class HouseKeeperListActivity extends BaseActivity implements GeocodeSear
                 setDataIntoListView(result);
                 break;
             }
+            case IPresenterBusinessCode.HOUSE_KEEPER_TYPE_LIST: {
+                setDataIntoTypeList(result);
+                break;
+            }
         }
     }
 
@@ -280,6 +318,9 @@ public class HouseKeeperListActivity extends BaseActivity implements GeocodeSear
                 break;
             }
             case IPresenterBusinessCode.HOUSE_KEEPER_LIST_WITH_LOCATION: {
+                break;
+            }
+            case IPresenterBusinessCode.HOUSE_KEEPER_TYPE_LIST: {
                 break;
             }
         }
@@ -302,11 +343,15 @@ public class HouseKeeperListActivity extends BaseActivity implements GeocodeSear
         presenter = new HouseKeeperListPresenter();
     }
 
+    public void initConditionDataView(){
+        selectConditionLine.setVisibility(View.GONE);
+    }
+
     public void showNodataHint(boolean isShow){
         if(isShow){
-            selectConditionLine.setVisibility(View.VISIBLE);
+            nodataLine.setVisibility(View.VISIBLE);
         }else{
-            selectConditionLine.setVisibility(View.GONE);
+            nodataLine.setVisibility(View.GONE);
         }
     }
 
@@ -337,7 +382,6 @@ public class HouseKeeperListActivity extends BaseActivity implements GeocodeSear
                     mList.clear();
                     //TODO
                     loadHouseKeeperListDataWithoutPosition();
-                    LogUtil.e("  *******   1  ");
 
                     //TODO -------  终止单次的定位回调
                     mlocationClient.stopLocation();
@@ -378,11 +422,6 @@ public class HouseKeeperListActivity extends BaseActivity implements GeocodeSear
     public void setDataIntoListView(Object object){
         if(object!=null && object instanceof GetHouseKeeperListEntity){
             GetHouseKeeperListEntity result = (GetHouseKeeperListEntity) object;
-            if(result!=null && result.getList()!=null){
-                LogUtil.e("setDataIntoListView:"+result.getList().size());
-            }else{
-                LogUtil.e("setDataIntoListView:"+0);
-            }
             if(currentPage==1){
                 //TODO 判断是否应该显示 无数据
                 if(result==null || result.getList()==null || result.getList().size()<1){
@@ -407,11 +446,8 @@ public class HouseKeeperListActivity extends BaseActivity implements GeocodeSear
                                 currentPage = 1;
                                 mList.clear();
                                 loadHouseKeeperListDataWithPositioin();
-                                LogUtil.e("  *******   2  ");
-
                             } else {
                                 loadHouseKeeperListDataWithoutPosition();
-                                LogUtil.e("  *******   3  ");
                             }
                         }
                         @Override
@@ -421,10 +457,8 @@ public class HouseKeeperListActivity extends BaseActivity implements GeocodeSear
                             if (mProvince != null) {
                                 listView.setMode(PullToRefreshBase.Mode.BOTH);
                                 loadHouseKeeperListDataWithPositioin();
-                                LogUtil.e("  *******   4  ");
                             } else {
                                 loadHouseKeeperListDataWithoutPosition();
-                                LogUtil.e("  *******   5  ");
                             }
                         }
                     });
@@ -436,10 +470,16 @@ public class HouseKeeperListActivity extends BaseActivity implements GeocodeSear
                     return;
                 }else{
                     showNodataHint(false);
+                    //TODO 当没有更多的数据加载时，关闭上拉加载更多
+                    if(result.getList().size()<1){
+                        listView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+                    }
                 }
 
                 mList.addAll(result.getList());
                 mAdapter.notifyDataSetChanged();
+                //TODO 关闭刷新
+                completeRefresh();
             }
         }else{
 
@@ -461,10 +501,8 @@ public class HouseKeeperListActivity extends BaseActivity implements GeocodeSear
                         mList.clear();
                         if (mProvince != null) {
                             loadHouseKeeperListDataWithPositioin();
-                            LogUtil.e("  *******   6  ");
                         } else {
                             loadHouseKeeperListDataWithoutPosition();
-                            LogUtil.e("  *******   7  ");
                         }
                     }
                     @Override
@@ -506,7 +544,7 @@ public class HouseKeeperListActivity extends BaseActivity implements GeocodeSear
                 break;
             }
             case R.id.condition_line_type: {
-
+                showTypeList();
                 break;
             }
         }
@@ -547,12 +585,10 @@ public class HouseKeeperListActivity extends BaseActivity implements GeocodeSear
             currentPage = 1;
             mList.clear();
             loadHouseKeeperListDataWithPositioin();
-            LogUtil.e("  *******   8  ");
         } else {
             currentPage = 1;
             mList.clear();
             loadHouseKeeperListDataWithoutPosition();
-            LogUtil.e("  *******   9  ");
         }
     }
 
@@ -595,6 +631,65 @@ public class HouseKeeperListActivity extends BaseActivity implements GeocodeSear
         currentPage = 1;
         mList.clear();
         loadHouseKeeperListDataWithPositioin();
-        LogUtil.e("  *******   10  ");
+    }
+
+    //TODO 展示服务类型列表
+    public void showTypeList(){
+        if(isShowTypeList){//TODO 服务类型已经展示出来了
+            isShowTypeList = false;
+            selectConditionLine.setVisibility(View.GONE);
+        }else{//TODO 服务类型尚未展示
+            isShowTypeList = true;
+            selectConditionLine.setVisibility(View.VISIBLE);
+            if(typeListData!=null && typeListData.size()>0){
+                //TODO 直接展示数据
+            }else{
+                //TODO 访问接口获取数据后，展示
+                getHouseKeeperTypeData();
+            }
+        }
+    }
+
+    public void getHouseKeeperTypeData(){
+        presenter.getHouseKeeperTypeList(this);
+    }
+
+    public void setDataIntoTypeList(Object result){
+        if(result!=null && result instanceof GetHouseKeeperTypeListEntity){
+            GetHouseKeeperTypeListEntity data = (GetHouseKeeperTypeListEntity) result;
+            if(data.getList()!=null && data.getList().size()>0){
+                typeListData = data.getList();
+                //TODO
+                ArrayList<String> nameList = new ArrayList<String>();
+                for (GetHouseKeeperTypeListEntity.ListBean temp : typeListData) {
+                    nameList.add(temp.getName());
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.item_select_condition, nameList);
+                selectConditionListType.setAdapter(adapter);
+                selectConditionListType.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                        if (typeListData.get(position).equals(selectConditionType.getText().toString())) {
+                            showTypeList();
+                        } else {
+                            currentServiceType = typeListData.get((int) l).getId()+"";
+                            selectConditionType.setText(typeListData.get((int) l).getName());
+
+                            currentPage = 1;
+                            showTypeList();
+                            filter();
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    public void filter(){
+        if(mProvince!=null){
+            loadHouseKeeperListDataWithPositioin();
+        }else{
+            loadHouseKeeperListDataWithoutPosition();
+        }
     }
 }
