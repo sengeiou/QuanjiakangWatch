@@ -34,9 +34,6 @@ public class DevicesService extends Service {
 
     }
 
-    public static final String PARAMS_POSITION = "position";
-    private int position = 0;
-
 
     @Override
     public void onStart(Intent intent, int startId) {

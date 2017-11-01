@@ -27,5 +27,10 @@
     <string name="hint_house_keeper_item_language_default">粤语</string>
     <string name="hint_house_keeper_item_price_unit">元/月</string>
 
+
+
+    <string name="hint_no_storage_title">无有效外存</string>
+    <string name="hint_no_storage_content">未检测到有效的外存储设备</string>
+
 </resources>
 

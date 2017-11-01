@@ -1,12 +1,23 @@
 package com.wbj.ndk.natty.client;
 
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+
 import com.quanjiakan.activity.base.BaseApplication;
-import com.quanjiakan.device.entity.CommonBindResult;
+import com.quanjiakan.device.entity.CommonBindRequest;
 import com.quanjiakan.device.entity.CommonNattyData;
-import com.quanjiakan.device.entity.CommonVoiceData;
 import com.quanjiakan.util.common.LogUtil;
+import com.quanjiakan.util.common.MessageDigestUtil;
+import com.quanjiakan.util.notification.NotificationUtil;
+import com.quanjiakan.watch.R;
+import com.wbj.ui.recorder.AudioFileFunc;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class NattyProtocolFilter {
 
@@ -30,7 +41,7 @@ public class NattyProtocolFilter {
     public final static int VOICE_STOP = 0x2C;
     public final static int DISPLAY_VOICE_PLAY = 0x2D;
 
-    public final static int DISPLAY_VOICE_SEND_RESULT = 0x2E;
+    public final static int DISPLAY_VOICE_RESULT = 0x2E;
 
     public final static int DISPLAY_EFENCE_RESULT = 0x30;
     public final static int DISPLAY_EFENCELIST_RESULT = 0x31;
@@ -42,15 +53,11 @@ public class NattyProtocolFilter {
     public final static int DISPLAY_UPDATE_DATA_COMMON_BROADCAST = 0x44;
     public final static int DISPLAY_UPDATE_DATA_ADMIN_BIND_INFO = 0x45;
 
-
-
-    public static void ntyProtocolFilter(String recv) {
-    }
-
-    public static void ntyProtocolFilter(String id, String recv) {
-    }
+    public final static int DISPLAY_UPDATE_ERROR = 0xFF;
+    public final static int DISPLAY_UPDATE_SUCCESS = 0xF0;
 
     /**
+     * ***********************************************************************************************
      * case 1:
      * [MBProgressHUD showError:@"该UserID不存在"];
      * break;
@@ -69,81 +76,112 @@ public class NattyProtocolFilter {
      * @param len
      */
     public static void ntyProtocolBind(int len) {
-        EventBus.getDefault().post(new CommonNattyData(DISPLAY_UPDATE_CONTROL_BIND_RESULT,len + ""));
-    }
-
-    public static void ntyProtocolUnBind(int len) {
-        EventBus.getDefault().post(new CommonNattyData(DISPLAY_UPDATE_CONTROL_UNBIND_RESULT,len + ""));
-    }
-
-
-    public static void ntyProtocolReconnect(int len) {
-        BaseApplication.getInstances().setSDKServerStatus("1");
-    }
-
-    public static void ntyProtocolDisconnect(int len) {
-        BaseApplication.getInstances().setSDKServerStatus("-1");
-    }
-
-    //{"Results":{"IMEI":"352315052834187","Proposer":"18011935659","UserName":"爸爸","MsgId":"40"}}
-    public static void ntyProtocolAdminBindComfirmCallBack(long fromID,String info) {
-        EventBus.getDefault().post(new CommonBindResult(DISPLAY_UPDATE_DATA_ADMIN_BIND_INFO,fromID,info));
-        LogUtil.e("绑定申请的数据-------------------------"+info);
-        //{"Results":{"IMEI":"352315052834187","Proposer":"18011935659","UserName":"爸爸","MsgId":"40"}}
-    }
-
-    public static void ntyProtocolNoExist(int len) {
-    }
-
-    public static void ntyProtocolPlayVoice(int len, byte[] buffer, long fromId) {
-        EventBus.getDefault().post(new CommonVoiceData(DISPLAY_VOICE_PLAY,buffer,len+"",fromId+""));
-    }
-
-    public static void ntyProtocolSendVoiceResult(int len, long fromId) {
-    }
-
-    public static void ntyProtocolSendSuccess(long fromId, int len) {
-    }
-
-    public static void ntyProtocolSendFail(long fromId, int len) {
-    }
-
-    public static void ntyProtocolLocationResult(long id, String data) {
-        EventBus.getDefault().post(new CommonNattyData(DISPLAY_UPDATE_CONTROL_LOCATION_NEW,data));
-    }
-
-    public static void ntyProtocolVoiceResult(long id, String data) {
-    }
-
-    public static void ntyDataResult(long id, String data) {
-        EventBus.getDefault().post(new CommonNattyData(DISPLAY_UPDATE_DATA_RESULT,data));
-    }
-
-    public static void ntyDataRoute(long id, String data) {
-        EventBus.getDefault().post(new CommonNattyData(DISPLAY_UPDATE_DATA_ROUTE,data));
-    }
-
-    public static void ntyCommonBroadcastResult(long id, String data) {
-        EventBus.getDefault().post(new CommonNattyData(DISPLAY_UPDATE_DATA_COMMON_BROADCAST,data));
+        judgeMessageBindResult(len);
     }
 
     /**
-     * 保存广播数据
+     * ***********************************************************************************************
+     */
+    public static void ntyProtocolUnBind(int len) {
+        judgeMessageUnBindResult(len);
+    }
+
+    /**
+     * ***********************************************************************************************
+     */
+
+    public static void ntyProtocolReconnect(int len) {
+        judgeMessageReconnect(len);
+    }
+
+    public static void ntyProtocolDisconnect(int len) {
+        judgeMessageDisconnect(len);
+
+    }
+
+    /**
+     * ***********************************************************************************************
+     */
+    //{"Results":{"IMEI":"352315052834187","Proposer":"18011935659","UserName":"爸爸","MsgId":"40"}}
+    //TODO 作为管理员，收到其他人的绑定申请
+    public static void ntyProtocolDealBindReqesutFromOther(long fromID, String info) {
+        judgeMessageBindRequestFromOther(fromID, info);
+    }
+
+    /**
+     * ***********************************************************************************************
+     * <p>
+     * 定位------单独的数据通道
+     */
+
+    public static void ntyProtocolLocationResult(long id, String data) {
+        judgeMessageLocation(data);
+    }
+
+    /**
+     * ***********************************************************************************************
+     * <p>
+     * 语音------单独的数据通道
+     */
+
+    public static void ntyProtocolVoiceResult(long id, String data) {
+//        EventBus.getDefault().post(new CommonNattyData(DISPLAY_VOICE_RESULT,data));
+    }
+
+    public static void ntyProtocolSaveVoiceFileToLocal(NattyClient client, long fromId, long gId, int length) {
+        //TODO
+        handleVoiceMessage(client, fromId, gId, length);
+    }
+
+    /**
+     * ***********************************************************************************************
+     */
+    public static void ntyDataResult(long id, String data) {
+        judgeMessageDataResult(data);
+    }
+
+
+    /**
+     * ***********************************************************************************************
+     * 推送消息-----忘记会从哪一个回调走了
+     */
+
+    public static void ntyCommonPushMessageResult(long id, String data, int status) {
+        judgeMessagePush(1, data);
+    }
+
+    public static void ntySetPushMessageResult(long id, String data, int status) {
+        judgeMessagePush(2, data);
+    }
+
+    public static void ntySetCommonReqResult(long id, String data, int status) {
+        judgeMessagePush(3, data);
+    }
+
+    public static void ntyNativeCommonReqResult(long id, String data, int status) {
+        judgeMessagePush(4, data);
+    }
+
+    /**
+     * ***********************************************************************************************
+     * 广播数据
      *
      * @param id
      * @param data
      * @param status
      */
-    public static void ntyCommonBroadcastResult(long id, String data, int status)  {
-        EventBus.getDefault().post(new CommonNattyData(DISPLAY_UPDATE_DATA_COMMON_BROADCAST,data));
+    public static void ntyCommonBroadcastResult(long id, String data, int status) {
+        /** 根据不同内容保存相应数据 **/
+        judgeMessageBroadcastType(data);
     }
 
-    /******
+    /**
+     * ***********************************************************************************************
      * Turn and runtime
      *********/
 
     public static void ntyProtocolTurn(String json) {
-
+        judgeMessageTurnType(json);
     }
 
     /******
@@ -151,14 +189,216 @@ public class NattyProtocolFilter {
      *********/
 
     public static void ntyProtocolRunTime(String json) {
-
+        judgeMessageRunTimeType(json);
     }
 
+
+    /**
+     * ***********************************************************************************************
+     * DataRoute 数据------------
+     *
+     */
+
+    /**
+     * ***********************************************************************************************
+     *
+     * @param id
+     * @param data
+     * @param status
+     */
+    public static void ntyDataRoute(long id, String data, int status) {
+        judgeMessageDateRouteType(data);
+    }
+
+    public static void ntyDataRoute(long id, String data) {
+        judgeMessageDateRouteType(data);
+    }
+
+    //TODO 应该预先进行 数据的分类，然后派发对应的实体，可以省去，使用共同的部分来
     public static void ntyProtocolDateRoute(String json) {
+        //这里对数据进行过滤----判断属于那种类型的消息
+        judgeMessageDateRouteType(json);
     }
 
-    public static void ntyProtocolBindConfirmResult(long fromId,String json) {
+    /**
+     * ***********************************************************************************************
+     */
 
+    public static void judgeMessageBroadcastType(String json) {
+        //TODO 里面仍会有Runtime
+        //通过JSON 判断是那种协议类型
+
+        EventBus.getDefault().post(new CommonNattyData(DISPLAY_UPDATE_DATA_COMMON_BROADCAST, json));
+    }
+
+    /**
+     * ***********************************************************************************************
+     */
+    public static void judgeMessageBindResult(int resultCode) {
+        EventBus.getDefault().post(new CommonNattyData(DISPLAY_UPDATE_CONTROL_BIND_RESULT, resultCode + ""));
+    }
+
+    public static void judgeMessageUnBindResult(int resultCode) {
+        EventBus.getDefault().post(new CommonNattyData(DISPLAY_UPDATE_CONTROL_UNBIND_RESULT, resultCode + ""));
+    }
+
+    /**
+     * ***********************************************************************************************
+     */
+    public static void judgeMessageReconnect(int resultCode) {
+        BaseApplication.getInstances().setSDKServerStatus("1");
+    }
+
+    public static void judgeMessageDisconnect(int resultCode) {
+        BaseApplication.getInstances().setSDKServerStatus("-1");
+    }
+
+    /**
+     * ***********************************************************************************************
+     * 作为管理员，收到其他用户的绑定申请
+     */
+    public static void judgeMessageBindRequestFromOther(long fromID, String data) {
+        //{"Results":{"IMEI":"352315052834187","Proposer":"18011935659","UserName":"爸爸","MsgId":"40"}}
+        EventBus.getDefault().post(new CommonBindRequest(DISPLAY_UPDATE_DATA_ADMIN_BIND_INFO, fromID, data));
+    }
+
+    /**
+     * ***********************************************************************************************
+     */
+    public static void judgeMessagePush(int from, String data) {
+        LogUtil.e("FromType:" + from + "\n Data:" + data);
+//        EventBus.getDefault().post(new CommonNattyPushMessage(data));
+    }
+
+    /**
+     * ***********************************************************************************************
+     */
+    public static void judgeMessageLocation(String data) {
+        LogUtil.e("judgeMessageLocation:" + data);
+//        EventBus.getDefault().post(new CommonNattyData(DISPLAY_UPDATE_CONTROL_LOCATION_NEW,data));
+    }
+
+    /**
+     * ***********************************************************************************************
+     */
+    public static void judgeMessageDataResult(String data) {
+        EventBus.getDefault().post(new CommonNattyData(DISPLAY_UPDATE_DATA_RESULT, data));
+    }
+
+    //TODO 判断JSON属于哪一种类型的数据，如果不属于则跳过（未进行协议定义）
+    public static void judgeMessageDateRouteType(String json) {
+        EventBus.getDefault().post(new CommonNattyData(DISPLAY_UPDATE_DATA_ROUTE, json));
+    }
+
+    /**
+     * ***********************************************************************************************
+     */
+    public static void judgeMessageRunTimeType(String json) {
+
+    }
+
+    public static void judgeMessageTurnType(String json) {
+
+    }
+
+    /**
+     * ***********************************************************************************************
+     */
+    private static final int NO_SDCARD_NOTIFY = 1000;
+
+    public static void handleVoiceMessage(final NattyClient client, final long fromId, final long gId, final int length) {
+        /**
+         * 通过Natty的引用找到这个文件的，并将文件保存下来
+         *
+         ntyNativePacketRecvResult fromId：13469
+         ntyNativePacketRecvResult gId：240207489224233264
+         ntyNativePacketRecvResult length：2182
+         */
+        if (length < 1) {
+            //TODO 排除无效的文件
+            return;
+        }
+        if (Integer.parseInt(BaseApplication.getInstances().getLoginInfo().getUserId()) == fromId) {
+            //TODO 排除收到了自己的语音
+            return;
+        }
+        //TODO 存在外存，则进行存储
+        if (AudioFileFunc.isSdcardExit()) {
+            //TODO 保存语音数据，存储到用户的外存
+            //TODO 获取语音数据
+
+            //TODO 向线程池中提交任务，由线程完成文件IO操作，并记录语音记录
+            BaseApplication.getInstances().addThreadTask(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        //*****************************************************************************************
+                        //TODO
+                        byte[] temp = client.ntyGetVoiceBuffer();
+                        long currentTime = System.currentTimeMillis();
+                        String savePath = getReceiveFilePath(currentTime);
+                        //TODO 保存文件
+                        File saveFile = new File(savePath);
+                        if (!saveFile.exists()) {
+                            saveFile.createNewFile();
+                        }
+                        FileOutputStream fileOutputStream = new FileOutputStream(saveFile);
+                        fileOutputStream.write(temp, 0, length);
+                        fileOutputStream.flush();
+                        fileOutputStream.close();
+                        // save record
+                        final String device_id = Long.toHexString(gId);//watch device ID
+                        //*****************************************************************************************
+                        // 将语音记录保存到数据库中
+
+                        final MediaPlayer player = new MediaPlayer();
+                        FileInputStream fileInputStream = new FileInputStream(saveFile);
+                        player.setDataSource(fileInputStream.getFD());
+                        player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                        player.prepareAsync();
+                        player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                            @Override
+                            public void onPrepared(MediaPlayer player) {
+                                int minute;
+                                int seconds;
+                                minute = player.getDuration() / 60000;
+                                seconds = (player.getDuration() / 1000) % 60;
+                                if (seconds < 1) {
+                                    seconds = 1;
+                                }
+                                player.reset();
+                                player.release();
+                                player = null;
+                                //TODO 将文件的数据保存到数据库记录中
+
+
+                            }
+                        });
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    //TODO -- 保存记录
+                }
+            });
+        } else {
+            //TODO 否则发出通知，未检测到可用外存，无法接收语音数据
+            NotificationUtil.getInstances(BaseApplication.getInstances()).
+                    commonNotificationAlertOnce(BaseApplication.getInstances(),
+                            BaseApplication.getInstances().getString(R.string.hint_no_storage_title),
+                            BaseApplication.getInstances().getString(R.string.hint_no_storage_content),
+                            null, NO_SDCARD_NOTIFY);
+        }
+    }
+
+    private static final String COMMON_VOICE_FILE_SUFFIX = ".amr";
+
+    public static String getReceiveFilePath(long currentTime) {
+        File dir = BaseApplication.getInstances().getExternalFilesDir("voice");
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        String mAudioAMRPath = dir.getAbsolutePath() + File.separator + MessageDigestUtil.getSHA1String(currentTime + "") + COMMON_VOICE_FILE_SUFFIX;
+        return mAudioAMRPath;
     }
 
 }

@@ -3,7 +3,6 @@ package com.quanjiakan.activity.base;
 import android.content.Context;
 import android.content.Intent;
 import android.support.multidex.MultiDexApplication;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.quanjiakan.activity.common.login.SigninActivity_mvp;
@@ -20,6 +19,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 public class BaseApplication extends MultiDexApplication {
@@ -28,7 +29,8 @@ public class BaseApplication extends MultiDexApplication {
      * 打包时需要变更
      */
 
-    NattyClient nattyClient;
+    private NattyClient nattyClient;
+    private ExecutorService cachedThreadPool;
 
     private static BaseApplication instances;
 
@@ -47,6 +49,10 @@ public class BaseApplication extends MultiDexApplication {
         initUmeng();
         //TODO 初始化数据库
         initDB();
+
+        initNatty();
+        // TODO 初始化线程
+        initThreadPool();
     }
 
     /**
@@ -70,6 +76,15 @@ public class BaseApplication extends MultiDexApplication {
         MobclickAgent.enableEncrypt(true);
         MobclickAgent.openActivityDurationTrack(false);
         MobclickAgent.setCatchUncaughtExceptions(true);
+    }
+
+    /**
+     * ****************************************************
+     * 启动Natty
+     */
+
+    public void initNatty(){
+        startSDK();
     }
 
     /**
@@ -257,6 +272,19 @@ public class BaseApplication extends MultiDexApplication {
             return false;
         }
     }
+
+    /**
+     * *********************************************************************************************
+     *
+     */
+    public void initThreadPool(){
+        cachedThreadPool = Executors.newCachedThreadPool();
+    }
+
+    public void addThreadTask(Runnable runnable){
+        cachedThreadPool.submit(runnable);
+    }
+
 
     /**
      * *********************************************************************************************

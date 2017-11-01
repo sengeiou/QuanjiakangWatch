@@ -25,7 +25,7 @@ public class BindWatchInfoEntity {
     @NotNull
     private String headImage; // TODO 绑定设备的用户ID号
     @NotNull
-    private String name; // TODO 绑定设备的用户ID号
+    private String name; // TODO 绑定设备名
     @NotNull
     private String location;//TODO 定位
     @NotNull
