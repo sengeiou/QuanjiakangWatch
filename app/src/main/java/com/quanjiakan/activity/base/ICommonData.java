@@ -15,6 +15,10 @@ public interface ICommonData {
 
     String FORBID_USER = "0";
 
+    String COMMON_DIVIDER_SYMBOL = ",";
+    String COMMON_UNREAD_VOICE_RECORD_SUFFIX = "_unread,";
+    String COMMON_READ_VOICE_RECORD_SUFFIX = "_read,";
+
 
     String MAIN_TAB_ITEM_MAIN_TAG = "main_tag";
     String MAIN_TAB_ITEM_MSG_TAG = "msg_tag";

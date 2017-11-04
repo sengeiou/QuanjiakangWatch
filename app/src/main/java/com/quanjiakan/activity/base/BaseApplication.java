@@ -9,6 +9,7 @@ import com.quanjiakan.activity.common.login.SigninActivity_mvp;
 import com.quanjiakan.db.entity.LoginUserInfoEntity;
 import com.quanjiakan.db.manager.DaoManager;
 import com.quanjiakan.service.DevicesService;
+import com.quanjiakan.util.common.LogUtil;
 import com.quanjiakan.util.common.MessageDigestUtil;
 import com.quanjiakan.util.notification.NotificationUtil;
 import com.umeng.analytics.MobclickAgent;
@@ -49,8 +50,6 @@ public class BaseApplication extends MultiDexApplication {
         initUmeng();
         //TODO 初始化数据库
         initDB();
-
-        initNatty();
         // TODO 初始化线程
         initThreadPool();
     }
@@ -83,9 +82,6 @@ public class BaseApplication extends MultiDexApplication {
      * 启动Natty
      */
 
-    public void initNatty(){
-        startSDK();
-    }
 
     /**
      * ****************************************************
@@ -148,18 +144,24 @@ public class BaseApplication extends MultiDexApplication {
 
     /**
      * ****************************************************
-     * 检测SDK状态
+     * Natty 相关
      */
     public void startSDK(){
         Intent intent = new Intent(this, DevicesService.class);
         startService(intent);
     }
 
-    public void stopSDK(){
-        Intent intent = new Intent(this, DevicesService.class);
-        stopService(intent);
+    public void stopSDK(BaseActivity activity){
+
         //TODO 关闭Natty 的连接
-        nattyClient.ntyShutdownClient();
+        if(nattyClient!=null){
+            nattyClient.ntyShutdownClient();
+            nattyClient = null;
+        }
+
+        Intent intent = new Intent(activity, DevicesService.class);
+        activity.stopService(intent);
+
     }
 
     public void initNattyClient(){
@@ -167,10 +169,15 @@ public class BaseApplication extends MultiDexApplication {
         long appid = Long.parseLong(getLoginInfo().getUserId());
         nattyClient.ntyClientInitilize();
         nattyClient.ntySetSelfId(appid);
+        LogUtil.e("Start Natty Client");
     }
 
-    public NattyClient getNattyClient(){
-        return nattyClient;
+    public int startupNattyClient(){
+        return nattyClient.ntyStartupClient();
+    }
+
+    public boolean isNattyNull(){
+        return nattyClient==null;
     }
 
     public String getSDKServerStatus() {
@@ -184,6 +191,8 @@ public class BaseApplication extends MultiDexApplication {
     public void setSDKServerStatus(String sdk_status) {
         SharePreferencesSetting.getInstance().setSDKServerStatus(Integer.parseInt(sdk_status));
     }
+
+
     /**
      * ****************************************************
      */
@@ -230,6 +239,10 @@ public class BaseApplication extends MultiDexApplication {
      * 可能会较常用到的一些数据
      */
     public void onLogout(BaseActivity context){
+        //TODO 退出到登录界面-----
+        Intent intent = new Intent(context, SigninActivity_mvp.class);
+        context.startActivity(intent);
+        context.finish();
 
         //TODO 释放发送通知占用的资源（如果登录前不需要发送通知的话）
         NotificationUtil.getInstances(this).release();
@@ -239,13 +252,10 @@ public class BaseApplication extends MultiDexApplication {
         DaoManager.getInstances(this).getDaoSession().getLoginUserInfoEntityDao().deleteAll();
         entity = null;
 
-        //TODO 退出到登录界面-----
-        Intent intent = new Intent(context, SigninActivity_mvp.class);
-        context.startActivity(intent);
-        context.finish();
-
         //TODO 关闭SDK的连接
-        stopSDK();
+        stopSDK(context);
+
+
     }
 
     //TODO 登录信息 获取
@@ -275,7 +285,7 @@ public class BaseApplication extends MultiDexApplication {
 
     /**
      * *********************************************************************************************
-     *
+     * 缓冲线程池任务---适合不需要获取返回的任务
      */
     public void initThreadPool(){
         cachedThreadPool = Executors.newCachedThreadPool();

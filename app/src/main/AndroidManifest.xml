@@ -121,6 +121,13 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
 
         <!-- ******************************************************************************************************** -->
+
+        <service android:name="com.quanjiakan.service.DevicesService"
+            android:enabled="true"
+            android:exported="false"/>
+
+
+        <!-- ******************************************************************************************************** -->
         <!-- meta data  Umeng -->
         <meta-data
             android:name="UMENG_APPKEY"

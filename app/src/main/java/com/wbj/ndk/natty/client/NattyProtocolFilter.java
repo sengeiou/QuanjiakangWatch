@@ -4,6 +4,10 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 
 import com.quanjiakan.activity.base.BaseApplication;
+import com.quanjiakan.activity.base.ICommonData;
+import com.quanjiakan.db.entity.MircoChatRecordEntity;
+import com.quanjiakan.db.entity.MircoChatUnreadNumberRecordEntity;
+import com.quanjiakan.db.manager.DaoManager;
 import com.quanjiakan.device.entity.CommonBindRequest;
 import com.quanjiakan.device.entity.CommonNattyData;
 import com.quanjiakan.util.common.LogUtil;
@@ -18,6 +22,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 public class NattyProtocolFilter {
 
@@ -333,48 +338,16 @@ public class NattyProtocolFilter {
                 public void run() {
                     try {
                         //*****************************************************************************************
-                        //TODO
-                        byte[] temp = client.ntyGetVoiceBuffer();
-                        long currentTime = System.currentTimeMillis();
-                        String savePath = getReceiveFilePath(currentTime);
-                        //TODO 保存文件
-                        File saveFile = new File(savePath);
-                        if (!saveFile.exists()) {
-                            saveFile.createNewFile();
+                        final String savePath = saveVoiceFile(client,fromId,gId,length);
+                        if(savePath==null){
+                            return;//TODO 保存操作中出现异常，导致操作未正常完成则终止后续操作
                         }
-                        FileOutputStream fileOutputStream = new FileOutputStream(saveFile);
-                        fileOutputStream.write(temp, 0, length);
-                        fileOutputStream.flush();
-                        fileOutputStream.close();
                         // save record
                         final String device_id = Long.toHexString(gId);//watch device ID
                         //*****************************************************************************************
                         // 将语音记录保存到数据库中
-
-                        final MediaPlayer player = new MediaPlayer();
-                        FileInputStream fileInputStream = new FileInputStream(saveFile);
-                        player.setDataSource(fileInputStream.getFD());
-                        player.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                        player.prepareAsync();
-                        player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                            @Override
-                            public void onPrepared(MediaPlayer player) {
-                                int minute;
-                                int seconds;
-                                minute = player.getDuration() / 60000;
-                                seconds = (player.getDuration() / 1000) % 60;
-                                if (seconds < 1) {
-                                    seconds = 1;
-                                }
-                                player.reset();
-                                player.release();
-                                player = null;
-                                //TODO 将文件的数据保存到数据库记录中
-
-
-                            }
-                        });
-                    } catch (IOException e) {
+                        getVoiceMessageLength(savePath,device_id,fromId);
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     //TODO -- 保存记录
@@ -387,6 +360,109 @@ public class NattyProtocolFilter {
                             BaseApplication.getInstances().getString(R.string.hint_no_storage_title),
                             BaseApplication.getInstances().getString(R.string.hint_no_storage_content),
                             null, NO_SDCARD_NOTIFY);
+        }
+    }
+
+    public static String saveVoiceFile(final NattyClient client, final long fromId, final long gId, final int length){
+        //TODO
+        try{
+            byte[] temp = client.ntyGetVoiceBuffer();
+            final long currentTime = System.currentTimeMillis();
+            final String savePath = getReceiveFilePath(currentTime);
+            //TODO 保存文件
+            File saveFile = new File(savePath);
+            if (!saveFile.exists()) {
+                saveFile.createNewFile();
+            }
+            FileOutputStream fileOutputStream = new FileOutputStream(saveFile);
+            fileOutputStream.write(temp, 0, length);
+            fileOutputStream.flush();
+            fileOutputStream.close();
+            return savePath;
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static void getVoiceMessageLength(final String saveFile,final String device_id,final long fromId){
+        try{
+            final MediaPlayer player = new MediaPlayer();
+            FileInputStream fileInputStream = new FileInputStream(saveFile);
+            player.setDataSource(fileInputStream.getFD());
+            player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            player.prepareAsync();
+            player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer player) {
+                    int minute;
+                    int seconds;
+                    minute = player.getDuration() / 60000;
+                    seconds = (player.getDuration() / 1000) % 60;
+                    if (seconds < 1) {
+                        seconds = 1;
+                    }
+                    //TODO 将文件的数据保存到数据库记录中
+                    saveVoiceRecord(device_id,fromId,saveFile,player.getDuration());
+
+                    saveVoiceRecordUnreadNumber(device_id);
+                    //TODO 释放MediaPlayer资源
+                    player.reset();
+                    player.release();
+                    player = null;
+                }
+            });
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void saveVoiceRecord(String device_id,long fromId,String saveFile,int length){
+        MircoChatRecordEntity entity = new MircoChatRecordEntity();
+        entity.setBelongDeviceIMEI(device_id);//IMEI号
+        entity.setFromUserID(fromId+"");
+        entity.setReceivedTimeStamp(System.currentTimeMillis());//收到的时间戳
+        entity.setVoiceRecordLocalPath(saveFile);
+        entity.setVoiceLength(length);//直接赋值语音长度
+        entity.setUnreadFlag(BaseApplication.getInstances().getLoginInfo().getUserId()+ ICommonData.COMMON_UNREAD_VOICE_RECORD_SUFFIX);
+        DaoManager.getInstances(BaseApplication.getInstances()).getDaoSession().getMircoChatRecordEntityDao().insert(entity);
+
+        EventBus.getDefault().post(entity);//TODO 通知需要刷新语音数据的地方（语音微聊界面）
+    }
+
+    public static void saveVoiceRecordUnreadNumber(String device_id){
+        //TODO 记录下这个IMEI号的未读消息数量
+        List<MircoChatUnreadNumberRecordEntity> allData = DaoManager.getInstances(BaseApplication.getInstances()).
+                getDaoSession().getMircoChatUnreadNumberRecordEntityDao().loadAll();
+        MircoChatUnreadNumberRecordEntity currentUnread = null;
+        //TODO 找出对应的
+        for (MircoChatUnreadNumberRecordEntity temp:
+                allData) {
+            if(BaseApplication.getInstances().getLoginInfo().getUserId().equals(temp.getBelongUserID()) &&
+                    device_id.equals(temp.getBelongDeviceIMEI())){
+                //TODO 找出对应的
+                currentUnread = temp;//
+                int unreadNumber =  temp.getUnreadNumber();
+                if(unreadNumber<0){
+                    unreadNumber = 0;
+                }
+                unreadNumber++;
+                temp.setUnreadNumber(unreadNumber);
+                DaoManager.getInstances(BaseApplication.getInstances()).
+                        getDaoSession().getMircoChatUnreadNumberRecordEntityDao().update(temp);
+                break;
+            }
+        }
+        //TODO 当数据库中尚未存在该用户该设备的记录时，重新创建一个然后插入进去
+        if(currentUnread==null){
+            currentUnread = new MircoChatUnreadNumberRecordEntity();
+            currentUnread.setUnreadNumber(1);
+            currentUnread.setBelongUserID(BaseApplication.getInstances().getLoginInfo().getUserId());
+            currentUnread.setBelongDeviceIMEI(device_id);
+            DaoManager.getInstances(BaseApplication.getInstances()).
+                    getDaoSession().getMircoChatUnreadNumberRecordEntityDao().insert(currentUnread);
+
+            EventBus.getDefault().post(currentUnread);//TODO 通知需要刷新未读数据的地方----首页--地图；手表首页----微聊
         }
     }
 

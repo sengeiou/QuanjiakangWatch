@@ -20,6 +20,7 @@ import com.quanjiakan.activity.base.ICommonData;
 import com.quanjiakan.activity.base.ISetFragmentBeforeShow;
 import com.quanjiakan.activity.common.image.ImageViewerActivity;
 import com.quanjiakan.activity.common.index.housekeeper.HouseKeeperListActivity;
+import com.quanjiakan.activity.common.login.SigninActivity_mvp;
 import com.quanjiakan.activity.common.main.fragment.MainMapFragment;
 import com.quanjiakan.activity.common.main.fragment.MessageListFragment;
 import com.quanjiakan.activity.common.main.fragment.SettingFragment;
@@ -27,6 +28,7 @@ import com.quanjiakan.constants.IActivityRequestValue;
 import com.quanjiakan.constants.IParamsIntValue;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.device.entity.CommonNattyData;
+import com.quanjiakan.util.common.LogUtil;
 import com.quanjiakan.view.SlidingMenu;
 import com.quanjiakan.watch.R;
 import com.umeng.analytics.MobclickAgent;
@@ -137,6 +139,8 @@ public class MainActivity extends BaseActivity {
     public void onResume() {
         super.onResume();
         MobclickAgent.onResume(this);
+        //TODO 仅在登录后启动Natty---
+        startNattyService();
     }
 
     @Override
@@ -211,6 +215,27 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    /**
+     * *****************************************************************************************************************************
+     * 启动Natty服务
+     * 若出现断开连接，则进行Natty服务的重连（重启）
+     */
+    public void startNattyService(){
+        //TODO 尚未启动过，则直接启动-------------SDK中存在重连机制，但仍存在问题尚未解决
+        if(BaseApplication.getInstances().isNattyNull()){
+            BaseApplication.getInstances().startSDK();
+        }else{
+        }
+        //TODO 启动过，但出现断连了，则重新关闭后启动
+//        else if(!BaseApplication.getInstances().isSDKConnected() &&
+//                BaseApplication.getInstances().getNattyClient()!=null){
+//            //
+//            if(BaseApplication.getInstances().getNattyClient()!=null){
+//                BaseApplication.getInstances().stopSDK();
+//            }
+//            BaseApplication.getInstances().startSDK();
+//        }
+    }
     /**
      * *****************************************************************************************************************************
      * 设置下方导航栏，以及点击交互
@@ -449,7 +474,7 @@ public class MainActivity extends BaseActivity {
                 break;
             }
             case ICommonData.MAIN_TAB_ITEM_SETTING: {
-                ibtnBack.setVisibility(View.GONE);
+                ibtnBack.setVisibility(View.VISIBLE);
                 ibtnBack.setImageResource(R.drawable.main_map_menu_item_left);
 
                 tvTitle.setVisibility(View.VISIBLE);
@@ -670,6 +695,8 @@ public class MainActivity extends BaseActivity {
             case R.id.ibtn_back: {
                 if(currentFragment==ICommonData.MAIN_TAB_ITEM_MAIN){
                     openSlideMenu();//TODO 打开侧边菜单
+                }else if(currentFragment==ICommonData.MAIN_TAB_ITEM_SETTING){
+                    onLogout();//TODO 测试退出
                 }
                 break;
             }

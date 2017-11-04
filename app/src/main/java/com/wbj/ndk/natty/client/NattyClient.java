@@ -100,7 +100,7 @@ public class NattyClient {
 
     //1
     public void ntyNativeLoginAckResult(char[] json, int length) {
-        LogUtil.e(" ntyNativeLoginAckResult " + length);
+
     }
     //**********************************************************************************************************************************************************
     //2 绑定结果
