@@ -49,45 +49,45 @@ import com.quanjiakan.util.common.LogUtil;
 
 import java.io.File;
 
-public class NattyClient {
-    static {
-        System.loadLibrary("natty-client");
-    }
+public class NattyClient_backup {
+//    static {
+//        System.loadLibrary("natty-client");
+//    }
 
 
-    //App 双十一接口
-    public native int ntyGetVoiceBufferSize();
-
-    public native byte[] ntyGetVoiceBuffer();
-
-    public native void ntySetSelfId(long selfId);
-
-    public native byte[] ntyGetVersion();
-
-    public native void ntyClientInitilize();
-
-    public native void nativeInitilize(); //debug
-
-    public native void nativeThreadStart(); //debug
-
-    public native void nativeThreadStop(); //debug
-
-    public native void ntyBindClient(long did, byte[] json, int length);
-
-    public native void ntyUnBindClient(long did);
-
-    public native int ntyBindConfirmReqClient(long proposerId, long devId, int msgId, byte[] json, int length);
-
-    public native int ntyStartupClient();
-
-    public native void ntyShutdownClient();
-
-    public native int ntyCommonReqClient(long gId, byte[] json, int length);
-
-    public native int ntyDataRouteClient(long gId, byte[] json, int length);
-
-    public native int ntyVoiceDataReqClient(long gId, byte[] data, int length);
-
+//    //App 双十一接口
+//    public native int ntyGetVoiceBufferSize();
+//
+//    public native byte[] ntyGetVoiceBuffer();
+//
+//    public native void ntySetSelfId(long selfId);
+//
+//    public native byte[] ntyGetVersion();
+//
+//    public native void ntyClientInitilize();
+//
+//    public native void nativeInitilize(); //debug
+//
+//    public native void nativeThreadStart(); //debug
+//
+//    public native void nativeThreadStop(); //debug
+//
+//    public native void ntyBindClient(long did, byte[] json, int length);
+//
+//    public native void ntyUnBindClient(long did);
+//
+//    public native int ntyBindConfirmReqClient(long proposerId, long devId, int msgId, byte[] json, int length);
+//
+//    public native int ntyStartupClient();
+//
+//    public native void ntyShutdownClient();
+//
+//    public native int ntyCommonReqClient(long gId, byte[] json, int length);
+//
+//    public native int ntyDataRouteClient(long gId, byte[] json, int length);
+//
+//    public native int ntyVoiceDataReqClient(long gId, byte[] data, int length);
+//
 
     //**************************************************
 
@@ -96,6 +96,11 @@ public class NattyClient {
 
 
     public void onNativeCallback(int count) { //debug
+    }
+
+    //1
+    public void ntyNativeLoginAckResult(char[] json, int length) {
+
     }
     //**********************************************************************************************************************************************************
     //2 绑定结果
