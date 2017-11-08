@@ -121,13 +121,7 @@ public class NattyClient {
         LogUtil.e(" ntyNativeOfflineMsgAckResult : " + str_json);
     }
     //**********************************************************************************************************************************************************
-    //6 仅含有状态的DataResult
-    //TODO 即：分两步
-    public void ntyNativeDataResult(int status) {
-
-    }
-
-    //6.1  含数据的DataResult
+    //6  含数据的DataResult(修正版)
     public void ntyNativeDataResult(byte[] json, int status) {
         String str_json = new String(json);
         LogUtil.e(" ntyNativeDataResult String " + str_json);
@@ -240,5 +234,104 @@ public class NattyClient {
 
     public void ntyNativeCommonReqResult(long fromId, byte[] json, int status) {
         NattyProtocolFilter.ntyNativeCommonReqResult(fromId, new String(json), status);
+    }
+
+    //*************************************************************
+    //TODO SDK中含有，但Java文件中却没有声明的方法
+
+    public void onNativeSendSuccess(int status){
+
+    }
+
+
+    public void onNativeSendTimeout(int status){
+
+    }
+
+    public void onNativeSendNoExist(int status){
+
+    }
+
+    public void onNativeSendFailed(int status){
+
+    }
+
+    public void onNativeUserRecvCallback(int status){
+
+    }
+
+    public void ntyHeartBeatAckResult(int status){
+
+    }
+
+    public void ntyLogoutAckResult(int status){
+
+    }
+
+    public void ntyTimeAckResult(byte[] json,int length){
+
+    }
+
+    public void ntyICCIDAckResult(byte[] json,int length){
+
+    }
+
+    public void ntyNativeCommonAckResult(byte[] json,int length){
+
+    }
+
+    public void ntyNativeLocationPushResult(byte[] json,int length){
+
+    }
+
+    public void ntyNativeWeatherPushResult(byte[] json,int length){
+
+    }
+
+    //*************************************************************************************
+    public void ntyVoiceBroadCastResult(int status){
+
+    }
+
+    public void ntyVoiceBroadCastResult(byte[] json,int status){
+
+    }
+
+    public void ntyVoiceBroadCastResult(long id,byte[] json,int status){
+
+    }
+
+    public void ntyVoiceBroadCastResult(long id,long json,int status){
+
+    }
+
+    //*************************************************************************************
+    public void ntyLoginAckResult(int status){
+
+    }
+
+    public void ntyLoginAckResult(byte[] json,int status){
+
+    }
+
+    public void ntyLoginAckResult(long id,byte[] json,int status){
+
+    }
+
+    public void ntyLoginAckResult(long id,long json,int status){
+
+    }
+
+    //*************************************************************************************
+    public void ntyNativeVoiceBroadCastResult(int status){
+
+    }
+
+    public void ntyNativeVoiceBroadCastResult(byte[] json,int status){
+
+    }
+
+    public void ntyNativeVoiceBroadCastResult(long id,long json,int status){
+
     }
 }
