@@ -1,5 +1,6 @@
 package com.quanjiakan.activity.common.index.housekeeper;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -24,6 +25,8 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
+import com.quanjiakan.activity.base.ICommonActivityRequestCode;
+import com.quanjiakan.activity.base.ICommonActivityResultCode;
 import com.quanjiakan.adapter.HouseKeeperListAdapter;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.net.IHttpUrlConstants;
@@ -111,11 +114,11 @@ public class HouseKeeperListActivity extends BaseActivity implements GeocodeSear
         public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
                                 long arg3) {
             // TODO Auto-generated method stub
-//            Intent intent = new Intent(context, HouseKeeperDetailActivity.class);
-//            intent.putExtra(BaseConstants.PARAMS_ID, mList.get(arg2 - 1).get("id").getAsString());
-//            intent.putExtra(BaseConstants.PARAM_ENTITY_STRING,mList.get(arg2 - 1).toString());
-//            startActivityForResult(intent, CommonRequestCode.REQUEST_PAY);
-            CommonDialogHint.getInstance().showHint(HouseKeeperListActivity.this,""+arg3);
+            Intent intent = new Intent(HouseKeeperListActivity.this, HouseKeeperDetailInfoActivity.class);
+            intent.putExtra(IParamsName.PARAMS_HOUSE_KEEPER_DETAIL_ID, mList.get((int)arg3).getId());
+            intent.putExtra(IParamsName.PARAMS_HOUSE_KEEPER_DETAIL_INFO,mList.get((int)arg3));
+            startActivityForResult(intent, ICommonActivityRequestCode.BACK_TO_MAIN);
+//            CommonDialogHint.getInstance().showHint(HouseKeeperListActivity.this,""+arg3);
         }
     };
 
@@ -425,7 +428,11 @@ public class HouseKeeperListActivity extends BaseActivity implements GeocodeSear
             if(currentPage==1){
                 //TODO 判断是否应该显示 无数据
                 if(result==null || result.getList()==null || result.getList().size()<1){
-                    showNodataHint(true);
+                    if(mList!=null && mList.size()>0){//TODO 有数据时则不进行操作（不论是否出现访问失败，还是没拿到数据）
+
+                    }else{//TODO 在尚未获取到过数据时显示无数据提示
+                        showNodataHint(true);
+                    }
                     return;
                 }else{
                     showNodataHint(false);
@@ -433,7 +440,11 @@ public class HouseKeeperListActivity extends BaseActivity implements GeocodeSear
                     //********************
                     mList.clear();
                     mList.addAll(result.getList());
-                    listView.setMode(PullToRefreshBase.Mode.BOTH);
+                    if(result.getList().size()>=10){
+                        listView.setMode(PullToRefreshBase.Mode.BOTH);
+                    }else{
+                        listView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+                    }
                     mAdapter = new HouseKeeperListAdapter(this, mList);
                     listView.setAdapter(mAdapter);
                     listView.setOnItemClickListener(onItemClickListener);
@@ -690,6 +701,17 @@ public class HouseKeeperListActivity extends BaseActivity implements GeocodeSear
             loadHouseKeeperListDataWithPositioin();
         }else{
             loadHouseKeeperListDataWithoutPosition();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode){
+            case ICommonActivityRequestCode.BACK_TO_MAIN:
+                if(resultCode== ICommonActivityResultCode.BACK_TO_MAIN){
+                    finish();
+                }
+                break;
         }
     }
 }

@@ -1,0 +1,350 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_bg_color">
+
+    <include
+        android:id="@+id/layout_title"
+        layout="@layout/titlebar_common" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/layout_btns"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/layout_title">
+
+        <LinearLayout
+            android:id="@+id/layout_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/main_bg_color"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:paddingBottom="@dimen/size_16"
+                android:paddingLeft="@dimen/size_8"
+                android:paddingRight="@dimen/size_8"
+                android:paddingTop="@dimen/size_16">
+
+                <ImageView
+                    android:id="@+id/image"
+                    android:layout_width="@dimen/height_70"
+                    android:layout_height="@dimen/height_70"
+                    android:scaleType="centerCrop" />
+
+                <TextView
+                    android:id="@+id/tv_level"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_15"
+                    android:layout_toRightOf="@+id/tv_name"
+                    android:background="@drawable/selector_hollow_transport_169e4f"
+                    android:padding="@dimen/size_2"
+                    android:text="@string/hint_house_keeper_detail_level1"
+                    android:textColor="#169e4f"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tv_age"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/tv_name"
+                    android:layout_below="@+id/tv_name"
+                    android:layout_marginTop="@dimen/size_8"
+                    android:text="年龄:"
+                    android:textColor="@color/hei"
+                    android:textSize="@dimen/font_14" />
+
+                <TextView
+                    android:id="@+id/tv_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_name"
+                    android:layout_marginLeft="@dimen/margin_20"
+                    android:layout_marginTop="@dimen/size_8"
+                    android:layout_toRightOf="@+id/tv_age"
+                    android:text="价格:"
+                    android:textColor="@color/hei"
+                    android:textSize="@dimen/font_14" />
+
+                <TextView
+                    android:id="@+id/tv_rate_key"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/tv_name"
+                    android:layout_below="@+id/tv_price"
+                    android:layout_marginTop="@dimen/size_8"
+                    android:text="@string/hint_house_keeper_detail_rating"
+                    android:textColor="@color/hei" />
+
+                <RatingBar
+                    android:id="@+id/rbar"
+                    style="@style/roomRatingBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_price"
+                    android:layout_marginLeft="@dimen/size_4"
+                    android:layout_marginTop="@dimen/size_10"
+                    android:layout_toRightOf="@+id/tv_rate_key"
+                    android:numStars="5" />
+
+                <TextView
+                    android:id="@+id/tv_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="7dp"
+                    android:text="@string/hint_house_keeper_detail_name"
+                    android:textColor="@color/hei222"
+                    android:textSize="@dimen/font_medium"
+                    android:layout_alignParentTop="true"
+                    android:layout_toRightOf="@+id/image"
+                    android:layout_toEndOf="@+id/image"
+                    android:layout_marginStart="7dp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/size_12"
+                android:background="@color/white">
+
+                <TextView
+                    android:id="@+id/tv_mark"
+                    android:layout_width="@dimen/size_4"
+                    android:layout_height="@dimen/size_18"
+                    android:layout_marginBottom="@dimen/size_6"
+                    android:layout_marginTop="@dimen/size_6"
+                    android:background="@color/maincolor" />
+
+                <TextView
+                    android:id="@+id/tv_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/size_6"
+                    android:layout_marginLeft="@dimen/size_12"
+                    android:layout_marginTop="@dimen/size_6"
+                    android:layout_toRightOf="@+id/tv_mark"
+                    android:text="保姆信息"
+                    android:textColor="@color/hei55"
+                    android:textSize="@dimen/font_14" />
+
+                <TextView
+                    android:id="@+id/tv_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/size_1"
+                    android:layout_below="@+id/tv_info"
+                    android:layout_marginLeft="@dimen/size_12"
+                    android:layout_marginRight="@dimen/size_12"
+                    android:background="@color/fengexian" />
+
+                <TextView
+                    android:id="@+id/tv_company"
+                    style="@style/textview_key"
+                    android:layout_below="@+id/tv_line"
+                    android:layout_marginLeft="@dimen/size_8"
+                    android:layout_marginRight="@dimen/size_8"
+                    android:text="公司:" />
+
+                <TextView
+                    android:id="@+id/tv_region"
+                    style="@style/textview_key"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_company"
+                    android:layout_marginLeft="@dimen/size_8"
+                    android:layout_marginRight="@dimen/size_8"
+                    android:text="区域:" />
+
+                <TextView
+                    android:id="@+id/tv_experience"
+                    style="@style/textview_key"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_region"
+                    android:layout_marginLeft="@dimen/size_8"
+                    android:layout_marginRight="@dimen/size_8"
+                    android:text="工龄:" />
+
+                <TextView
+                    android:id="@+id/tv_items"
+                    style="@style/textview_key"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_experience"
+                    android:layout_marginLeft="@dimen/size_8"
+                    android:layout_marginRight="@dimen/size_8"
+                    android:text="是否住家:" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/layout_info_company"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/size_12"
+                android:background="@color/white">
+
+                <TextView
+                    android:id="@+id/tv_mark_company"
+                    android:layout_width="@dimen/size_4"
+                    android:layout_height="@dimen/size_18"
+                    android:layout_marginBottom="@dimen/size_6"
+                    android:layout_marginTop="@dimen/size_6"
+                    android:background="@color/maincolor" />
+
+                <TextView
+                    android:id="@+id/tv_info_company"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/size_6"
+                    android:layout_marginLeft="@dimen/size_12"
+                    android:layout_marginTop="@dimen/size_6"
+                    android:layout_toRightOf="@+id/tv_mark_company"
+                    android:text="商家信息"
+                    android:textColor="@color/hei55"
+                    android:textSize="@dimen/font_14" />
+
+                <TextView
+                    android:id="@+id/tv_line_company"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/size_1"
+                    android:layout_below="@+id/tv_info_company"
+                    android:layout_marginLeft="@dimen/size_12"
+                    android:layout_marginRight="@dimen/size_12"
+                    android:background="@color/fengexian" />
+
+                <TextView
+                    android:id="@+id/tv_name_company"
+                    style="@style/textview_key"
+                    android:layout_below="@+id/tv_line_company"
+                    android:layout_marginLeft="@dimen/size_8"
+                    android:layout_marginRight="@dimen/size_8"
+                    android:layout_marginTop="@dimen/size_8"
+                    android:text="@string/hint_house_keeper_detail_company_postfix"
+                    android:textColor="@color/hei222"
+                    android:textSize="@dimen/font_15" />
+
+                <TextView
+                    android:id="@+id/tv_address_company"
+                    style="@style/textview_key"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_name_company"
+                    android:layout_marginLeft="@dimen/size_16"
+                    android:layout_marginRight="@dimen/size_16"
+                    android:layout_toLeftOf="@+id/tv_line_phone"
+                    android:padding="@dimen/size_0"
+                    android:text="@string/hint_house_keeper_detail_company_location"
+                    android:textColor="@color/colorAlphaBlack_55" />
+
+                <TextView
+                    android:id="@+id/tv_line_phone"
+                    android:layout_width="@dimen/size_1"
+                    android:layout_height="@dimen/height_40"
+                    android:layout_below="@+id/tv_line_company"
+                    android:layout_marginBottom="@dimen/size_5"
+                    android:layout_marginTop="@dimen/height_20"
+                    android:layout_toLeftOf="@+id/image_call"
+                    android:background="@color/fengexian" />
+
+
+                <ImageView
+                    android:id="@+id/image_call"
+                    android:layout_width="@dimen/height_70"
+                    android:layout_height="@dimen/height_70"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@+id/tv_line_company"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/phone_call" />
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/layout_service_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/font_12"
+                android:background="@color/white">
+
+                <TextView
+                    android:id="@+id/tv_mark_services"
+                    android:layout_width="@dimen/size_4"
+                    android:layout_height="@dimen/size_18"
+                    android:layout_marginBottom="@dimen/size_6"
+                    android:layout_marginTop="@dimen/size_6"
+                    android:background="@color/maincolor" />
+
+                <TextView
+                    android:id="@+id/tv_info_service"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/size_6"
+                    android:layout_marginLeft="@dimen/size_12"
+                    android:layout_marginTop="@dimen/size_6"
+                    android:layout_toRightOf="@+id/tv_mark_services"
+                    android:text="@string/hint_house_keeper_detail_service_title"
+                    android:textColor="@color/hei55"
+                    android:textSize="@dimen/font_14" />
+
+                <TextView
+                    android:id="@+id/tv_line_service"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/size_1"
+                    android:layout_below="@+id/tv_info_service"
+                    android:layout_marginLeft="@dimen/size_12"
+                    android:layout_marginRight="@dimen/size_12"
+                    android:background="@color/fengexian"
+                    android:text="22222" />
+
+                <TextView
+                    android:id="@+id/tv_service_items"
+                    style="@style/textview_key"
+                    android:layout_below="@+id/tv_line_service"
+                    android:layout_marginLeft="@dimen/size_8"
+                    android:layout_marginRight="@dimen/size_8"
+                    android:layout_marginTop="@dimen/size_8"
+                    android:text="@string/hint_house_keeper_detail_company_postfix"
+                    android:textColor="@color/hei222"
+                    android:textSize="@dimen/font_15" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/layout_btns"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="@color/colorPureWhite"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_buy"
+            android:layout_width="@dimen/height_200"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/size_8"
+            android:background="@drawable/selector_hollow_green_transport"
+            android:gravity="center_horizontal"
+            android:padding="@dimen/size_8"
+            android:text="@string/hint_house_keeper_detail_buy"
+            android:textColor="@color/color_title_green"
+            android:textSize="@dimen/font_big" />
+
+    </LinearLayout>
+
+</RelativeLayout>	

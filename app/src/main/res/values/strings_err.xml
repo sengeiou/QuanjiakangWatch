@@ -4,6 +4,8 @@
     <string name="error_common_net_request_fail">数据获取失败，请重试!</string>
     <string name="error_common_net_invalid_parameters">无效的请求参数!</string>
 
+    <string name="error_common_error_activity_parameters">无效的传递参数!</string>
+
     <!--      流程   登录   错误提示       -->
     <string name="error_login_hint">登录失败</string>
     <string name="error_hint">登录失败</string>
@@ -16,5 +18,18 @@
     <string name="error_findpassword_error_phone">请输入正确手机号码</string>
     <string name="error_findpassword_error_check_code">验证码不一致，请重试!</string>
     <string name="error_findpassword_reset_error">找回密码失败!</string>
+
+    <!--      流程   家政   错误提示       -->
+    <string name="error_house_keeper_order_no_time">请选择开始或结束日期</string>
+    <string name="error_house_keeper_order_time_select_error">结束日期应该在开始日期之后</string>
+    <string name="error_house_keeper_order_no_info">请填写联系人姓名，电话，地址等</string>
+    <string name="error_house_keeper_order_error_mobile">请填写正确的联系人手机号码</string>
+    <string name="error_house_keeper_order_error_name">请填写正确的联系人姓名</string>
+
+
+
+
+    <string name="error_housekeeper_wrong_phonenumber">未获取到公司服务电话!</string>
+
 </resources>
 

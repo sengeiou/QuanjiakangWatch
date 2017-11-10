@@ -132,3 +132,28 @@ public static java.lang.String TABLENAME;
 -dontwarn com.trello.**
 
 ###### 避免混淆泛型 #######
+# ----- 关于JNI调用时出现NoSuchMethodError-------多由于混淆造成，解决方法为，避免对JNI代码相关的调用类的混淆
+#11-09 09:24:59.380 23320-23353/com.quanjiakan.watch E/Native___Natty: GetMethodID ---  ntyCallJavaFuncReturn ntyNativeVoiceBroadCastResult
+#11-09 09:24:59.419 23320-23353/com.quanjiakan.watch A/art: art/runtime/check_jni.cc:70] JNI DETECTED ERROR IN APPLICATION: JNI GetMethodID called with pending exception 'java.lang.NoSuchMethodError' thrown in unknown throw location
+#11-09 09:24:59.419 23320-23353/com.quanjiakan.watch A/art: art/runtime/check_jni.cc:70]     in call to GetMethodID
+#11-09 09:24:59.420 23320-23353/com.quanjiakan.watch A/art: art/runtime/check_jni.cc:70] "Thread-4141" prio=5 tid=18 Runnable
+#11-09 09:24:59.420 23320-23353/com.quanjiakan.watch A/art: art/runtime/check_jni.cc:70]   | group="main" sCount=0 dsCount=0 obj=0x32d450a0 self=0x7fad051800
+#11-09 09:24:59.420 23320-23353/com.quanjiakan.watch A/art: art/runtime/check_jni.cc:70]   | sysTid=23353 nice=0 cgrp=bg_non_interactive sched=0/0 handle=0x7fb2971000
+#11-09 09:24:59.420 23320-23353/com.quanjiakan.watch A/art: art/runtime/check_jni.cc:70]   | state=R schedstat=( 27662603 627978621 695 ) utm=0 stm=2 core=0 HZ=100
+#11-09 09:24:59.420 23320-23353/com.quanjiakan.watch A/art: art/runtime/check_jni.cc:70]   | stack=0x7f9ed63000-0x7f9ed65000 stackSize=1008KB
+#11-09 09:24:59.420 23320-23353/com.quanjiakan.watch A/art: art/runtime/check_jni.cc:70]   | held mutexes= "mutator lock"(shared held)
+#11-09 09:24:59.421 23320-23353/com.quanjiakan.watch A/art: art/runtime/check_jni.cc:70]   native: #00 pc 00004234  /system/lib64/libbacktrace_libc++.so (_ZN9Backtrace6UnwindEmP8ucontext+28)
+#11-09 09:24:59.421 23320-23353/com.quanjiakan.watch A/art: art/runtime/check_jni.cc:70]   native: #01 pc 0000001c  ???
+#11-09 09:24:59.421 23320-23353/com.quanjiakan.watch A/art: art/runtime/check_jni.cc:70]   (no managed stack frames)
+#11-09 09:24:59.421 23320-23353/com.quanjiakan.watch A/art: art/runtime/check_jni.cc:70]
+#11-09 09:24:59.422 23320-23353/com.quanjiakan.watch A/libc: Fatal signal 6 (SIGABRT), code -6 in tid 23353 (Thread-4141)
+-keep class com.wbj.** {*;}
+-dontwarn com.wbj.**
+
+
+
+
+
+
+
+

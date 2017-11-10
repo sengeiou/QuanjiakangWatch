@@ -47,6 +47,12 @@ public interface IParamsName {
     String PARAMS_HOUSE_KEEPER_DIST = "serviceDist";
     String PARAMS_HOUSE_KEEPER_TYPE = "housekeeperType";
 
+    String PARAMS_HOUSE_KEEPER_DETAIL_ID = "housekeeperDetailID";
+    String PARAMS_HOUSE_KEEPER_DETAIL_INFO = "housekeeperDetailInfo";
+
+    String PARAMS_HOUSE_KEEPER_DETAIL_ALIAS = "housekeeperDetailAlias";
+
+
     //TODO 手表相关
     String PARAMS_DEVICE_MEMBER_ID = "memberId";
 

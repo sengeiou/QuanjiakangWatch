@@ -23,35 +23,35 @@ import retrofit2.http.Query;
 public interface RxGetHouseKeeperListService {
 
     @GET("/"+IHttpUrlConstants.PROJECT_PINGAN+"/"+ IHttpUrlConstants.REQUEST_GET+"?handler=services&action=housekeeperlist&rows=10")
-    rx.Observable<GetHouseKeeperListEntity> doGetWatchListWithoutLocation(@Query(IParamsName.PARAMS_COMMON_PLATFORM) String platform,
-                                                           @Query(IParamsName.PARAMS_COMMON_TOKEN) String token,
-                                                           @Query(IParamsName.PARAMS_COMMON_PAGE) String page
+    rx.Observable<GetHouseKeeperListEntity> doGetHouseKeeperListWithoutLocation(@Query(IParamsName.PARAMS_COMMON_PLATFORM) String platform,
+                                                                                @Query(IParamsName.PARAMS_COMMON_TOKEN) String token,
+                                                                                @Query(IParamsName.PARAMS_COMMON_PAGE) String page
     );
 
     @GET("/"+IHttpUrlConstants.PROJECT_PINGAN+"/"+ IHttpUrlConstants.REQUEST_GET+"?handler=services&action=housekeeperlist&rows=10")
-    rx.Observable<GetHouseKeeperListEntity> doGetWatchListWithoutLocation(@Query(IParamsName.PARAMS_COMMON_PLATFORM) String platform,
-                                                                          @Query(IParamsName.PARAMS_COMMON_TOKEN) String token,
-                                                                          @Query(IParamsName.PARAMS_HOUSE_KEEPER_TYPE) String type,
-                                                                          @Query(IParamsName.PARAMS_COMMON_PAGE) String page
+    rx.Observable<GetHouseKeeperListEntity> doGetHouseKeeperListWithoutLocation(@Query(IParamsName.PARAMS_COMMON_PLATFORM) String platform,
+                                                                                @Query(IParamsName.PARAMS_COMMON_TOKEN) String token,
+                                                                                @Query(IParamsName.PARAMS_HOUSE_KEEPER_TYPE) String type,
+                                                                                @Query(IParamsName.PARAMS_COMMON_PAGE) String page
     );
 
 
     @GET("/"+IHttpUrlConstants.PROJECT_PINGAN+"/"+ IHttpUrlConstants.REQUEST_GET+"?handler=services&action=housekeeperlist&rows=10")
-    rx.Observable<GetHouseKeeperListEntity> doGetWatchListWithoutLocation(@Query(IParamsName.PARAMS_COMMON_PLATFORM) String platform,
-                                                                          @Query(IParamsName.PARAMS_COMMON_TOKEN) String token,
-                                                                          @Query(IParamsName.PARAMS_COMMON_PAGE) String page,
-                                                                          @Query(IParamsName.PARAMS_HOUSE_KEEPER_PROVINCE) String serviceProvince,
-                                                                          @Query(IParamsName.PARAMS_HOUSE_KEEPER_CITY) String serviceCity,
-                                                                          @Query(IParamsName.PARAMS_HOUSE_KEEPER_DIST) String serviceDist
+    rx.Observable<GetHouseKeeperListEntity> doGetHouseKeeperListWithoutLocation(@Query(IParamsName.PARAMS_COMMON_PLATFORM) String platform,
+                                                                                @Query(IParamsName.PARAMS_COMMON_TOKEN) String token,
+                                                                                @Query(IParamsName.PARAMS_COMMON_PAGE) String page,
+                                                                                @Query(IParamsName.PARAMS_HOUSE_KEEPER_PROVINCE) String serviceProvince,
+                                                                                @Query(IParamsName.PARAMS_HOUSE_KEEPER_CITY) String serviceCity,
+                                                                                @Query(IParamsName.PARAMS_HOUSE_KEEPER_DIST) String serviceDist
     );
 
     @GET("/"+IHttpUrlConstants.PROJECT_PINGAN+"/"+ IHttpUrlConstants.REQUEST_GET+"?handler=services&action=housekeeperlist&rows=10")
-    rx.Observable<GetHouseKeeperListEntity> doGetWatchListWithoutLocation(@Query(IParamsName.PARAMS_COMMON_PLATFORM) String platform,
-                                                                          @Query(IParamsName.PARAMS_COMMON_TOKEN) String token,
-                                                                          @Query(IParamsName.PARAMS_HOUSE_KEEPER_TYPE) String type,
-                                                                          @Query(IParamsName.PARAMS_COMMON_PAGE) String page,
-                                                                          @Query(IParamsName.PARAMS_HOUSE_KEEPER_PROVINCE) String serviceProvince,
-                                                                          @Query(IParamsName.PARAMS_HOUSE_KEEPER_CITY) String serviceCity,
-                                                                          @Query(IParamsName.PARAMS_HOUSE_KEEPER_DIST) String serviceDist
+    rx.Observable<GetHouseKeeperListEntity> doGetHouseKeeperListWithoutLocation(@Query(IParamsName.PARAMS_COMMON_PLATFORM) String platform,
+                                                                                @Query(IParamsName.PARAMS_COMMON_TOKEN) String token,
+                                                                                @Query(IParamsName.PARAMS_HOUSE_KEEPER_TYPE) String type,
+                                                                                @Query(IParamsName.PARAMS_COMMON_PAGE) String page,
+                                                                                @Query(IParamsName.PARAMS_HOUSE_KEEPER_PROVINCE) String serviceProvince,
+                                                                                @Query(IParamsName.PARAMS_HOUSE_KEEPER_CITY) String serviceCity,
+                                                                                @Query(IParamsName.PARAMS_HOUSE_KEEPER_DIST) String serviceDist
     );
 }

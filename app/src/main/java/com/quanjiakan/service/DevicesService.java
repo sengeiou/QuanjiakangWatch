@@ -9,8 +9,6 @@ import com.quanjiakan.util.common.LogUtil;
 
 public class DevicesService extends Service {
 
-    private Thread threadHolder;
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -21,7 +19,7 @@ public class DevicesService extends Service {
     public void initBindDevice(){
         BaseApplication.getInstances().setSDKServerStatus(-1+"");
         if(BaseApplication.getInstances().isNattyNull()){
-            threadHolder = new Thread(){
+            BaseApplication.getInstances().addThreadTask(new Runnable() {
                 @Override
                 public void run() {
                     /**
@@ -34,8 +32,7 @@ public class DevicesService extends Service {
                     int res = BaseApplication.getInstances().startupNattyClient();
                     BaseApplication.getInstances().setSDKServerStatus(res+"");
                 }
-            };
-            threadHolder.start();
+            });
         }
     }
 

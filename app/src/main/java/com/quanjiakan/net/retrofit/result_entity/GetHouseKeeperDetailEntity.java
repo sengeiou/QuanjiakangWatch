@@ -1,27 +1,20 @@
 package com.quanjiakan.net.retrofit.result_entity;
 
-import java.io.Serializable;
-import java.util.List;
-
 /**
- * Created by Administrator on 2017/10/26.
+ * Created by Administrator on 2017/11/9.
  */
 
-public class GetHouseKeeperListEntity implements Serializable{
+public class GetHouseKeeperDetailEntity {
 
     /**
      * code : 200
-     * list : [{"address":"广州市天河区龙口西196号伊顿商务中心3楼   ","age":46,"companyId":7,"companyName":"广州家事无忧家庭服务股份有限公司   ","createtime":"2017-05-10 13:59:47.0","creator":1,"education":1,"experience":"6","fromRegion":"湖南,null,null","gender":"f","height":160,"housekeeperType":1,"housekeeperTypeName":"保姆","id":38,"image":"http://picture.quanjiakan.com:9080/quanjiakan/resources/housekeeper/20161109200616_ri4lld.png","language":"普通话","level":1,"marriage":1,"mobile":"020-81773777","model":1,"name":"刘霞","nation":"汉族","price":"3500-4000","serviceItem":"室内桌面,台面,厨房,卫生间,整理物品,清除垃圾\r\n","serviceRegion":"广东,广州,荔湾区","shengxiao":"狗","star":1,"status":1},{"address":"广州市天河区龙口西196号伊顿商务中心3楼   ","age":47,"companyId":7,"companyName":"广州家事无忧家庭服务股份有限公司   ","createtime":"2017-05-10 14:21:30.0","creator":1,"education":1,"experience":"5","fromAddress":"{\"province\":18,\"city\":186,\"area\":1796}","fromRegion":"湖南,长沙,芙蓉区","gender":"f","height":156,"housekeeperType":1,"housekeeperTypeName":"保姆","id":91,"image":"http://picture.quanjiakan.com:9080/quanjiakan/resources/housekeeper/20161109200637_jmuz0k.jpg","language":"普通话","level":1,"marriage":1,"mobile":"020-81773777","model":1,"name":"刘桂兰","nation":"汉族","price":"3500-4000","serviceAddress":"{\"province\":19,\"city\":200,\"area\":1932}","serviceItem":"室内桌面,台面,厨房,卫生间,整理物品,清除垃圾","serviceRegion":"广东,广州,荔湾区","shengxiao":"猴","star":1,"status":1}]
      * message : 返回成功
-     * rows : 15
-     * total : 768
+     * object : {"address":"广州市天河区龙口西196号伊顿商务中心3楼   ","age":46,"companyId":7,"companyName":"广州家事无忧家庭服务股份有限公司   ","createtime":"2017-05-10 13:59:47.0","creator":1,"education":1,"experience":"6","fromRegion":"湖南,null,null","gender":"f","height":160,"housekeeperType":1,"id":38,"image":"http://picture.quanjiakan.com:9080/quanjiakan/resources/housekeeper/20161109200616_ri4lld.png","language":"普通话","level":1,"marriage":1,"mobile":"020-81773777","model":1,"name":"刘霞","nation":"汉族","price":"3500-4000","serviceItem":"室内桌面,台面,厨房,卫生间,整理物品,清除垃圾\r\n","serviceRegion":"广东,广州,荔湾区","shengxiao":"狗","star":1,"status":1}
      */
 
     private String code;
     private String message;
-    private int rows;
-    private int total;
-    private List<ListBean> list;
+    private ObjectBean object;
 
     public String getCode() {
         return code;
@@ -39,31 +32,15 @@ public class GetHouseKeeperListEntity implements Serializable{
         this.message = message;
     }
 
-    public int getRows() {
-        return rows;
+    public ObjectBean getObject() {
+        return object;
     }
 
-    public void setRows(int rows) {
-        this.rows = rows;
+    public void setObject(ObjectBean object) {
+        this.object = object;
     }
 
-    public int getTotal() {
-        return total;
-    }
-
-    public void setTotal(int total) {
-        this.total = total;
-    }
-
-    public List<ListBean> getList() {
-        return list;
-    }
-
-    public void setList(List<ListBean> list) {
-        this.list = list;
-    }
-
-    public static class ListBean  implements Serializable{
+    public static class ObjectBean {
         /**
          * address : 广州市天河区龙口西196号伊顿商务中心3楼
          * age : 46
@@ -77,7 +54,6 @@ public class GetHouseKeeperListEntity implements Serializable{
          * gender : f
          * height : 160
          * housekeeperType : 1
-         * housekeeperTypeName : 保姆
          * id : 38
          * image : http://picture.quanjiakan.com:9080/quanjiakan/resources/housekeeper/20161109200616_ri4lld.png
          * language : 普通话
@@ -94,8 +70,6 @@ public class GetHouseKeeperListEntity implements Serializable{
          * shengxiao : 狗
          * star : 1
          * status : 1
-         * fromAddress : {"province":18,"city":186,"area":1796}
-         * serviceAddress : {"province":19,"city":200,"area":1932}
          */
 
         private String address;
@@ -110,7 +84,6 @@ public class GetHouseKeeperListEntity implements Serializable{
         private String gender;
         private int height;
         private int housekeeperType;
-        private String housekeeperTypeName;
         private int id;
         private String image;
         private String language;
@@ -126,8 +99,6 @@ public class GetHouseKeeperListEntity implements Serializable{
         private String shengxiao;
         private int star;
         private int status;
-        private String fromAddress;
-        private String serviceAddress;
 
         public String getAddress() {
             return address;
@@ -223,14 +194,6 @@ public class GetHouseKeeperListEntity implements Serializable{
 
         public void setHousekeeperType(int housekeeperType) {
             this.housekeeperType = housekeeperType;
-        }
-
-        public String getHousekeeperTypeName() {
-            return housekeeperTypeName;
-        }
-
-        public void setHousekeeperTypeName(String housekeeperTypeName) {
-            this.housekeeperTypeName = housekeeperTypeName;
         }
 
         public int getId() {
@@ -351,58 +314,6 @@ public class GetHouseKeeperListEntity implements Serializable{
 
         public void setStatus(int status) {
             this.status = status;
-        }
-
-        public String getFromAddress() {
-            return fromAddress;
-        }
-
-        public void setFromAddress(String fromAddress) {
-            this.fromAddress = fromAddress;
-        }
-
-        public String getServiceAddress() {
-            return serviceAddress;
-        }
-
-        public void setServiceAddress(String serviceAddress) {
-            this.serviceAddress = serviceAddress;
-        }
-
-        @Override
-        public String toString() {
-            return "ListBean{" +
-                    "address='" + address + '\'' +
-                    ", age=" + age +
-                    ", companyId=" + companyId +
-                    ", companyName='" + companyName + '\'' +
-                    ", createtime='" + createtime + '\'' +
-                    ", creator=" + creator +
-                    ", education=" + education +
-                    ", experience='" + experience + '\'' +
-                    ", fromRegion='" + fromRegion + '\'' +
-                    ", gender='" + gender + '\'' +
-                    ", height=" + height +
-                    ", housekeeperType=" + housekeeperType +
-                    ", housekeeperTypeName='" + housekeeperTypeName + '\'' +
-                    ", id=" + id +
-                    ", image='" + image + '\'' +
-                    ", language='" + language + '\'' +
-                    ", level=" + level +
-                    ", marriage=" + marriage +
-                    ", mobile='" + mobile + '\'' +
-                    ", model=" + model +
-                    ", name='" + name + '\'' +
-                    ", nation='" + nation + '\'' +
-                    ", price='" + price + '\'' +
-                    ", serviceItem='" + serviceItem + '\'' +
-                    ", serviceRegion='" + serviceRegion + '\'' +
-                    ", shengxiao='" + shengxiao + '\'' +
-                    ", star=" + star +
-                    ", status=" + status +
-                    ", fromAddress='" + fromAddress + '\'' +
-                    ", serviceAddress='" + serviceAddress + '\'' +
-                    '}';
         }
     }
 }

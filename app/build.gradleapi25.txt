@@ -1,0 +1,113 @@
+apply plugin: 'com.android.application'
+apply plugin: 'org.greenrobot.greendao'
+
+buildscript {
+    repositories {
+        mavenCentral() // add repository
+    }
+    dependencies {
+        classpath 'org.greenrobot:greendao-gradle-plugin:3.0.0'  // add plugin
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+greendao {
+    schemaVersion 3
+    daoPackage 'com.example.greendao.dao'
+    targetGenDir 'src/main/java'
+}
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.3"
+    defaultConfig {
+        applicationId "com.quanjiakan.watch"
+        minSdkVersion 16
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        multiDexEnabled true
+
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a", "arm64-v8a", "x86","arm64-v8a","x86_64"
+// 'x86_64', 'arm64-v8a', mips, mips64...加入需要生成的文件夹
+        }
+
+    }
+    buildTypes {
+        debug {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            buildConfigField "boolean", "LOG_DEBUG", "true"
+            buildConfigField "int", "LOG_LEVEL", "1"
+            buildConfigField "String", "DB_NAME", '"databaseName.db"'
+        }
+        release {
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            buildConfigField "boolean", "LOG_DEBUG", "false"
+            buildConfigField "int", "LOG_LEVEL", "10"
+            buildConfigField "String", "DB_NAME", '"databaseName.db"'
+        }
+    }
+
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+//    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+//        exclude group: 'com.android.support', module: 'support-annotations'
+//    })
+    compile 'com.android.support:appcompat-v7:25.3.1'
+
+    //************************* Test
+    //    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+//        exclude group: 'com.android.support', module: 'support-annotations'
+//    })
+    testCompile 'junit:junit:4.12'
+
+    //************************* Rx depandence
+    compile 'io.reactivex:rxjava:1.1.0'
+    compile 'io.reactivex:rxandroid:1.1.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'com.google.code.gson:gson:2.6.2'
+    compile 'com.trello:rxlifecycle:1.0'
+    compile 'com.trello:rxlifecycle-components:1.0'
+    //************************* Permission Check depandence
+    compile 'com.lovedise:permissiongen:0.0.6'
+    //************************* Umeng statistics
+    compile 'com.umeng.analytics:analytics:latest.integration'
+    //************************* leakCanary
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+    //************************* greendao
+    // greendao3.0 配置可以参考 http://blog.csdn.net/njweiyukun/article/details/51893092
+    compile 'org.greenrobot:greendao:3.0.1'
+    compile 'org.greenrobot:greendao-generator:3.0.0'
+
+    //************************* eventbus
+    compile 'org.greenrobot:eventbus:3.0.0'
+    //************************* butterknife
+    compile 'com.jakewharton:butterknife:8.4.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+    //************************* AMap
+    compile 'com.amap.api:location:latest.integration'
+    compile 'com.amap.api:search:latest.integration'
+    compile 'com.amap.api:navi-3dmap:latest.integration'//TODO 导航里存在3Dmap，若再次引入map将出现重复引用异常
+    //************************* Picasso 图片加载
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    //************************* 图片放大
+    compile 'com.commit451:PhotoView:1.2.4'
+
+    compile project(path: ':pulltorefresh')
+}

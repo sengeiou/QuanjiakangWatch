@@ -40,19 +40,23 @@ public class HouseKeeperListAdapter extends BaseAdapter {
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub
-		return mList.size();
+		if(mList!=null){
+			return mList.size();
+		}else{
+			return 0;
+		}
 	}
 
 	@Override
 	public Object getItem(int arg0) {
 		// TODO Auto-generated method stub
-		return null;
+		return arg0;
 	}
 
 	@Override
 	public long getItemId(int arg0) {
 		// TODO Auto-generated method stub
-		return mList.get(arg0).getId();
+		return arg0;
 	}
 
 	@Override

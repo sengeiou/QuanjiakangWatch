@@ -36,7 +36,7 @@ public class HouseKeeperListPresenter implements IBasePresenter {
         RxGetHouseKeeperListService rxGetRequest = retrofit.create(RxGetHouseKeeperListService.class);
 
         if (params.containsKey(IParamsName.PARAMS_HOUSE_KEEPER_TYPE)) {
-            rxGetRequest.doGetWatchListWithoutLocation(params.get(IParamsName.PARAMS_COMMON_PLATFORM),
+            rxGetRequest.doGetHouseKeeperListWithoutLocation(params.get(IParamsName.PARAMS_COMMON_PLATFORM),
                     params.get(IParamsName.PARAMS_COMMON_TOKEN),
                     params.get(IParamsName.PARAMS_HOUSE_KEEPER_TYPE),
                     params.get(IParamsName.PARAMS_COMMON_PAGE))
@@ -62,7 +62,7 @@ public class HouseKeeperListPresenter implements IBasePresenter {
                         }
                     });
         } else {
-            rxGetRequest.doGetWatchListWithoutLocation(params.get(IParamsName.PARAMS_COMMON_PLATFORM),
+            rxGetRequest.doGetHouseKeeperListWithoutLocation(params.get(IParamsName.PARAMS_COMMON_PLATFORM),
                     params.get(IParamsName.PARAMS_COMMON_TOKEN),
                     params.get(IParamsName.PARAMS_COMMON_PAGE))
                     .subscribeOn(Schedulers.io())
@@ -104,7 +104,7 @@ public class HouseKeeperListPresenter implements IBasePresenter {
         RxGetHouseKeeperListService rxGetRequest = retrofit.create(RxGetHouseKeeperListService.class);
 
         if (params.containsKey(IParamsName.PARAMS_HOUSE_KEEPER_TYPE)) {
-            rxGetRequest.doGetWatchListWithoutLocation(params.get(IParamsName.PARAMS_COMMON_PLATFORM),
+            rxGetRequest.doGetHouseKeeperListWithoutLocation(params.get(IParamsName.PARAMS_COMMON_PLATFORM),
                     params.get(IParamsName.PARAMS_COMMON_TOKEN),
                     params.get(IParamsName.PARAMS_HOUSE_KEEPER_TYPE),
                     params.get(IParamsName.PARAMS_COMMON_PAGE),
@@ -133,7 +133,7 @@ public class HouseKeeperListPresenter implements IBasePresenter {
                         }
                     });
         } else {
-            rxGetRequest.doGetWatchListWithoutLocation(params.get(IParamsName.PARAMS_COMMON_PLATFORM),
+            rxGetRequest.doGetHouseKeeperListWithoutLocation(params.get(IParamsName.PARAMS_COMMON_PLATFORM),
                     params.get(IParamsName.PARAMS_COMMON_TOKEN),
                     params.get(IParamsName.PARAMS_COMMON_PAGE),
                     params.get(IParamsName.PARAMS_HOUSE_KEEPER_PROVINCE),
@@ -177,7 +177,7 @@ public class HouseKeeperListPresenter implements IBasePresenter {
         //TODO 访问成功过，且数据获取到了
 //        Retrofit retrofit = Retrofit2Util.getRetrofitStringResult(IHttpUrlConstants.BASEURL_APP);
 //        RxGetHouseKeeperListStringService rxGetRequest = retrofit.create(RxGetHouseKeeperListStringService.class);
-//        rxGetRequest.doGetWatchListWithoutLocation(params.get(IParamsName.PARAMS_COMMON_PLATFORM),
+//        rxGetRequest.doGetHouseKeeperListWithoutLocation(params.get(IParamsName.PARAMS_COMMON_PLATFORM),
 //                params.get(IParamsName.PARAMS_COMMON_TOKEN),
 //                params.get(IParamsName.PARAMS_COMMON_PAGE),
 //                params.get(IParamsName.PARAMS_HOUSE_KEEPER_PROVINCE),
@@ -231,7 +231,7 @@ public class HouseKeeperListPresenter implements IBasePresenter {
         //TODO 可用，但针对请求似乎存在问题
 //        Retrofit retrofit = Retrofit2Util.getRetrofitStringResult(IHttpUrlConstants.BASEURL_APP);
 //        RxGetHouseKeeperListStringService rxGetRequest = retrofit.create(RxGetHouseKeeperListStringService.class);
-//        rxGetRequest.doGetWatchListWithoutLocation(params.get(IParamsName.PARAMS_COMMON_PLATFORM),
+//        rxGetRequest.doGetHouseKeeperListWithoutLocation(params.get(IParamsName.PARAMS_COMMON_PLATFORM),
 //                params.get(IParamsName.PARAMS_COMMON_TOKEN),
 //                params.get(IParamsName.PARAMS_COMMON_PAGE),
 //                params.get(IParamsName.PARAMS_HOUSE_KEEPER_PROVINCE),
@@ -272,7 +272,7 @@ public class HouseKeeperListPresenter implements IBasePresenter {
 //
 //        Retrofit retrofit = Retrofit2Util.getRetrofitStringResult(IHttpUrlConstants.BASEURL_APP);
 //        RxGetHouseKeeperListStringService rxGetRequest = retrofit.create(RxGetHouseKeeperListStringService.class);
-//        rxGetRequest.doGetWatchListWithoutLocation(params.get(IParamsName.PARAMS_COMMON_PLATFORM),
+//        rxGetRequest.doGetHouseKeeperListWithoutLocation(params.get(IParamsName.PARAMS_COMMON_PLATFORM),
 //                params.get(IParamsName.PARAMS_COMMON_TOKEN),
 //                params.get(IParamsName.PARAMS_COMMON_PAGE),
 //                params.get(IParamsName.PARAMS_HOUSE_KEEPER_PROVINCE),
