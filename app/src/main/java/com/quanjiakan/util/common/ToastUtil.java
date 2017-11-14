@@ -4,24 +4,11 @@
 package com.quanjiakan.util.common;
 
 import android.content.Context;
-import android.widget.Toast;
+
+import com.amap.api.services.core.AMapException;
 
 public class ToastUtil {
-	
-	private static Toast mToast;
 
-	public static void show(Context context, String info) {
-		if(context!=null){
-			Toast.makeText(context, info, Toast.LENGTH_LONG).show();
-		}
-	}
-
-	public static void show(Context context, int info) {
-		if(context!=null) {
-			Toast.makeText(context, info, Toast.LENGTH_LONG).show();
-		}
-	}
-	
 	public static void showerror(Context context, int rCode){
 	    try {
 //	        switch (rCode) {

@@ -27,6 +27,10 @@
     <string name="hint_get_house_keeper_detail_data_phone">正在获取家政\n电话数据...</string>
 
     <string name="hint_get_house_keeper_order">正在获取家政\n订单数据...</string>
+    <string name="hint_get_house_keeper_order_ali">正在获取家政\n支付宝订单数据...</string>
+    <string name="hint_get_house_keeper_order_wechat">正在获取家政\n微信订单数据...</string>
+    <string name="hint_get_house_keeper_order_ali_verify">正在校验支付宝\n订单数据...</string>
+    <string name="hint_get_house_keeper_order_wechat_verify">正在校验微信\n订单数据...</string>
 
     <string name="hint_house_keeper_item_language_default">粤语</string>
     <string name="hint_house_keeper_item_price_unit">元/月</string>
@@ -80,6 +84,9 @@
     <string name="hint_house_keeper_order_info_person_mobile_phone">联系人手机号</string>
     <string name="hint_house_keeper_order_info_person_address">预约人信息</string>
 
+    <string name="hint_house_keeper_list_no_headimg">该家政人员无头像</string>
+
+
     <string name="hint_house_keeper_order_info_pay_title">选择支付方式</string>
     <string name="hint_house_keeper_order_info_pay_ali">支付宝</string>
     <string name="hint_house_keeper_order_info_pay_wechat">微信支付</string>
@@ -87,11 +94,15 @@
     <string name="hint_house_keeper_order_info_pay_sum">预付款:200元</string>
     <string name="hint_house_keeper_order_info_pay_comfirm">确定</string>
 
+    <string name="hint_order_invalid">无效的订单!</string>
 
 
+    <string name="hint_ali_pay_result_9000">支付成功</string>
+    <string name="hint_ali_pay_result_8000">支付结果确认中</string>
+    <string name="hint_ali_pay_result_other">支付失败</string>
 
-
-
+    <string name="hint_pay_type_ali">支付宝</string>
+    <string name="hint_pay_type_wechat">微信支付</string>
 
     <string name="hint_no_storage_title">无有效外存</string>
     <string name="hint_no_storage_content">未检测到有效的外存储设备</string>

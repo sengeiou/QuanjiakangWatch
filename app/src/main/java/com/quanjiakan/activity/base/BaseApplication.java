@@ -1,9 +1,7 @@
 package com.quanjiakan.activity.base;
 
-import android.content.Context;
 import android.content.Intent;
 import android.support.multidex.MultiDexApplication;
-import android.widget.Toast;
 
 import com.quanjiakan.activity.common.login.SigninActivity_mvp;
 import com.quanjiakan.db.entity.LoginUserInfoEntity;
@@ -224,14 +222,6 @@ public class BaseApplication extends MultiDexApplication {
      */
     public void initDB(){
         DaoManager.getInstances(this);
-    }
-
-    public void toast(Context context,String message) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-    }
-
-    public void toastLong(Context context,String message) {
-        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
     }
 
     /**

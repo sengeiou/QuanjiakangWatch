@@ -57,7 +57,6 @@ import com.quanjiakan.net.retrofit.result_entity.GetWatchListEntity;
 import com.quanjiakan.net_presenter.BindDeviceListPresenter;
 import com.quanjiakan.net_presenter.IPresenterBusinessCode;
 import com.quanjiakan.util.common.StringCheckUtil;
-import com.quanjiakan.util.common.ToastUtil;
 import com.quanjiakan.util.common.UnitExchangeUtil;
 import com.quanjiakan.util.dialog.CommonDialogHint;
 import com.quanjiakan.util.dialog.QuanjiakanDialog;
@@ -463,7 +462,6 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
     public static final int INFOR_ADDRESS = 101;
     private Handler msgHandler = new Handler() {
         public void handleMessage(Message msg) {
-            ToastUtil.showerror(getActivity(), msg.arg1);
         }
     };
 

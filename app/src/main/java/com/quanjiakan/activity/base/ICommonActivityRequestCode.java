@@ -9,4 +9,5 @@ public interface ICommonActivityRequestCode {
     int MAP_TO_DEVICE_CHILD = 2;
 
     int BACK_TO_MAIN = 1000;
+    int PAY = 1001;
 }

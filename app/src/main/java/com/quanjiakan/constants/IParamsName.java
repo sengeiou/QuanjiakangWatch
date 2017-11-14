@@ -32,6 +32,8 @@ public interface IParamsName {
     String PARAMS_COMMON_TOKEN = "token";
     String PARAMS_COMMON_PAGE = "page";
     String PARAMS_COMMON_MEMBERID = "memberId";
+    String PARAMS_COMMON_USERID = "user_id";
+    String PARAMS_COMMON_DATA = "data";
 
     String PARAMS_COMMON_MOBILE = "mobile";
     String PARAMS_COMMON_PASSWORD = "password";

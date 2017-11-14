@@ -27,6 +27,9 @@
     <string name="error_house_keeper_order_error_name">请填写正确的联系人姓名</string>
 
 
+    <string name="error_ali_create_order_error">创建订单失败,请重试!</string>
+
+
 
 
     <string name="error_housekeeper_wrong_phonenumber">未获取到公司服务电话!</string>

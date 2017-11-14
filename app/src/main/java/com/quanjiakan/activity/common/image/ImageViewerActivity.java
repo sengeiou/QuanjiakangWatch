@@ -10,10 +10,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.quanjiakan.activity.base.BaseActivity;
-import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.activity.base.ICommonData;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.util.dialog.CommonDialogHint;
@@ -176,7 +174,7 @@ public class ImageViewerActivity extends BaseActivity implements OnClickListener
 						photoViewer.setImageBitmap(bitmap);
 					}
 				}else{
-					Toast.makeText(ImageViewerActivity.this, getString(R.string.error_net_analysis), Toast.LENGTH_SHORT).show();
+					CommonDialogHint.getInstance().showHint(ImageViewerActivity.this,getString(R.string.error_net_analysis));
 				}
 			}
 		}

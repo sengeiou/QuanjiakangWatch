@@ -13,8 +13,10 @@ import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.activity.common.image.ImageViewerActivity;
+import com.quanjiakan.activity.common.index.housekeeper.HouseKeeperListActivity;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.net.retrofit.result_entity.GetHouseKeeperListEntity;
+import com.quanjiakan.util.dialog.CommonDialogHint;
 import com.quanjiakan.util.widget.RoundTransform;
 import com.quanjiakan.watch.R;
 import com.squareup.picasso.Picasso;
@@ -136,7 +138,7 @@ public class HouseKeeperListAdapter extends BaseAdapter {
 							intent.putExtra(IParamsName.PARAMS_URL,object.getImage());
 							context.startActivity(intent);
 						}else{
-							BaseApplication.getInstances().toast(context,"该家政人员无头像!");
+							CommonDialogHint.getInstance().showHint(context,context.getString(R.string.hint_house_keeper_list_no_headimg));
 						}
 					} catch (Exception e) {
 						e.printStackTrace();

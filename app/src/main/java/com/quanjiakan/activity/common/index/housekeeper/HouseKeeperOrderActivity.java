@@ -23,15 +23,24 @@ import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.retrofit.result_entity.GetHouseKeeperListEntity;
 import com.quanjiakan.net_presenter.HouseKeeperOrderPresenter;
 import com.quanjiakan.net_presenter.IPresenterBusinessCode;
+import com.quanjiakan.util.common.LogUtil;
+import com.quanjiakan.util.common.ParseToGsonUtil;
 import com.quanjiakan.util.common.StringCheckUtil;
 import com.quanjiakan.util.common.UnitExchangeUtil;
 import com.quanjiakan.util.dialog.CommonDialogHint;
+import com.quanjiakan.util.pay.AlipayHandler;
+import com.quanjiakan.util.pay.WeixinPayHandler;
 import com.quanjiakan.util.widget.RoundTransform;
 import com.quanjiakan.view.dialog.ChangeBirthDialog;
 import com.quanjiakan.watch.R;
 import com.squareup.picasso.Picasso;
 import com.umeng.analytics.MobclickAgent;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 import butterknife.BindView;
@@ -96,6 +105,56 @@ public class HouseKeeperOrderActivity extends BaseActivity {
     enum TimeType{
         START,END
     }
+
+    public enum PAY_CHANNEL{
+        DEFAULT(0,"DEFAULT"),
+        ALI(1,"ALI"),
+        WECHAT(2,"WECHAT");
+
+        private int value;
+        private String type;
+
+        PAY_CHANNEL(int i,String type) {
+            this.value = i;
+            this.type = type;
+        }
+
+        public int getValue(){
+            return value;
+        }
+
+        public String getType(){
+            return type;
+        }
+    }
+
+    public enum PAY_RESULT{
+        SUCCESS(0,"SUCCESS"),
+        FAILURE(1,"FAILURE");
+
+        private int value;
+        private String result;
+
+        PAY_RESULT(int i,String result) {
+            this.value = i;
+            this.result = result;
+        }
+
+        public int getValue(){
+            return value;
+        }
+
+        public String getResult(){
+            return result;
+        }
+    }
+
+    private PAY_CHANNEL selectedPayType;
+    private PAY_RESULT currentPayResult;
+
+    private final int defaultPrePay = 200;
+    private String aliOrderId;
+    private String wechatOrderId;
 
     private JsonObject orderDetail = new JsonObject();
 
@@ -165,12 +224,65 @@ public class HouseKeeperOrderActivity extends BaseActivity {
         switch (type) {
             case IPresenterBusinessCode.HOUSE_KEEPER_ORDER: {
                 //TYPE_GET_STRING_NOCACHE
-                //http://pay.quanjiakan.com:7080/familycore-pay/core/api_get?devicetype=0&platform=2&client=1&token=849f2bbb87dc5c049f20b85be3047e3b&user_id=11303&code=pay&action=housekeeper_produceorder&data={"note":"","housekeeperId":38,"companyId":7,"begindate":"2017-11-10","enddate":"2017-11-10","orderUserName":"发古板","mobile":"13212345678","address":"复活币","orderUserId":11303,"userId":11303,"paymentChannel":1}
+                //http://pay.quanjiakan.com:7080/familycore-pay/core/api_get?devicetype=0&platform=2&client=1&token=849f2bbb87dc5c049f20b85be3047e3b&user_id=11303&code=pay&action=housekeeper_produceorder&
+                //data={"note":"","housekeeperId":38,"companyId":7,"begindate":"2017-11-10","enddate":"2017-11-10","orderUserName":"发古板","mobile":"13212345678","address":"复活币","orderUserId":11303,"userId":11303,"paymentChannel":1}
                 //Request Result:{"code":"200","message":"{\"orderid\":\"QJKKEEPER20171110053936135398\",\"paidinfo\":{\"partner\":\"2088021868486397\",\"seller_id\":\"13510237554@163.com\",\"out_trade_no\":\"QJKKEEPER20171110053936135398\",\"subject\":\"全家康支付\",\"body\":\"支付家政人员服务费用\",\"total_fee\":\"200.0\",\"notify_url\":\"http://pay.quanjiakan.com:7080/familycore-pay/notify_alipay.jsp\",\"service\":\"mobile.securitypay.pay\",\"payment_type\":\"1\",\"_input_charset\":\"utf-8\",\"it_b_pay\":\"30m\",\"return_url\":\"m.alipay.com\",\"sign\":\"CRKOZfxyv/KgU9EAUf/W7Ki/KmvKrm4dZIEe3bnbDg6IQ4ZDis5ebANLZhsuDfKW7YFoIxeWQFR6wOBLnyROEbmA/O5nW08VIUCQBNqWjSO6NDyphBQ2y76LMiO7r87CPlparrLQtwLCUX5BFRfVWF8+yLGJGuYFCWZ3gqOL5g8=\",\"code\":\"200\"}}"}
+
+                //TODO 构建数据
+                if(rbtn1.isChecked()){
+                    selectedPayType = PAY_CHANNEL.ALI;
+                }else if(rbtn2.isChecked()){
+                    selectedPayType = PAY_CHANNEL.WECHAT;
+                }else{
+                    selectedPayType = PAY_CHANNEL.ALI;
+                }
+
+                String jsonString = "{\"note\":"+ "\"\"" +
+                        ",\"housekeeperId\":"+entity.getId()+
+                        ",\"companyId\":"+ entity.getCompanyId()+
+                        ",\"begindate\":"+"\""+tvBeginDateValue.getTag()+"\""+
+                        ",\"enddate\":"+"\""+tvEndDateValue.getTag()+"\""+
+                        ",\"orderUserName\":"+"\""+etContactName.getText().toString()+"\""+
+                        ",\"mobile\":"+"\""+etMobile.getText().toString()+"\""+
+                        ",\"address\":"+"\""+etAddress.getText().toString()+"\""+
+                        ",\"orderUserId\":"+BaseApplication.getInstances().getLoginInfo().getUserId()+
+                        ",\"userId\":"+ BaseApplication.getInstances().getLoginInfo().getUserId()+",\"paymentChannel\":"+selectedPayType.getValue()+"}";
+
                 HashMap<String, String> params = new HashMap<>();
                 params.put(IParamsName.PARAMS_COMMON_PLATFORM, IHttpUrlConstants.PLATFORM_ANDROID);
                 params.put(IParamsName.PARAMS_COMMON_TOKEN, BaseApplication.getInstances().getLoginInfo().getToken());
-                params.put(IParamsName.PARAMS_HOUSE_KEEPER_DETAIL_ID, entity.getId()+"");
+                params.put(IParamsName.PARAMS_COMMON_USERID, BaseApplication.getInstances().getLoginInfo().getUserId());
+                params.put(IParamsName.PARAMS_COMMON_DATA, jsonString);
+                return params;
+            }
+            case IPresenterBusinessCode.ALI_PAY: {
+                HashMap<String, String> params = new HashMap<>();
+                params.put(IParamsName.PARAMS_COMMON_TOKEN, BaseApplication.getInstances().getLoginInfo().getToken());
+                params.put(IParamsName.PARAMS_COMMON_USERID, BaseApplication.getInstances().getLoginInfo().getUserId());
+                return params;
+            }
+            case IPresenterBusinessCode.ALI_PAY_VERIFY_RESULT: {
+                HashMap<String, String> params = new HashMap<>();
+                String jsonString = "{\"userId\":"+ BaseApplication.getInstances().getLoginInfo().getUserId()+
+                        ",\"orderid\":"+"\""+aliOrderId+"\""+"}";
+                params.put(IParamsName.PARAMS_COMMON_USERID, BaseApplication.getInstances().getLoginInfo().getUserId());
+                params.put(IParamsName.PARAMS_COMMON_TOKEN, BaseApplication.getInstances().getLoginInfo().getToken());
+                params.put(IParamsName.PARAMS_COMMON_DATA, jsonString);
+                return params;
+            }
+            case IPresenterBusinessCode.WECHAT_PAY: {
+                HashMap<String, String> params = new HashMap<>();
+                params.put(IParamsName.PARAMS_COMMON_TOKEN, BaseApplication.getInstances().getLoginInfo().getToken());
+                params.put(IParamsName.PARAMS_COMMON_USERID, BaseApplication.getInstances().getLoginInfo().getUserId());
+                return params;
+            }
+            case IPresenterBusinessCode.WECHAT_PAY_VERIFY_RESULT: {
+                HashMap<String, String> params = new HashMap<>();
+                String jsonString = "{\"userId\":"+ BaseApplication.getInstances().getLoginInfo().getUserId()+
+                        ",\"orderid\":"+"\""+wechatOrderId+"\""+"}";
+                params.put(IParamsName.PARAMS_COMMON_USERID, BaseApplication.getInstances().getLoginInfo().getUserId());
+                params.put(IParamsName.PARAMS_COMMON_TOKEN, BaseApplication.getInstances().getLoginInfo().getToken());
+                params.put(IParamsName.PARAMS_COMMON_DATA, jsonString);
                 return params;
             }
             default:
@@ -184,6 +296,18 @@ public class HouseKeeperOrderActivity extends BaseActivity {
             case IPresenterBusinessCode.HOUSE_KEEPER_ORDER:
                 getDialog(this, getString(R.string.hint_get_house_keeper_order));
                 break;
+            case IPresenterBusinessCode.ALI_PAY:
+                getDialog(this, getString(R.string.hint_get_house_keeper_order_ali));
+                break;
+            case IPresenterBusinessCode.ALI_PAY_VERIFY_RESULT:
+                getDialog(this, getString(R.string.hint_get_house_keeper_order_ali_verify));
+                break;
+            case IPresenterBusinessCode.WECHAT_PAY:
+                getDialog(this, getString(R.string.hint_get_house_keeper_order_wechat));
+                break;
+            case IPresenterBusinessCode.WECHAT_PAY_VERIFY_RESULT:
+                getDialog(this, getString(R.string.hint_get_house_keeper_order_wechat_verify));
+                break;
             default:
                 break;
         }
@@ -193,6 +317,10 @@ public class HouseKeeperOrderActivity extends BaseActivity {
     public void dismissMyDialog(int type) {
         switch (type) {
             case IPresenterBusinessCode.HOUSE_KEEPER_ORDER:
+            case IPresenterBusinessCode.ALI_PAY:
+            case IPresenterBusinessCode.ALI_PAY_VERIFY_RESULT:
+            case IPresenterBusinessCode.WECHAT_PAY:
+            case IPresenterBusinessCode.WECHAT_PAY_VERIFY_RESULT:
             default:
                 break;
         }
@@ -203,6 +331,18 @@ public class HouseKeeperOrderActivity extends BaseActivity {
     public void onSuccess(int type, int httpResponseCode, Object result) {
         switch (type) {
             case IPresenterBusinessCode.HOUSE_KEEPER_ORDER:
+                setServerOrder(result);
+                break;
+            case IPresenterBusinessCode.ALI_PAY:
+                break;
+            case IPresenterBusinessCode.ALI_PAY_VERIFY_RESULT:
+                currentPayResult = PAY_RESULT.SUCCESS;
+                break;
+            case IPresenterBusinessCode.WECHAT_PAY:
+                break;
+            case IPresenterBusinessCode.WECHAT_PAY_VERIFY_RESULT:
+                currentPayResult = PAY_RESULT.SUCCESS;
+                break;
             default:
                 break;
         }
@@ -212,7 +352,18 @@ public class HouseKeeperOrderActivity extends BaseActivity {
     public void onError(int type, int httpResponseCode, Object errorMsg) {
 
         switch (type) {
+            case IPresenterBusinessCode.ALI_PAY_VERIFY_RESULT:
+                currentPayResult = PAY_RESULT.FAILURE;
+                goToPaymentResult(aliOrderId);
+                break;
+            case IPresenterBusinessCode.WECHAT_PAY_VERIFY_RESULT:
+                currentPayResult = PAY_RESULT.FAILURE;
+                goToPaymentResult(wechatOrderId);
+                break;
+            //**************************************************** 以上为支付结果校验
             case IPresenterBusinessCode.HOUSE_KEEPER_ORDER:
+            case IPresenterBusinessCode.ALI_PAY:
+            case IPresenterBusinessCode.WECHAT_PAY:
             default:
                 if (errorMsg != null) {
                     CommonDialogHint.getInstance().showHint(this, errorMsg.toString());
@@ -324,6 +475,7 @@ public class HouseKeeperOrderActivity extends BaseActivity {
         orderDetail.addProperty("mobile",etMobile.getText().toString());
         orderDetail.addProperty("address",etAddress.getText().toString());
 
+        //检查是否未选择开始或结束日期
         if(tvBeginDateValue.getTag() == null || tvEndDateValue.getTag() == null){
             CommonDialogHint.getInstance().showHint(this,getString(R.string.error_house_keeper_order_no_time));
             return;
@@ -336,22 +488,117 @@ public class HouseKeeperOrderActivity extends BaseActivity {
             return;
         }
         //*******************************************
-
+        //检查预约人信息
         if(etMobile.length() == 0 || etContactName.length() == 0 || etAddress.length() == 0){
             CommonDialogHint.getInstance().showHint(this,getString(R.string.error_house_keeper_order_no_info));
             return;
         }
+        //检查预约电话是否正确
         if(!StringCheckUtil.isPhoneNumber(etMobile.getText().toString())){
             CommonDialogHint.getInstance().showHint(this,getString(R.string.error_house_keeper_order_error_mobile));
             return;
         }
+        //检查联系人姓名是否全为中文字符
         if(!StringCheckUtil.isAllChineseChar(etContactName.getText().toString())){
             CommonDialogHint.getInstance().showHint(this,getString(R.string.error_house_keeper_order_error_name));
             return;
         }
-
+        //获取订单数据
         presenter.doGetHouseKeeperOrder(this);
 
+    }
+
+    public void setServerOrder(Object result){
+
+        if(result!=null && result instanceof String){
+            String resultString = result.toString();
+            LogUtil.e("订单：\n"+resultString);
+
+            /*
+{
+  "code": "200",
+  "message": "{\"orderid\":\"QJKKEEPER20171113110956262592\",\"paidinfo\":{\"partner\":\"2088021868486397\",\"seller_id\":\"13510237554@163.com\",\"out_trade_no\":\"QJKKEEPER20171113110956262592\",\"subject\":\"全家康支付\",\"body\":\"支付家政人员服务费用\",\"total_fee\":\"200.0\",\"notify_url\":\"http://pay.quanjiakan.com:7080/familycore-pay/notify_alipay.jsp\",\"service\":\"mobile.securitypay.pay\",\"payment_type\":\"1\",\"_input_charset\":\"utf-8\",\"it_b_pay\":\"30m\",\"return_url\":\"m.alipay.com\",\"sign\":\"FToxLQaeEBeNh9O/JpyCxoaLl7UHm2IGb44L8cFL0ZzNTmp3aH1niFRdKYyntE2HUoRDrBqqVNNHwPM5u5mYDINqXe6fsr9/m19dgtZBV20ccWhwH0/jfRN9EgcAaaETLtnXVeJKHG5skC4RoyKmEuo7NBY9PZYSRw17RmHtAP0=\",\"code\":\"200\"}}"
+}
+             */
+            try{
+                JSONObject resultJson = new JSONObject(resultString);
+                if(resultJson.has("message") && resultJson.getString("message").length()>0){
+                    JsonObject resultMessage = new ParseToGsonUtil(resultJson.getString("message")).getJsonObject();
+
+                    //TODO
+                    orderDetail.addProperty("id",resultJson.getString("message"));
+                    orderDetail.addProperty("orderid",resultMessage.get("orderid").getAsString());
+                    orderDetail.addProperty("createtime",new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+
+                    if(selectedPayType==PAY_CHANNEL.ALI){
+                        //进行支付宝支付
+                        goAliPay(resultMessage.get("orderid").getAsString(),resultMessage.get("paidinfo").getAsJsonObject());
+                    }else if(selectedPayType==PAY_CHANNEL.WECHAT){
+                        //进行微信支付
+                        goWechatPay(resultMessage.get("orderid").getAsString(),resultMessage.get("paidinfo").getAsJsonObject());
+                    }else{
+                        //TODO 作为默认选择（支付宝）
+                        goAliPay(resultMessage.get("orderid").getAsString(),resultMessage.get("paidinfo").getAsJsonObject());
+                    }
+                }else{
+                    CommonDialogHint.getInstance().showHint(this,getString(R.string.hint_order_invalid));
+                }
+            }catch (JSONException jsonExecption){
+                jsonExecption.printStackTrace();
+            }
+        }else{
+            //无效的结果
+            CommonDialogHint.getInstance().showHint(this,getString(R.string.hint_order_invalid));
+        }
+    }
+
+    public void goAliPay(final String orderId,JsonObject payInfo){
+        new AlipayHandler(this, new AlipayHandler.AlipayCallback() {
+
+            @Override
+            public void paidComplete(int type, String msg, String result) {
+                // TODO Auto-generated method stub
+                if(type == AlipayHandler.PAID_SUCCESS){
+                    //支付成功，并将支付提交提交到后台
+                    JsonObject object = new ParseToGsonUtil(result).getJsonObject();
+                    vertifyAliPayment(object.get("orderid").getAsString());
+                }else if (type == AlipayHandler.PAID_FAILED) {
+                    //支付失败
+                    orderDetail.addProperty("status","1");
+                    currentPayResult = PAY_RESULT.FAILURE;
+                    goToPaymentResult(orderId);
+                }
+            }
+        }).pay(payInfo);
+    }
+
+    public void goWechatPay(final String orderId, JsonObject payInfo){
+        new WeixinPayHandler(this).pay(payInfo);
+    }
+
+    public void vertifyAliPayment(String orderId){
+        aliOrderId = orderId;
+        presenter.verifyAliPaymentResult(this);
+    }
+
+    public void vertifyWechatPayment(String orderId){
+        wechatOrderId = orderId;
+        presenter.verifyWechatPaymentResult(this);
+    }
+
+    public void goToPaymentResult(final String orderId){
+        CommonDialogHint.getInstance().showHint(this,"跳转至订单结果页面!\n订单ID号："+orderId
+                +"\n"+currentPayResult.getResult()
+                +"\n"+selectedPayType.getType());
+//        Intent intent = new Intent(this,PaymentResultActivity.class);
+//        intent.putExtra(IParamsName.PARAMS_COMMON_DATA,orderDetail.toString());
+//        intent.putExtra("type", selectedPayType==PAY_CHANNEL.ALI? getString(R.string.hint_pay_type_ali):
+//                getString(R.string.hint_pay_type_wechat));
+//        intent.putExtra("flag", -1);
+//        intent.putExtra("total_fee", defaultPrePay);
+//        intent.putExtra("orderid", orderId);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+//        startActivityForResult(intent, ICommonActivityRequestCode.PAY);
     }
 
     //***********************************************************************

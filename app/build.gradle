@@ -108,6 +108,13 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     //************************* 图片放大
     compile 'com.commit451:PhotoView:1.2.4'
+    //************************* 支付宝支付SDK
+    compile files('libs/alipaySdk-20170922.jar')
+    //************************* 微信支付SDK
+    compile 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
+    //************************* NameValuePair 支持包 分为libs直接引入包，和使用链接形式  两种皆可
+    compile 'org.apache.httpcomponents:httpcore:4.4.1'
+
 
     compile project(path: ':pulltorefresh')
 }

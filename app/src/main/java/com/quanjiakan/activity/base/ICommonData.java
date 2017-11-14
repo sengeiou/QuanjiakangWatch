@@ -37,6 +37,9 @@ public interface ICommonData {
     String FILE_PATH_PREFIX2 = "file://";
     String FILE_PATH_PREFIX3 = "file:/";
 
+    String ALI_PAY_RESULT_9000 = "9000";
+    String ALI_PAY_RESULT_8000 = "8000";
+
 
     //TODO ************************************************
     //TODO 公共 数值 类型数据
