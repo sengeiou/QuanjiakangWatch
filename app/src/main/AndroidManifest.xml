@@ -102,21 +102,25 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
-        <activity android:name="com.quanjiakan.activity.common.index.housekeeper.HouseKeeperDetailInfoActivity"
+        <activity
+            android:name="com.quanjiakan.activity.common.index.housekeeper.HouseKeeperDetailInfoActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
-        <activity android:name="com.quanjiakan.activity.common.index.housekeeper.HouseKeeperOrderActivity"
+        <activity
+            android:name="com.quanjiakan.activity.common.index.housekeeper.HouseKeeperOrderActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
-        <activity android:name="com.quanjiakan.activity.common.pay.PaymentResultActivity"
+        <activity
+            android:name="com.quanjiakan.activity.common.pay.PaymentResultActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
         <!-- ******************************************************************************************************** -->
 
-        <activity android:name="com.quanjiakan.activity.common.setting.orders.housekeeper.HouseKeeperOrderDetailActivity"
+        <activity
+            android:name="com.quanjiakan.activity.common.setting.orders.housekeeper.HouseKeeperOrderDetailActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <!-- ******************************************************************************************************** -->
@@ -144,7 +148,9 @@
             android:exported="true"
             android:launchMode="singleTop" />
 
-        <receiver android:name="com.quanjiakan.watch.wxapi.AppRegister">
+        <receiver
+            android:name="com.quanjiakan.watch.wxapi.AppRegister"
+            android:permission="com.tencent.mm.plugin.permission.SEND">
             <intent-filter>
                 <action android:name="com.tencent.mm.plugin.openapi.Intent.ACTION_REFRESH_WXAPP" />
             </intent-filter>
@@ -152,19 +158,20 @@
 
         <!-- ******************************************************************************************************** -->
 
-        <service android:name="com.quanjiakan.service.DevicesService"
+        <service
+            android:name="com.quanjiakan.service.DevicesService"
             android:enabled="true"
-            android:exported="false"/>
+            android:exported="false" />
 
 
         <!-- ******************************************************************************************************** -->
         <!-- meta data  Umeng -->
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="59b790e8677baa7685000031"/>
+            android:value="59b790e8677baa7685000031" />
         <meta-data
             android:name="UMENG_CHANNEL"
-            android:value="Watch"/>
+            android:value="Watch" />
 
 
         <!-- meta data  AMap
@@ -176,7 +183,6 @@
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="b61007593f5d3d8cb494ea4e7759ea77" />
-
 
 
     </application>

@@ -6,7 +6,6 @@ import android.widget.TextView;
 
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
-import com.quanjiakan.activity.base.WXPayResult;
 import com.quanjiakan.util.common.LogUtil;
 import com.quanjiakan.util.pay.WeixinPayHandler;
 import com.quanjiakan.watch.R;
@@ -29,7 +28,8 @@ public class WXPayEntryActivity extends BaseActivity implements IWXAPIEventHandl
         setContentView(R.layout.layout_payresult);
 		tv_title = (TextView) findViewById(R.id.tv_title);
 		tv_title.setText("WXPayEntry");
-        api = WXAPIFactory.createWXAPI(this, WeixinPayHandler.app_id);
+		api = WXAPIFactory.createWXAPI(this, WeixinPayHandler.app_id,false);
+		api.registerApp(WeixinPayHandler.app_id);
         api.handleIntent(getIntent(), this);
     }
 

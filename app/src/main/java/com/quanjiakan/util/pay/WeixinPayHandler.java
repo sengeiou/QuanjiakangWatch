@@ -19,7 +19,7 @@ public class WeixinPayHandler {
 	}
 
 	protected void init(){
-		api = WXAPIFactory.createWXAPI(context, app_id);
+		api = WXAPIFactory.createWXAPI(context, WeixinPayHandler.app_id,false);
 		api.registerApp(app_id);
 	}
 
