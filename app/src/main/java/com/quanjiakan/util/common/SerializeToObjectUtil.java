@@ -19,7 +19,7 @@ public class SerializeToObjectUtil{
      * 静态内部类的单例模式
      * @return
      */
-    public SerializeToObjectUtil getInstances(){
+    public static SerializeToObjectUtil getInstances(){
         return SerializeToObjectUtilHolder.instances;
     }
 
@@ -37,9 +37,8 @@ public class SerializeToObjectUtil{
 
     /**
      * 私有静态内部类持有
-     * @param <T>
      */
-    private static class SerializeToObjectUtilHolder<T>{
+    private static class SerializeToObjectUtilHolder{
         private static final SerializeToObjectUtil instances = new SerializeToObjectUtil();
     }
 

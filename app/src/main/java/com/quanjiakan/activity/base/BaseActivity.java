@@ -11,7 +11,9 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.quanjiakan.util.common.UnitExchangeUtil;
+import com.quanjiakan.util.dialog.CommonDialogHint;
 import com.quanjiakan.watch.R;
+import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -23,6 +25,14 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseAct
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+//        CommonDialogHint.getInstance().showHint(this, getString(R.string.error_common_error_activity_parameters), new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                finish();
+//            }
+//        });
+//        return;
     }
 
     @Override
@@ -33,6 +43,8 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseAct
     @Override
     public void onResume() {
         super.onResume();
+//        MobclickAgent.onResume(this);
+//        MobclickAgent.onPageStart(this.getClass().getSimpleName());
     }
 
     @Override
@@ -43,6 +55,8 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseAct
     @Override
     public void onPause() {
         super.onPause();
+//        MobclickAgent.onPause(this);
+//        MobclickAgent.onPageEnd(this.getClass().getSimpleName());
     }
 
     @Override

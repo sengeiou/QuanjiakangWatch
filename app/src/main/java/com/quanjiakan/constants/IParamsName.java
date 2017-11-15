@@ -55,6 +55,12 @@ public interface IParamsName {
     String PARAMS_HOUSE_KEEPER_DETAIL_ALIAS = "housekeeperDetailAlias";
 
 
+    String PARAMS_PAY_RESULT_TYPE = "pay_type";
+    String PARAMS_PAY_RESULT_CODE = "pay_result_code";
+    String PARAMS_PAY_MONEY = "pay_sum_money";
+    String PARAMS_PAY_ORDERID = "pay_orderid";
+
+
     //TODO 手表相关
     String PARAMS_DEVICE_MEMBER_ID = "memberId";
 

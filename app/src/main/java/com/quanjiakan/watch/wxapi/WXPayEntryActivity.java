@@ -1,11 +1,11 @@
 package com.quanjiakan.watch.wxapi;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
 import com.quanjiakan.activity.base.BaseActivity;
+import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.activity.base.WXPayResult;
 import com.quanjiakan.util.common.LogUtil;
 import com.quanjiakan.util.pay.WeixinPayHandler;
@@ -23,10 +23,6 @@ public class WXPayEntryActivity extends BaseActivity implements IWXAPIEventHandl
 
 	private TextView tv_title;
 
-	public static WXPayResult wxPayResult;
-
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,8 +31,6 @@ public class WXPayEntryActivity extends BaseActivity implements IWXAPIEventHandl
 		tv_title.setText("WXPayEntry");
         api = WXAPIFactory.createWXAPI(this, WeixinPayHandler.app_id);
         api.handleIntent(getIntent(), this);
-
-		wxPayResult = WXPayResult.FAILURE;
     }
 
 	@Override
@@ -44,35 +38,31 @@ public class WXPayEntryActivity extends BaseActivity implements IWXAPIEventHandl
 		super.onNewIntent(intent);
 		setIntent(intent);
         api.handleIntent(intent, this);
-
-		wxPayResult = WXPayResult.FAILURE;
 	}
 
 	@Override
 	public void onStart() {
 		super.onStart();
-
-		wxPayResult = WXPayResult.FAILURE;
 	}
 
 	@Override
 	public void onReq(BaseReq req) {
-
 	}
 
 	@Override
 	public void onResp(BaseResp resp) {
 		LogUtil.e( "onPayFinish, errCode = " + resp.errCode+"errorString:"+resp.errStr);
 		if (resp.errCode == BaseResp.ErrCode.ERR_OK) {
-			wxPayResult = WXPayResult.SUCCESS;
+			BaseApplication.getInstances().setWxPayResultSuccess();
 		}else if (resp.errCode == BaseResp.ErrCode.ERR_COMM) {
-//			BaseApplication.getInstances().toast("支付失败      WXPayEntryActivity IWXAPIEventHandler 回调");
-			wxPayResult = WXPayResult.FAILURE;
+			BaseApplication.getInstances().setWxPayResultFailure();
 		}else if(resp.errCode == BaseResp.ErrCode.ERR_USER_CANCEL){
-			wxPayResult = WXPayResult.USER_CANCEL;
+			BaseApplication.getInstances().setWxPayResultCancel();
 		}else{
-			wxPayResult = WXPayResult.FAILURE;
+			BaseApplication.getInstances().setWxPayResultFailure();
 		}
+		//TODO 收到回调后关闭页面
+		finish();
 	}
 
 	@Override

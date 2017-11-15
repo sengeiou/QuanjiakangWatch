@@ -31,5 +31,37 @@
 
     <string name="housekeeper_detail_title">人员详情</string>
 
+    <string name="pay_result_title">支付结果</string>
+    <string name="pay_result_back_home">返回首页</string>
+    <string name="pay_result_order_detail">查看订单</string>
+
+    <string name="pay_result_order_detail_1">订单:</string>
+    <string name="pay_result_order_detail_2">通过</string>
+    <string name="pay_result_order_detail_success">支付成功</string>
+    <string name="pay_result_order_detail_failure">支付失败</string>
+    <string name="pay_result_order_detail_money_symbol_China_yuan">￥</string>
+    <string name="pay_result_order_detail_money_yuan">元</string>
+
+    <string name="order_detail_price_1">价格:</string>
+    <string name="order_detail_price_2">元/月</string>
+    <string name="order_detail_age_1">年龄:</string>
+    <string name="order_detail_age_2">岁</string>
+
+    <string name="order_detail_time">预约时间:</string>
+    <string name="order_detail_duration"> 到 </string>
+
+    <string name="order_detail_has_pay_prefix">是否付款:</string>
+    <string name="order_detail_has_pay_success"> 已付定金</string>
+    <string name="order_detail_has_pay_fail"> 未付款</string>
+    <string name="order_detail_space">    </string>
+
+
+
+    <string name="order_detail_sum_money">费用合计:</string>
+
+
+
+    <string name="order_detail_title">预约详情</string>
+
 </resources>
 

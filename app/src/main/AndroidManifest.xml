@@ -110,6 +110,15 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
+        <activity android:name="com.quanjiakan.activity.common.pay.PaymentResultActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <!-- ******************************************************************************************************** -->
+
+        <activity android:name="com.quanjiakan.activity.common.setting.orders.housekeeper.HouseKeeperOrderDetailActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <!-- ******************************************************************************************************** -->
         <!-- common web -->
 
@@ -127,6 +136,19 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <!-- ********************  微信支付  ************************************************************************************ -->
+
+        <activity
+            android:name="com.quanjiakan.watch.wxapi.WXPayEntryActivity"
+            android:exported="true"
+            android:launchMode="singleTop" />
+
+        <receiver android:name="com.quanjiakan.watch.wxapi.AppRegister">
+            <intent-filter>
+                <action android:name="com.tencent.mm.plugin.openapi.Intent.ACTION_REFRESH_WXAPP" />
+            </intent-filter>
+        </receiver>
 
         <!-- ******************************************************************************************************** -->
 

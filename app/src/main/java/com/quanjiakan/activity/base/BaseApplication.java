@@ -31,6 +31,8 @@ public class BaseApplication extends MultiDexApplication {
     private NattyClient nattyClient;
     private ExecutorService cachedThreadPool;
 
+    private WXPayResult payResult;
+
     private static BaseApplication instances;
 
     public static BaseApplication getInstances() {
@@ -285,6 +287,39 @@ public class BaseApplication extends MultiDexApplication {
         cachedThreadPool.submit(runnable);
     }
 
+
+    /**
+     * *********************************************************************************************
+     *
+     */
+
+    public boolean isWXPayResultNull(){
+        return (payResult==null);
+    }
+
+    public boolean isWXPaySuccess(){
+        return payResult == WXPayResult.SUCCESS;
+    }
+
+    public void initAndResetPayResult(){
+        payResult = null;
+    }
+
+    public void setWxPayResultSuccess(){
+        payResult = WXPayResult.SUCCESS;
+    }
+
+    public void setWxPayResultFailure(){
+        payResult = WXPayResult.FAILURE;
+    }
+
+    public void setWxPayResultCancel(){
+        payResult = WXPayResult.USER_CANCEL;
+    }
+
+    public WXPayResult getPayResult(){
+        return payResult;
+    }
 
     /**
      * *********************************************************************************************

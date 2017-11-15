@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.activity.base.ICommonActivityRequestCode;
+import com.quanjiakan.activity.base.ICommonActivityResultCode;
 import com.quanjiakan.constants.IActivityRequestValue;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.net.IHttpUrlConstants;
@@ -470,6 +471,13 @@ public class HouseKeeperDetailInfoActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+        switch (requestCode){
+            case ICommonActivityRequestCode.BACK_TO_MAIN:
+                if(resultCode== ICommonActivityResultCode.BACK_TO_MAIN){
+                    setResult(ICommonActivityResultCode.BACK_TO_MAIN);
+                    finish();
+                }
+                break;
+        }
     }
 }

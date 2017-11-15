@@ -23,6 +23,7 @@ android {
     buildToolsVersion "25.0.3"
     defaultConfig {
         applicationId "com.quanjiakan.watch"
+//        applicationId "com.pingantong.main"
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 1
@@ -112,8 +113,6 @@ dependencies {
     compile files('libs/alipaySdk-20170922.jar')
     //************************* 微信支付SDK
     compile 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
-    //************************* NameValuePair 支持包 分为libs直接引入包，和使用链接形式  两种皆可
-    compile 'org.apache.httpcomponents:httpcore:4.4.1'
 
 
     compile project(path: ':pulltorefresh')

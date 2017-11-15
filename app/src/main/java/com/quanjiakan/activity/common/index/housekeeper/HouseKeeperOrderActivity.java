@@ -1,6 +1,7 @@
 package com.quanjiakan.activity.common.index.housekeeper;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -18,6 +19,9 @@ import android.widget.TextView;
 import com.google.gson.JsonObject;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
+import com.quanjiakan.activity.base.ICommonActivityRequestCode;
+import com.quanjiakan.activity.base.ICommonActivityResultCode;
+import com.quanjiakan.activity.common.pay.PaymentResultActivity;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.retrofit.result_entity.GetHouseKeeperListEntity;
@@ -197,6 +201,10 @@ public class HouseKeeperOrderActivity extends BaseActivity {
         super.onResume();
         MobclickAgent.onResume(this);
         MobclickAgent.onPageStart(this.getClass().getSimpleName());
+
+        if(!BaseApplication.getInstances().isWXPayResultNull()){
+            vertifyWechatPayment(wechatOrderId);
+        }
     }
 
 
@@ -337,11 +345,13 @@ public class HouseKeeperOrderActivity extends BaseActivity {
                 break;
             case IPresenterBusinessCode.ALI_PAY_VERIFY_RESULT:
                 currentPayResult = PAY_RESULT.SUCCESS;
+                goToPaymentResult(aliOrderId);
                 break;
             case IPresenterBusinessCode.WECHAT_PAY:
                 break;
             case IPresenterBusinessCode.WECHAT_PAY_VERIFY_RESULT:
                 currentPayResult = PAY_RESULT.SUCCESS;
+                goToPaymentResult(wechatOrderId);
                 break;
             default:
                 break;
@@ -573,6 +583,8 @@ public class HouseKeeperOrderActivity extends BaseActivity {
     }
 
     public void goWechatPay(final String orderId, JsonObject payInfo){
+        BaseApplication.getInstances().initAndResetPayResult();//开启新的支付前，重置支付状态
+        wechatOrderId = orderId;
         new WeixinPayHandler(this).pay(payInfo);
     }
 
@@ -582,23 +594,31 @@ public class HouseKeeperOrderActivity extends BaseActivity {
     }
 
     public void vertifyWechatPayment(String orderId){
-        wechatOrderId = orderId;
-        presenter.verifyWechatPaymentResult(this);
+        if(!BaseApplication.getInstances().isWXPayResultNull() &&
+                BaseApplication.getInstances().isWXPaySuccess()){//调起支付过，并且支付成功了,校验订单
+            presenter.verifyWechatPaymentResult(this);
+        }else{
+            currentPayResult = PAY_RESULT.FAILURE;
+            goToPaymentResult(orderId);
+        }
     }
 
     public void goToPaymentResult(final String orderId){
-        CommonDialogHint.getInstance().showHint(this,"跳转至订单结果页面!\n订单ID号："+orderId
-                +"\n"+currentPayResult.getResult()
-                +"\n"+selectedPayType.getType());
-//        Intent intent = new Intent(this,PaymentResultActivity.class);
-//        intent.putExtra(IParamsName.PARAMS_COMMON_DATA,orderDetail.toString());
-//        intent.putExtra("type", selectedPayType==PAY_CHANNEL.ALI? getString(R.string.hint_pay_type_ali):
-//                getString(R.string.hint_pay_type_wechat));
-//        intent.putExtra("flag", -1);
-//        intent.putExtra("total_fee", defaultPrePay);
-//        intent.putExtra("orderid", orderId);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-//        startActivityForResult(intent, ICommonActivityRequestCode.PAY);
+        if(currentPayResult==PAY_RESULT.SUCCESS){
+            orderDetail.addProperty("status","2");
+        }else{
+            orderDetail.addProperty("status","1");
+        }
+
+        Intent intent = new Intent(this,PaymentResultActivity.class);
+        intent.putExtra(IParamsName.PARAMS_COMMON_DATA,orderDetail.toString());
+        intent.putExtra(IParamsName.PARAMS_PAY_RESULT_TYPE, selectedPayType==PAY_CHANNEL.ALI? getString(R.string.hint_pay_type_ali):
+                getString(R.string.hint_pay_type_wechat));
+        intent.putExtra(IParamsName.PARAMS_PAY_RESULT_CODE, currentPayResult.getValue());
+        intent.putExtra(IParamsName.PARAMS_PAY_MONEY, defaultPrePay);
+        intent.putExtra(IParamsName.PARAMS_PAY_ORDERID, orderId);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);//TODO 最开始的这种方式会导致返回从订单详情页返回首页的效果失效
+        startActivityForResult(intent, ICommonActivityRequestCode.BACK_TO_MAIN);
     }
 
     //***********************************************************************
@@ -689,4 +709,17 @@ public class HouseKeeperOrderActivity extends BaseActivity {
     }
 
     //***********************************************************************
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode){
+            case ICommonActivityRequestCode.BACK_TO_MAIN:
+                if(resultCode== ICommonActivityResultCode.BACK_TO_MAIN){
+                    setResult(ICommonActivityResultCode.BACK_TO_MAIN);
+                    finish();
+                }
+                break;
+        }
+    }
 }
