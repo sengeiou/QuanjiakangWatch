@@ -14,13 +14,14 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.activity.base.ICommonData;
 import com.quanjiakan.activity.base.ISetFragmentBeforeShow;
 import com.quanjiakan.activity.common.image.ImageViewerActivity;
+import com.quanjiakan.activity.common.index.healthinquiry.HealthInquiryCreateProblemActivity;
 import com.quanjiakan.activity.common.index.housekeeper.HouseKeeperListActivity;
-import com.quanjiakan.activity.common.login.SigninActivity_mvp;
 import com.quanjiakan.activity.common.main.fragment.MainMapFragment;
 import com.quanjiakan.activity.common.main.fragment.MessageListFragment;
 import com.quanjiakan.activity.common.main.fragment.SettingFragment;
@@ -28,9 +29,7 @@ import com.quanjiakan.constants.IActivityRequestValue;
 import com.quanjiakan.constants.IParamsIntValue;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.device.entity.CommonNattyData;
-import com.quanjiakan.util.common.LogUtil;
 import com.quanjiakan.view.SlidingMenu;
-import com.quanjiakan.watch.R;
 import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -615,7 +614,7 @@ public class MainActivity extends BaseActivity {
     }
 
     public void toHealthConsult(){
-        Intent intent = new Intent(this, HouseKeeperListActivity.class);
+        Intent intent = new Intent(this, HealthInquiryCreateProblemActivity.class);
         startActivityForResult(intent,IActivityRequestValue.REQUEST_TO_HEALTH_CONSULT);
     }
 

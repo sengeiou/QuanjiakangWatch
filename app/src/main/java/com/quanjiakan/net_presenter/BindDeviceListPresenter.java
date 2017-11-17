@@ -1,17 +1,13 @@
 package com.quanjiakan.net_presenter;
 
+import com.pingantong.main.R;
 import com.quanjiakan.activity.common.main.fragment.MainMapFragment;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.entity.LoginInfoEntity;
 import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.Retrofit2Util;
 import com.quanjiakan.net.retrofit.result_entity.GetWatchListEntity;
-import com.quanjiakan.net.retrofit.result_entity.PostLoginEntity;
 import com.quanjiakan.net.retrofit.service.RxGetWatchListService;
-import com.quanjiakan.net.retrofit.service.RxGetWatchListStringService;
-import com.quanjiakan.net.retrofit.service.RxPostLoginEntityService;
-import com.quanjiakan.util.common.LogUtil;
-import com.quanjiakan.watch.R;
 
 import java.util.HashMap;
 

@@ -8,6 +8,8 @@ public interface ICommonData {
     //TODO ************************************************
     //TODO 公共 String 类型数据
 
+    String HTTP_OK = "200";
+
     String ENCODE_DECODE_UTF_8 = "utf-8";
     String ENCODE_DECODE_UTF_8_BIG = "UTF-8";
     String ENCODE_DECODE_URL_PREFIX = "%";
@@ -39,6 +41,8 @@ public interface ICommonData {
 
     String ALI_PAY_RESULT_9000 = "9000";
     String ALI_PAY_RESULT_8000 = "8000";
+
+    String HEALTH_INQUIRY_TYPE = "cy";
 
 
     //TODO ************************************************

@@ -5,8 +5,8 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseActivity;
-import com.quanjiakan.watch.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

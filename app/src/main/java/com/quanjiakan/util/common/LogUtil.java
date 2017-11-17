@@ -2,7 +2,7 @@ package com.quanjiakan.util.common;
 
 import android.util.Log;
 
-import com.quanjiakan.watch.BuildConfig;
+import com.pingantong.main.BuildConfig;
 
 /**
  *

@@ -11,12 +11,12 @@ import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.ICommonData;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.util.dialog.CommonDialogHint;
 import com.quanjiakan.util.dialog.QuanjiakanDialog;
-import com.quanjiakan.watch.R;
 import com.squareup.picasso.Picasso;
 import com.umeng.analytics.MobclickAgent;
 

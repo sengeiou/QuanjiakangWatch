@@ -1,5 +1,6 @@
 package com.quanjiakan.net_presenter;
 
+import com.pingantong.main.R;
 import com.quanjiakan.activity.common.index.housekeeper.HouseKeeperListActivity;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.net.IHttpUrlConstants;
@@ -9,7 +10,6 @@ import com.quanjiakan.net.retrofit.result_entity.GetHouseKeeperTypeListEntity;
 import com.quanjiakan.net.retrofit.service.RxGetHouseKeeperListService;
 import com.quanjiakan.net.retrofit.service.RxGetHouseKeeperTypeListService;
 import com.quanjiakan.util.common.LogUtil;
-import com.quanjiakan.watch.R;
 
 import java.util.HashMap;
 

@@ -30,9 +30,16 @@ public interface IPresenterBusinessCode {
 
     int HOUSE_KEEPER_ORDER = 30107;
 
+    int HEALTH_INQUIRY_CREATE_PROBLEM = 30108;
+    int HEALTH_INQUIRY_SEND_PROBLEM = 30109;
 
+    //*******************************************************************************
     int ALI_PAY = 31100;
     int ALI_PAY_VERIFY_RESULT = 31101;
     int WECHAT_PAY = 31102;
     int WECHAT_PAY_VERIFY_RESULT = 31103;
+
+
+
+
 }

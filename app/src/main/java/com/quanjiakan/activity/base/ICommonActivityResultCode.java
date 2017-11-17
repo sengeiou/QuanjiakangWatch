@@ -10,4 +10,7 @@ public interface ICommonActivityResultCode {
 
 
     int BACK_TO_MAIN = 1000;
+    int RELOAD_DATA = 1001;
+    int HEALTH_INQUIRY_CREATE_PATIENT_INFO = 1002;
+    int HEALTH_INQUIRY_EDIT_PATIENT_INFO = 1003;
 }

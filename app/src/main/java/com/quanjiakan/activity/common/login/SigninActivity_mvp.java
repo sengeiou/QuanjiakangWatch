@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.activity.common.main.MainActivity;
@@ -26,7 +27,6 @@ import com.quanjiakan.net_presenter.SigninPresenter;
 import com.quanjiakan.util.common.LogUtil;
 import com.quanjiakan.util.common.MessageDigestUtil;
 import com.quanjiakan.util.dialog.CommonDialogHint;
-import com.quanjiakan.watch.R;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.HashMap;

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.common.image.ImageViewerActivity;
 import com.quanjiakan.constants.IParamsName;
@@ -19,7 +20,6 @@ import com.quanjiakan.util.common.ParseToGsonUtil;
 import com.quanjiakan.util.common.SerializeToObjectUtil;
 import com.quanjiakan.util.dialog.CommonDialogHint;
 import com.quanjiakan.util.widget.RoundTransform;
-import com.quanjiakan.watch.R;
 import com.squareup.picasso.Picasso;
 import com.umeng.analytics.MobclickAgent;
 

@@ -15,8 +15,7 @@ import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 
-import com.quanjiakan.util.common.LogUtil;
-import com.quanjiakan.watch.R;
+import com.pingantong.main.R;
 
 /**
  * description:

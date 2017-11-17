@@ -9,16 +9,14 @@ import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RatingBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.activity.base.ICommonActivityRequestCode;
 import com.quanjiakan.activity.base.ICommonActivityResultCode;
-import com.quanjiakan.constants.IActivityRequestValue;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.retrofit.result_entity.GetHouseKeeperCompanyPhone;
@@ -26,10 +24,8 @@ import com.quanjiakan.net.retrofit.result_entity.GetHouseKeeperDetailEntity;
 import com.quanjiakan.net.retrofit.result_entity.GetHouseKeeperListEntity;
 import com.quanjiakan.net_presenter.HouseKeeperDetailPresenter;
 import com.quanjiakan.net_presenter.IPresenterBusinessCode;
-import com.quanjiakan.util.common.StringCheckUtil;
 import com.quanjiakan.util.dialog.CommonDialogHint;
 import com.quanjiakan.util.widget.RoundTransform;
-import com.quanjiakan.watch.R;
 import com.squareup.picasso.Picasso;
 import com.umeng.analytics.MobclickAgent;
 

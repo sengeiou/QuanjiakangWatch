@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.example.greendao.dao.DaoMaster;
 import com.example.greendao.dao.DaoSession;
-import com.quanjiakan.watch.BuildConfig;
+import com.pingantong.main.BuildConfig;
 
 /**
  * Created by Administrator on 2017/10/13.

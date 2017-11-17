@@ -8,6 +8,7 @@ import android.text.TextUtils;
 
 import com.alipay.sdk.app.PayTask;
 import com.google.gson.JsonObject;
+import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.activity.base.ICommonData;
@@ -18,7 +19,6 @@ import com.quanjiakan.net.retrofit.service.RxGetAliPayStringService;
 import com.quanjiakan.net_presenter.IPresenterBusinessCode;
 import com.quanjiakan.util.common.LogUtil;
 import com.quanjiakan.util.common.ParseToGsonUtil;
-import com.quanjiakan.watch.R;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

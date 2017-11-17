@@ -7,12 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-
+import com.pingantong.main.R;
 import com.quanjiakan.util.widget.wheelview.AbstractWheelTextAdapter;
 import com.quanjiakan.util.widget.wheelview.OnWheelChangedListener;
 import com.quanjiakan.util.widget.wheelview.OnWheelScrollListener;
 import com.quanjiakan.util.widget.wheelview.WheelView;
-import com.quanjiakan.watch.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;

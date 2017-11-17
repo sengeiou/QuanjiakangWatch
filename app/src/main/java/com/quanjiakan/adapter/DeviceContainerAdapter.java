@@ -7,12 +7,12 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.pingantong.main.R;
 import com.quanjiakan.activity.base.ICommonData;
 import com.quanjiakan.adapterholder.DeviceContainerHolder;
 import com.quanjiakan.db.entity.BindWatchInfoEntity;
 import com.quanjiakan.view.MaterialBadgeTextView;
 import com.quanjiakan.view.roundimage.RoundedImageView;
-import com.quanjiakan.watch.R;
 import com.squareup.picasso.Picasso;
 
 import java.io.UnsupportedEncodingException;

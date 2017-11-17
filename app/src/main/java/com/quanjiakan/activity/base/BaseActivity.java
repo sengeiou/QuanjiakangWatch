@@ -10,10 +10,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.pingantong.main.R;
 import com.quanjiakan.util.common.UnitExchangeUtil;
-import com.quanjiakan.util.dialog.CommonDialogHint;
-import com.quanjiakan.watch.R;
-import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -45,11 +43,6 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseAct
         super.onResume();
 //        MobclickAgent.onResume(this);
 //        MobclickAgent.onPageStart(this.getClass().getSimpleName());
-    }
-
-    @Override
-    public void onRestart() {
-        super.onRestart();
     }
 
     @Override

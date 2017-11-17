@@ -65,4 +65,10 @@ public interface IParamsName {
     String PARAMS_DEVICE_MEMBER_ID = "memberId";
 
 
+
+    //TODO 健康咨询
+    String PARAMS_HEALTH_INQURIRY_TYPE = "type";
+    String PARAMS_HEALTH_INQURIRY_MEMBER_ID = "memberId";
+    String PARAMS_HEALTH_INQURIRY_CONTENT = "content";
+    String PARAMS_HEALTH_INQURIRY_FROMTOKEN = "fromtoken";
 }

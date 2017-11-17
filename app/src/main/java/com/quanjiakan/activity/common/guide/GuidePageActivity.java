@@ -15,13 +15,13 @@ import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 
+import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.activity.base.ICommonSharePreferencesKey;
 import com.quanjiakan.activity.common.login.SigninActivity_mvp;
 import com.quanjiakan.activity.common.main.MainActivity;
 import com.quanjiakan.view.InsideViewPager;
-import com.quanjiakan.watch.R;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;

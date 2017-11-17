@@ -1,6 +1,5 @@
 package com.quanjiakan.activity.common.main.fragment;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -9,9 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.amap.api.maps.MapView;
+import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseFragment;
 import com.quanjiakan.device.entity.CommonNattyData;
-import com.quanjiakan.watch.R;
 import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.Subscribe;

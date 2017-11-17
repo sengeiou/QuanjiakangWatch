@@ -40,6 +40,7 @@ import com.amap.api.services.geocoder.GeocodeSearch;
 import com.amap.api.services.geocoder.RegeocodeAddress;
 import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
+import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.activity.base.BaseFragment;
 import com.quanjiakan.activity.base.ICommonActivityRequestCode;
@@ -62,7 +63,6 @@ import com.quanjiakan.util.dialog.CommonDialogHint;
 import com.quanjiakan.util.dialog.QuanjiakanDialog;
 import com.quanjiakan.util.map.MapUtil;
 import com.quanjiakan.util.map.NaviMapUtil;
-import com.quanjiakan.watch.R;
 import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -541,7 +541,6 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
                         NaviMapUtil.GotoGaoDeNaviMap(getActivity(), "全家康用户端", selfLatitude + "", selfLongitude + "", selfAdress, latLng.latitude + "", latLng.longitude + "",
                                 (info_location.getTag() != null ? info_location.getTag().toString() : ""), "1", "0", "2");
                     } else {
-                        CommonDialogHint.getInstance().showHint(getActivity(), "暂未获取到自己的定位信息,请稍后重试!");
                         locateSelf(LOCATION_TYPE_GET_POSITION);
                     }
                     selectNaviDialog.dismiss();
@@ -570,7 +569,7 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
                         final String patitentBdLon = patitentPoint.get("mgLon");
                         NaviMapUtil.GotoBaiDuNaviMap(getActivity(), selfBdlat + "," + selfBdlon, patitentBdLat + "," + patitentBdLon, "driving", null, null, null, null, null, "thirdapp.navi." + "巨硅科技" + R.string.app_name);
                     } else {
-                        CommonDialogHint.getInstance().showHint(getActivity(), "暂未获取到自己的定位信息,请稍后重试!");
+
                     }
                     selectNaviDialog.dismiss();
                 }

@@ -55,13 +55,56 @@
     <string name="order_detail_has_pay_fail"> 未付款</string>
     <string name="order_detail_space">    </string>
 
-
-
     <string name="order_detail_sum_money">费用合计:</string>
 
-
-
     <string name="order_detail_title">预约详情</string>
+
+
+
+    <string name="health_inquiry_create_problem_title">我要咨询</string>
+    <string name="health_inquiry_create_problem_menu_next">下一步</string>
+
+    <string name="health_inquiry_create_problem_init_number_hint">0/1000</string>
+    <string name="health_inquiry_create_problem_init_number_middle">/</string>
+    <string name="health_inquiry_create_problem_init_number_last">1000</string>
+    <string name="health_inquiry_create_problem_history">历史问诊</string>
+
+    <string name="health_inquiry_create_problem_hint">请详细描述病症及其持续时间</string>
+
+
+    <string name="health_inquiry_history_replied">已回复</string>
+    <string name="health_inquiry_history_not_replied">未回复</string>
+    <string name="health_inquiry_history_format_date">yyyy年MM月dd日</string>
+    <string name="health_inquiry_history_format_time">HH:mm</string>
+    <string name="health_inquiry_history_right_now">刚刚</string>
+    <string name="health_inquiry_history_divider"> | </string>
+    <string name="health_inquiry_history_charge_type_free">免费</string>
+    <string name="health_inquiry_history_append_forbid">暂未回复,不可进行追问!</string>
+
+
+    <string name="health_inquiry_send_problem_title">请选择档案</string>
+    <string name="health_inquiry_send_problem_hint">请选择为谁提问</string>
+    <string name="health_inquiry_send_problem_edit">编辑</string>
+    <string name="common_submit">确定</string>
+
+    <string name="health_inquiry_create_patient_info_title">创建新档案</string>
+    <string name="health_inquiry_create_patient_info_name">姓名</string>
+    <string name="health_inquiry_create_patient_info_name_hint">请输入姓名</string>
+    <string name="health_inquiry_create_patient_info_gender">性别</string>
+    <string name="health_inquiry_create_patient_info_male">男</string>
+    <string name="health_inquiry_create_patient_info_female">女</string>
+    <string name="health_inquiry_create_patient_info_age">年龄</string>
+    <string name="health_inquiry_create_patient_info_age_hint">请输入年龄</string>
+
+
+    <string name="health_inquiry_patient_data_adapter_left"> ( </string>
+    <string name="health_inquiry_patient_data_adapter_middle"> , </string>
+    <string name="health_inquiry_patient_data_adapter_right"> ) </string>
+
+
+
+    <string name="health_inquiry_edit_patient_info_title">编辑档案</string>
+
 
 </resources>
 

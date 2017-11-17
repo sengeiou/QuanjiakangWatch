@@ -5,18 +5,12 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.TextView;
 
-import com.quanjiakan.activity.base.BaseApplication;
+import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseFragment;
-import com.quanjiakan.activity.common.main.MainActivity;
-import com.quanjiakan.watch.R;
 import com.umeng.analytics.MobclickAgent;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**

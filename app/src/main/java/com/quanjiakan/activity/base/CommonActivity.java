@@ -3,7 +3,7 @@ package com.quanjiakan.activity.base;
 import android.os.Bundle;
 import android.view.View;
 
-import com.quanjiakan.watch.R;
+import com.pingantong.main.R;
 import com.umeng.analytics.MobclickAgent;
 
 /**

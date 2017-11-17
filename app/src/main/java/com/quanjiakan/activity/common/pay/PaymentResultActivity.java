@@ -7,6 +7,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.ICommonActivityRequestCode;
 import com.quanjiakan.activity.base.ICommonActivityResultCode;
@@ -14,7 +15,6 @@ import com.quanjiakan.activity.common.index.housekeeper.HouseKeeperOrderActivity
 import com.quanjiakan.activity.common.setting.orders.housekeeper.HouseKeeperOrderDetailActivity;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.util.dialog.CommonDialogHint;
-import com.quanjiakan.watch.R;
 import com.umeng.analytics.MobclickAgent;
 
 import butterknife.BindView;

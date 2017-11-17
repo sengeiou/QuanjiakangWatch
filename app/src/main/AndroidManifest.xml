@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.quanjiakan.watch">
+    package="com.pingantong.main">
 
     <uses-permission android:name="android.permission.GET_TASKS" />
 
@@ -117,6 +117,26 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
+
+        <activity
+            android:name="com.quanjiakan.activity.common.index.healthinquiry.HealthInquiryCreateProblemActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <activity
+            android:name="com.quanjiakan.activity.common.index.healthinquiry.HealthInquirySendProblemActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <activity
+            android:name="com.quanjiakan.activity.common.index.healthinquiry.HealthInquiryCreatePatientInfoActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <activity
+            android:name="com.quanjiakan.activity.common.index.healthinquiry.HealthInquiryEditPatientInfoActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <!-- ******************************************************************************************************** -->
 
         <activity
@@ -155,6 +175,20 @@
                 <action android:name="com.tencent.mm.plugin.openapi.Intent.ACTION_REFRESH_WXAPP" />
             </intent-filter>
         </receiver>
+        <!-- ************************************************ -->
+
+        <activity
+            android:name="com.pingantong.main.wxapi.WXPayEntryActivity"
+            android:exported="true"
+            android:launchMode="singleTop" />
+
+        <receiver
+            android:name="com.pingantong.main.wxapi.AppRegister"
+            android:permission="com.tencent.mm.plugin.permission.SEND">
+            <intent-filter>
+                <action android:name="com.tencent.mm.plugin.openapi.Intent.ACTION_REFRESH_WXAPP" />
+            </intent-filter>
+        </receiver>
 
         <!-- ******************************************************************************************************** -->
 
@@ -176,13 +210,16 @@
 
         <!-- meta data  AMap
         debug:
-        0892676546e2e34893a81908e174ee38
+        0892676546e2e34893a81908e174ee38  com.quanjiakan.watch
         release:
-        b61007593f5d3d8cb494ea4e7759ea77
+        b61007593f5d3d8cb494ea4e7759ea77  com.quanjiakan.watch
+
+        release:
+        9efbe9e742408fc4bc7407bd5ff0b4a1  com.pingantong.main
         -->
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="b61007593f5d3d8cb494ea4e7759ea77" />
+            android:value="9efbe9e742408fc4bc7407bd5ff0b4a1" />
 
 
     </application>

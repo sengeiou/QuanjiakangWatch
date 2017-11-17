@@ -9,22 +9,14 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.gson.JsonNull;
-import com.google.gson.JsonObject;
-import com.quanjiakan.activity.base.BaseApplication;
+import com.pingantong.main.R;
 import com.quanjiakan.activity.common.image.ImageViewerActivity;
-import com.quanjiakan.activity.common.index.housekeeper.HouseKeeperListActivity;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.net.retrofit.result_entity.GetHouseKeeperListEntity;
 import com.quanjiakan.util.dialog.CommonDialogHint;
 import com.quanjiakan.util.widget.RoundTransform;
-import com.quanjiakan.watch.R;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class HouseKeeperListAdapter extends BaseAdapter {

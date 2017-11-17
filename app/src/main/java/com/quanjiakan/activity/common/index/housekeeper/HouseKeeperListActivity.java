@@ -23,6 +23,7 @@ import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.activity.base.ICommonActivityRequestCode;
@@ -37,7 +38,6 @@ import com.quanjiakan.net_presenter.IPresenterBusinessCode;
 import com.quanjiakan.util.common.LogUtil;
 import com.quanjiakan.util.dialog.ChangeAddressDetailDialog;
 import com.quanjiakan.util.dialog.CommonDialogHint;
-import com.quanjiakan.watch.R;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;

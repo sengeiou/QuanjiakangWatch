@@ -29,8 +29,8 @@
 
     <string name="error_ali_create_order_error">创建订单失败,请重试!</string>
 
-
-
+    <string name="error_send_inquiry_success">发送咨询成功!</string>
+    <string name="error_send_inquiry_fail">发送咨询失败!</string>
 
     <string name="error_housekeeper_wrong_phonenumber">未获取到公司服务电话!</string>
 

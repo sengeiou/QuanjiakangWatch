@@ -9,8 +9,8 @@ import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.pingantong.main.R;
 import com.quanjiakan.util.common.UnitExchangeUtil;
-import com.quanjiakan.watch.R;
 
 /**
  * Created by Administrator on 2017/10/10.

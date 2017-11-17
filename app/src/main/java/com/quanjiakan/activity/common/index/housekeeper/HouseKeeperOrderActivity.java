@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.JsonObject;
+import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.activity.base.ICommonActivityRequestCode;
@@ -36,7 +37,6 @@ import com.quanjiakan.util.pay.AlipayHandler;
 import com.quanjiakan.util.pay.WeixinPayHandler;
 import com.quanjiakan.util.widget.RoundTransform;
 import com.quanjiakan.view.dialog.ChangeBirthDialog;
-import com.quanjiakan.watch.R;
 import com.squareup.picasso.Picasso;
 import com.umeng.analytics.MobclickAgent;
 
@@ -204,6 +204,7 @@ public class HouseKeeperOrderActivity extends BaseActivity {
 
         if(!BaseApplication.getInstances().isWXPayResultNull()){
             vertifyWechatPayment(wechatOrderId);
+            BaseApplication.getInstances().initAndResetPayResult();
         }
     }
 
@@ -583,7 +584,6 @@ public class HouseKeeperOrderActivity extends BaseActivity {
     }
 
     public void goWechatPay(final String orderId, JsonObject payInfo){
-        BaseApplication.getInstances().initAndResetPayResult();//开启新的支付前，重置支付状态
         wechatOrderId = orderId;
         new WeixinPayHandler(this).pay(payInfo);
     }

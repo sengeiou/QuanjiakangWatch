@@ -3,6 +3,7 @@ package com.wbj.ndk.natty.client;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 
+import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.activity.base.ICommonData;
 import com.quanjiakan.db.entity.MircoChatRecordEntity;
@@ -13,7 +14,6 @@ import com.quanjiakan.device.entity.CommonNattyData;
 import com.quanjiakan.util.common.LogUtil;
 import com.quanjiakan.util.common.MessageDigestUtil;
 import com.quanjiakan.util.notification.NotificationUtil;
-import com.quanjiakan.watch.R;
 import com.wbj.ui.recorder.AudioFileFunc;
 
 import org.greenrobot.eventbus.EventBus;

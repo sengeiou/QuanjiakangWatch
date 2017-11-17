@@ -24,7 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.quanjiakan.watch.R;
+import com.pingantong.main.R;
 
 import java.util.ArrayList;
 

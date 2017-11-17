@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.constants.IParamsName;
@@ -34,7 +35,6 @@ import com.quanjiakan.util.common.StringCheckUtil;
 import com.quanjiakan.util.common.UnitExchangeUtil;
 import com.quanjiakan.util.dialog.CommonDialogHint;
 import com.quanjiakan.util.widget.OrderClickSpan;
-import com.quanjiakan.watch.R;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.HashMap;

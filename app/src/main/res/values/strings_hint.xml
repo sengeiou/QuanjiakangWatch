@@ -107,5 +107,18 @@
     <string name="hint_no_storage_title">无有效外存</string>
     <string name="hint_no_storage_content">未检测到有效的外存储设备</string>
 
+    <string name="hint_health_inquiry_length_limit">文字超出长度限制!</string>
+
+    <string name="hint_health_inquiry_last_10_problem_hint">正在获取最新数据</string>
+    <string name="hint_health_inquiry_please_input">请输入问题!</string>
+    <string name="hint_health_inquiry_less_then_10">字数不足10,请继续补充!</string>
+    <string name="hint_health_inquiry_more_then_1000">字数超过1000,请适当删减!</string>
+
+    <string name="hint_health_inquiry_please_create_one">请先创建一个档案!</string>
+    <string name="hint_health_inquiry_please_choose_one">请先选择一个档案!</string>
+    <string name="hint_health_inquiry_no_change">尚未修改数据!</string>
+
+    <string name="hint_health_inquiry_sending">正在发送...</string>
+
 </resources>
 

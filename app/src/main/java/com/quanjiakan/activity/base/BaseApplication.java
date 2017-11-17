@@ -290,7 +290,7 @@ public class BaseApplication extends MultiDexApplication {
 
     /**
      * *********************************************************************************************
-     *
+     * 微信支付----支付状态
      */
 
     public boolean isWXPayResultNull(){
@@ -315,10 +315,6 @@ public class BaseApplication extends MultiDexApplication {
 
     public void setWxPayResultCancel(){
         payResult = WXPayResult.USER_CANCEL;
-    }
-
-    public WXPayResult getPayResult(){
-        return payResult;
     }
 
     /**
