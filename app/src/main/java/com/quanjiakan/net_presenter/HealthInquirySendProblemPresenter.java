@@ -1,13 +1,10 @@
 package com.quanjiakan.net_presenter;
 
-import com.quanjiakan.activity.common.index.healthinquiry.HealthInquiryCreateProblemActivity;
 import com.quanjiakan.activity.common.index.healthinquiry.HealthInquirySendProblemActivity;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.Retrofit2Util;
-import com.quanjiakan.net.retrofit.result_entity.PostLastTenMessage;
-import com.quanjiakan.net.retrofit.service.RxPostLastTenMessageService;
-import com.quanjiakan.net.retrofit.service.RxPostSendInquiryService;
+import com.quanjiakan.net.retrofit.service.post.string.RxPostSendInquiryService;
 
 import java.util.HashMap;
 

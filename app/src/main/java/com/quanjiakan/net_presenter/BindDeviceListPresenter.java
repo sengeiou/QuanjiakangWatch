@@ -7,7 +7,7 @@ import com.quanjiakan.entity.LoginInfoEntity;
 import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.Retrofit2Util;
 import com.quanjiakan.net.retrofit.result_entity.GetWatchListEntity;
-import com.quanjiakan.net.retrofit.service.RxGetWatchListService;
+import com.quanjiakan.net.retrofit.service.get.object.RxGetWatchListService;
 
 import java.util.HashMap;
 

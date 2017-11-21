@@ -5,9 +5,7 @@ import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.Retrofit2Util;
 import com.quanjiakan.net.retrofit.result_entity.PostLastTenMessage;
-import com.quanjiakan.net.retrofit.result_entity.PostSMSEntity;
-import com.quanjiakan.net.retrofit.service.RxPostLastTenMessageService;
-import com.quanjiakan.net.retrofit.service.RxPostSMSEntityService;
+import com.quanjiakan.net.retrofit.service.post.object.RxPostLastTenMessageService;
 
 import java.util.HashMap;
 

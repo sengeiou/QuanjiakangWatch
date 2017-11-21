@@ -240,5 +240,11 @@ public static java.lang.String TABLENAME;
 -dontwarn com.apache.**
 
 
+# ----- apache http support
+-keep class com.czt.** {*;}
+-dontwarn com.czt.**
 
+
+-keep class com.soundcloud.** {*;}
+-dontwarn com.soundcloud.**
 

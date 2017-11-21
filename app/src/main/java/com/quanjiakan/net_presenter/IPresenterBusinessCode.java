@@ -8,6 +8,7 @@ public interface IPresenterBusinessCode {
     /**
      * TODO 标识各种业务的操作
      */
+    int EMPTY = 60000;
     int NONE = 30000;
     int LOGIN = 30001;
     int SMS_CODE = 30002;
@@ -32,6 +33,16 @@ public interface IPresenterBusinessCode {
 
     int HEALTH_INQUIRY_CREATE_PROBLEM = 30108;
     int HEALTH_INQUIRY_SEND_PROBLEM = 30109;
+
+    int HEALTH_INQUIRY_APPEND_PROBLEM = 30110;
+    int HEALTH_INQUIRY_PROBLEM_ANSWER_LIST = 30111;
+    int HEALTH_INQUIRY_PROBLEM_SEND_QUESTION = 30112;
+    int HEALTH_INQUIRY_DOCTOR_INFO = 30113;
+    int HEALTH_INQUIRY_DOCTOR_EVALUATE = 30114;
+
+
+    int COMMON_FILE_UPLOAD = 30301;
+    int COMMON_FILE_DOWNLOAD = 30302;
 
     //*******************************************************************************
     int ALI_PAY = 31100;

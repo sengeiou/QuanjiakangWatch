@@ -5,6 +5,9 @@
     <string name="hint_common_hint_title">提示</string>
     <string name="hint_common_hint_no_data">暂无数据</string>
 
+    <string name="hint_common_get_data">正在获取数据...</string>
+    <string name="hint_common_submit_data">正在提交数据...</string>
+
     <string name="hint_signup_check_code">获取验证码</string>
     <string name="hint_signup_check_code_remain_pre">剩余</string>
     <string name="hint_signup_check_code_remain_suf">s</string>
@@ -119,6 +122,19 @@
     <string name="hint_health_inquiry_no_change">尚未修改数据!</string>
 
     <string name="hint_health_inquiry_sending">正在发送...</string>
+
+    <string name="hint_health_inquiry_evaluate_hint">问题尚未被回复，无法进行评价!</string>
+
+    <string name="hint_health_inquiry_append_no_question">请填入追问的问题!</string>
+    <string name="hint_health_inquiry_append_voice_upload_fail">上传语音失败，请重试!</string>
+    <string name="hint_health_inquiry_append_image_upload_fail">上传图片失败，请重试!</string>
+
+
+    <string name="hint_common_upload_file_fail">文件上传失败</string>
+    <string name="hint_common_upload_file_code">请求响应码</string>
+    <string name="hint_common_upload_file_server_denied">服务器拒绝连接</string>
+
+
 
 </resources>
 

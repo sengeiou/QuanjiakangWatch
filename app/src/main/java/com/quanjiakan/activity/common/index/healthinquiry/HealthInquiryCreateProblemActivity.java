@@ -21,6 +21,7 @@ import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.activity.base.ICommonActivityRequestCode;
 import com.quanjiakan.activity.base.ICommonActivityResultCode;
+import com.quanjiakan.activity.common.setting.healthinquiry.HealthInquiryFurtherAskActivity;
 import com.quanjiakan.adapter.HealthInquiryProblemListAdapter;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.net.IHttpUrlConstants;
@@ -382,7 +383,13 @@ public class HealthInquiryCreateProblemActivity extends BaseActivity {
         });
     }
 
-    public void setListViewData(List<PostLastTenMessage.ListBean> dataList){
+    public void toFurtherAsk(int position,PostLastTenMessage.ListBean entity){
+        Intent intent = new Intent(this, HealthInquiryFurtherAskActivity.class);
+        intent.putExtra(IParamsName.PARAMS_COMMON_DATA,entity);
+        startActivityForResult(intent,ICommonActivityRequestCode.RELOAD_DATA);
+    }
+
+    public void setListViewData(final List<PostLastTenMessage.ListBean> dataList){
         mAdapter = new HealthInquiryProblemListAdapter(this,dataList);
         listview.setAdapter(mAdapter);
         listview.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
@@ -402,7 +409,7 @@ public class HealthInquiryCreateProblemActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long position) {
                 if(mAdapter.isReplied((int) position)){
                     //TODO 跳转至追问界面
-                    CommonDialogHint.getInstance().showHint(HealthInquiryCreateProblemActivity.this,"跳转至追问页");
+                    toFurtherAsk((int) position,dataList.get((int) position));
                 }else{
                     //TODO 提示未回复的无法进行追问
                     CommonDialogHint.getInstance().showHint(HealthInquiryCreateProblemActivity.this,getString(R.string.health_inquiry_history_append_forbid));
@@ -417,13 +424,20 @@ public class HealthInquiryCreateProblemActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode){
-            case ICommonActivityRequestCode.BACK_TO_MAIN:
-                if(resultCode == ICommonActivityResultCode.BACK_TO_MAIN){
+            case ICommonActivityRequestCode.BACK_TO_MAIN: {
+                if (resultCode == ICommonActivityResultCode.BACK_TO_MAIN) {
                     finish();
-                }else if(resultCode == ICommonActivityResultCode.RELOAD_DATA){
+                } else if (resultCode == ICommonActivityResultCode.RELOAD_DATA) {
                     loadLastTenMessage();
                 }
                 break;
+            }
+            case ICommonActivityRequestCode.RELOAD_DATA: {
+                if (resultCode == ICommonActivityResultCode.RELOAD_DATA) {
+                    loadLastTenMessage();
+                }
+                break;
+            }
         }
     }
 }

@@ -49,6 +49,10 @@ public interface IHttpUrlConstants {
 //      String PLATFORM_WEB = "1";
     String PLATFORM_ANDROID = "2";
 //      String PLATFORM_IOS = "3";
+
+
+    String CLIENT_ANDROID = "1";
+    String DEVICE_TYPE_ANDROID = "0";
     //***************************************************
     /**
      * Service

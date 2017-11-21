@@ -1,12 +1,13 @@
 package com.quanjiakan.net.retrofit.result_entity;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by Administrator on 2017/11/15.
  */
 
-public class PostLastTenMessage {
+public class PostLastTenMessage implements Serializable{
 
     /**
      * 实际是获取到了全部的数据，需要自己进行排序与过滤
@@ -64,7 +65,7 @@ public class PostLastTenMessage {
         this.list = list;
     }
 
-    public static class ListBean {
+    public static class ListBean implements Serializable{
         /**
          * chunyuId : 440121340
          * createMillisecond : 1477882941480

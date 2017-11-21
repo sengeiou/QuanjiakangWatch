@@ -6,8 +6,7 @@ import com.quanjiakan.entity.LoginInfoEntity;
 import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.Retrofit2Util;
 import com.quanjiakan.net.retrofit.result_entity.PostLoginEntity;
-import com.quanjiakan.net.retrofit.service.RxPostLoginEntityService;
-import com.quanjiakan.util.common.LogUtil;
+import com.quanjiakan.net.retrofit.service.post.object.RxPostLoginEntityService;
 
 import java.util.HashMap;
 

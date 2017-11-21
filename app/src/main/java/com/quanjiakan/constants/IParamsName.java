@@ -35,6 +35,14 @@ public interface IParamsName {
     String PARAMS_COMMON_USERID = "user_id";
     String PARAMS_COMMON_DATA = "data";
 
+    String PARAMS_COMMON_DEVICE_TYPE = "devicetype";
+    String PARAMS_COMMON_DEVICE_CLIENT = "client";
+
+
+
+
+
+
     String PARAMS_COMMON_MOBILE = "mobile";
     String PARAMS_COMMON_PASSWORD = "password";
 
@@ -68,7 +76,19 @@ public interface IParamsName {
 
     //TODO 健康咨询
     String PARAMS_HEALTH_INQURIRY_TYPE = "type";
-    String PARAMS_HEALTH_INQURIRY_MEMBER_ID = "memberId";
+
+    String PARAMS_HEALTH_INQURIRY_TYPE_VALUE = "cy";
+
     String PARAMS_HEALTH_INQURIRY_CONTENT = "content";
     String PARAMS_HEALTH_INQURIRY_FROMTOKEN = "fromtoken";
+    String PARAMS_HEALTH_INQURIRY_TOTOKEN = "totoken";
+    String PARAMS_HEALTH_INQURIRY_CHUNYUID = "chunyuId";
+    String PARAMS_HEALTH_INQURIRY_DOCTOR_ID = "doctorId";//
+    String PARAMS_HEALTH_INQURIRY_PROBLEM_ID = "problemId";//
+
+    String PARAMS_HEALTH_INQUIRY_PROBLEM_ID = "problem_id";
+    String PARAMS_HEALTH_INQUIRY_USERNAME = "username";
+    String PARAMS_HEALTH_INQUIRY_STAR = "star";
+    String PARAMS_HEALTH_INQUIRY_CONTENT = "content";
+
 }

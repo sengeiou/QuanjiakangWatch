@@ -106,5 +106,22 @@
     <string name="health_inquiry_edit_patient_info_title">编辑档案</string>
 
 
+    <string name="health_inquiry_append_title">追 问</string>
+    <string name="health_inquiry_append_belong_hospital">所属医院:</string>
+    <string name="health_inquiry_append_belong_clinic">所属科室:</string>
+    <string name="health_inquiry_append_hospital_rank">医院等级:</string>
+
+    <string name="health_inquiry_append_evaluate_dialog_title">请评价本次服务</string>
+    <string name="health_inquiry_append_evaluate_dialog_content_hint">让我们了解您对本次服务的感受</string>
+    <string name="health_inquiry_append_evaluate_dialog_content_hint1">请输入问题评价!</string>
+
+    <string name="health_inquiry_append_evaluate_result_success">评价问题成功!</string>
+    <string name="health_inquiry_append_evaluate_result_fail">评价问题失败!</string>
+    <string name="health_inquiry_append_evaluate_result_server_error">评价接口返回数据异常!</string>
+
+
+
+
+
 </resources>
 

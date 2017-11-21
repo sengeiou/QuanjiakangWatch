@@ -15,7 +15,7 @@ import com.quanjiakan.activity.base.ICommonData;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.Retrofit2Util;
-import com.quanjiakan.net.retrofit.service.RxGetAliPayStringService;
+import com.quanjiakan.net.retrofit.service.get.string.RxGetAliPayStringService;
 import com.quanjiakan.net_presenter.IPresenterBusinessCode;
 import com.quanjiakan.util.common.LogUtil;
 import com.quanjiakan.util.common.ParseToGsonUtil;

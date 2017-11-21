@@ -7,8 +7,8 @@ import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.Retrofit2Util;
 import com.quanjiakan.net.retrofit.result_entity.GetHouseKeeperListEntity;
 import com.quanjiakan.net.retrofit.result_entity.GetHouseKeeperTypeListEntity;
-import com.quanjiakan.net.retrofit.service.RxGetHouseKeeperListService;
-import com.quanjiakan.net.retrofit.service.RxGetHouseKeeperTypeListService;
+import com.quanjiakan.net.retrofit.service.get.object.RxGetHouseKeeperListService;
+import com.quanjiakan.net.retrofit.service.get.object.RxGetHouseKeeperTypeListService;
 import com.quanjiakan.util.common.LogUtil;
 
 import java.util.HashMap;

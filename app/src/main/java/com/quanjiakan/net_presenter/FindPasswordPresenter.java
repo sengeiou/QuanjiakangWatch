@@ -1,17 +1,13 @@
 package com.quanjiakan.net_presenter;
 
 import com.quanjiakan.activity.common.login.FindPasswordActivity;
-import com.quanjiakan.activity.common.login.SignupActivity;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.Retrofit2Util;
 import com.quanjiakan.net.retrofit.result_entity.PostResetPasswordEntity;
 import com.quanjiakan.net.retrofit.result_entity.PostSMSEntity;
-import com.quanjiakan.net.retrofit.result_entity.PostSignupEntity;
-import com.quanjiakan.net.retrofit.service.RxPostResetPasswordService;
-import com.quanjiakan.net.retrofit.service.RxPostSMSEntityService;
-import com.quanjiakan.net.retrofit.service.RxPostSignupService;
-import com.quanjiakan.util.common.LogUtil;
+import com.quanjiakan.net.retrofit.service.post.string.RxPostResetPasswordService;
+import com.quanjiakan.net.retrofit.service.post.object.RxPostSMSEntityService;
 
 import java.util.HashMap;
 

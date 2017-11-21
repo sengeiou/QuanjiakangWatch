@@ -14,4 +14,8 @@ public interface ICommonActivityRequestCode {
     int HEALTH_INQUIRY_CREATE_PATIENT_INFO = 1002;
     int HEALTH_INQUIRY_EDIT_PATIENT_INFO = 1003;
 
+    int REQUEST_CODE_CAPTURE_CAMEIA = 2001;
+    int REQUEST_CROP = 6709;
+    int REQUEST_PICK = 9162;
+
 }
