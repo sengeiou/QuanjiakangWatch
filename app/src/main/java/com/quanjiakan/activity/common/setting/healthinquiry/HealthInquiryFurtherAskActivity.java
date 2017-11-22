@@ -27,7 +27,6 @@ import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.czt.mp3recorder.MP3Recorder;
 import com.google.gson.JsonArray;
@@ -808,9 +807,7 @@ public class HealthInquiryFurtherAskActivity extends BaseActivity {
                                 }
                             }, 500);
                         } else {
-                            Toast.makeText(HealthInquiryFurtherAskActivity.this, HealthInquiryFurtherAskActivity.this.
-                                    getString(IdHelper.getString(HealthInquiryFurtherAskActivity.this,
-                                            "jmui_sdcard_not_exist_toast")), Toast.LENGTH_SHORT).show();
+                            CommonDialogHint.getInstance().showHint(HealthInquiryFurtherAskActivity.this,getString(R.string.jmui_sdcard_not_exist_toast));
                             mIsPressed = false;
                             return false;
                         }
@@ -883,8 +880,7 @@ public class HealthInquiryFurtherAskActivity extends BaseActivity {
         if (myRecAudioFile == null) {
             cancelTimer();
             stopRecording();
-            Toast.makeText(this, getString(IdHelper.getString(this, "jmui_create_file_failed")),
-                    Toast.LENGTH_SHORT).show();
+            CommonDialogHint.getInstance().showHint(HealthInquiryFurtherAskActivity.this,getString(R.string.jmui_create_file_failed));
         }
         recordIndicator = new Dialog(this, R.style.jmui_record_voice_dialog);
         recordIndicator.setContentView(R.layout.jmui_dialog_record_voice);
@@ -1001,8 +997,7 @@ public class HealthInquiryFurtherAskActivity extends BaseActivity {
 
         long intervalTime = System.currentTimeMillis() - startTime;
         if (intervalTime < MIN_INTERVAL_TIME) {
-            Toast.makeText(this, getString(IdHelper.getString(this,
-                    "jmui_time_too_short_toast")), Toast.LENGTH_SHORT).show();
+            CommonDialogHint.getInstance().showHint(HealthInquiryFurtherAskActivity.this,getString(R.string.jmui_time_too_short_toast));
             myRecAudioFile.delete();
         } else {
             if (myRecAudioFile != null && myRecAudioFile.exists()) {
@@ -1035,8 +1030,7 @@ public class HealthInquiryFurtherAskActivity extends BaseActivity {
                         MobclickAgent.reportError(HealthInquiryFurtherAskActivity.this, e);
                     }
                 } else {
-                    Toast.makeText(this, this.getString(IdHelper.getString(this,
-                            "jmui_record_voice_permission_request")), Toast.LENGTH_SHORT).show();
+                    CommonDialogHint.getInstance().showHint(HealthInquiryFurtherAskActivity.this,getString(R.string.jmui_record_voice_permission_request));
                 }
 
             }

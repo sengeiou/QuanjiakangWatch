@@ -17,9 +17,11 @@ import android.widget.TextView;
 import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
+import com.quanjiakan.activity.base.ICommonActivityRequestCode;
 import com.quanjiakan.activity.base.ICommonData;
 import com.quanjiakan.activity.base.ISetFragmentBeforeShow;
 import com.quanjiakan.activity.common.image.ImageViewerActivity;
+import com.quanjiakan.activity.common.index.bind.BindStepOneActivity;
 import com.quanjiakan.activity.common.index.healthinquiry.HealthInquiryCreateProblemActivity;
 import com.quanjiakan.activity.common.index.housekeeper.HouseKeeperListActivity;
 import com.quanjiakan.activity.common.main.fragment.MainMapFragment;
@@ -603,7 +605,8 @@ public class MainActivity extends BaseActivity {
 
     //TODO
     public void goToBindDevice(){
-
+        Intent intent = new Intent(this, BindStepOneActivity.class);
+        startActivityForResult(intent, ICommonActivityRequestCode.RELOAD_DATA);
     }
 
     public void testToImageViewer(){

@@ -46,6 +46,10 @@ public interface IPresenterBusinessCode {
     int COMMON_FILE_UPLOAD_VOICE = 30303;
     int COMMON_FILE_UPLOAD_IMAGE = 30304;
 
+    int DEVICE_BIND_STEP_ONE = 30305;
+
+    int DEVICE_GET_WATCH_CONTACT = 30306;
+
     //*******************************************************************************
     int ALI_PAY = 31100;
     int ALI_PAY_VERIFY_RESULT = 31101;

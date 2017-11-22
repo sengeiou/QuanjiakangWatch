@@ -8,13 +8,13 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseConstants;
 import com.quanjiakan.activity.base.ICommonActivityRequestCode;
 import com.quanjiakan.constants.IParamsName;
+import com.quanjiakan.net_presenter.BindStepOnePresenter;
 import com.quanjiakan.net_presenter.IPresenterBusinessCode;
 import com.quanjiakan.util.common.LogUtil;
 import com.quanjiakan.util.dialog.CommonDialogHint;
@@ -52,12 +52,14 @@ public class BindStepOneActivity extends BaseActivity {
     @BindView(R.id.btn_submit)
     Button btnSubmit;
 
+    private BindStepOnePresenter presenter;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_device_bind_step_one);
         ButterKnife.bind(this);
-
+        initTitle();
     }
 
     @Override
@@ -151,6 +153,18 @@ public class BindStepOneActivity extends BaseActivity {
         startActivityForResult(intent, ICommonActivityRequestCode.REQUEST_SCAN);
     }
 
+    public void initTitle(){
+        ibtnBack.setVisibility(View.VISIBLE);
+
+        tvTitle.setVisibility(View.VISIBLE);
+        tvTitle.setText(R.string.bind_device_step_one_title);
+
+        menuText.setVisibility(View.GONE);
+        ibtnMenu.setVisibility(View.GONE);
+
+        presenter = new BindStepOnePresenter();
+    }
+
     /**
      * ***********************************************************************************************************************************************
      */
@@ -170,11 +184,11 @@ public class BindStepOneActivity extends BaseActivity {
                                 bindDevice2dcodeValue.setText(deviceid.substring(deviceid.lastIndexOf("imei=") + 5, deviceid.lastIndexOf("imei=") + 20));
                             }
                         } else {
-                            Toast.makeText(this, "无效的二维码，请确认是正确的设备后再次扫描!", Toast.LENGTH_SHORT).show();
+                            CommonDialogHint.getInstance().showHint(this,getString(R.string.hint_common_scan_error1));
                         }
                         LogUtil.w("二维码设备ID:" + deviceid);
                     } else {
-                        Toast.makeText(this, "二维码解析失败,请重试!", Toast.LENGTH_SHORT).show();
+                        CommonDialogHint.getInstance().showHint(this,getString(R.string.hint_common_scan_error2));
                     }
                 }
                 break;

@@ -14,7 +14,6 @@ import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.quanjiakan.util.common.IdHelper;
 import com.quanjiakan.util.common.StorageDeviceUtil;
@@ -108,8 +107,6 @@ public class RecordVoiceButton extends Button {
                         }
                     }, 500);
                 } else {
-                    Toast.makeText(this.getContext(), mContext.getString(IdHelper.getString(mContext,
-                            "jmui_sdcard_not_exist_toast")), Toast.LENGTH_SHORT).show();
                     this.setPressed(false);
                     this.setText(mContext.getString(IdHelper.getString(mContext, "jmui_record_voice_hint")));
                     mIsPressed = false;
@@ -191,8 +188,6 @@ public class RecordVoiceButton extends Button {
         if (myRecAudioFile == null) {
             cancelTimer();
             stopRecording();
-            Toast.makeText(mContext, mContext.getString(IdHelper.getString(mContext, "jmui_create_file_failed")),
-                    Toast.LENGTH_SHORT).show();
         }
         Log.i("FileCreate", "Create file success file path: " + myRecAudioFile.getAbsolutePath());
         recordIndicator = new Dialog(getContext(), IdHelper.getStyle(mContext, "jmui_record_voice_dialog"));
@@ -214,8 +209,6 @@ public class RecordVoiceButton extends Button {
 
         long intervalTime = System.currentTimeMillis() - startTime;
         if (intervalTime < MIN_INTERVAL_TIME) {
-            Toast.makeText(getContext(), mContext.getString(IdHelper.getString(mContext,
-                    "jmui_time_too_short_toast")), Toast.LENGTH_SHORT).show();
             myRecAudioFile.delete();
         } else {
             if (myRecAudioFile != null && myRecAudioFile.exists()) {
@@ -236,8 +229,7 @@ public class RecordVoiceButton extends Button {
                         duration = 60;
                     }
                 } else {
-                    Toast.makeText(mContext, mContext.getString(IdHelper.getString(mContext,
-                                    "jmui_record_voice_permission_request")), Toast.LENGTH_SHORT).show();
+
                 }
             }
         }

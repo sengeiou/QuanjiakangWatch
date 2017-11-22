@@ -82,6 +82,14 @@
 
         <!-- ******************************************************************************************************** -->
         <!-- common business after login  -->
+
+        <activity
+            android:name="com.quanjiakan.activity.common.index.bind.BindStepOneActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
+
         <activity
             android:name="com.quanjiakan.activity.common.index.devices.WatchEntryActivity_child"
             android:launchMode="singleTop"
@@ -169,6 +177,11 @@
 
         <activity
             android:name="com.soundcloud.android.crop.CropImageActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <activity
+            android:name="com.zxing.qrcode.BindDeviceActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
 

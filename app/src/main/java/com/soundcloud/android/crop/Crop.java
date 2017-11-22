@@ -7,9 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.widget.Toast;
 
-import com.pingantong.main.R;
 import com.soundcloud.android.crop.util.VisibleForTesting;
 
 /**
@@ -150,7 +148,7 @@ public class Crop {
             //打开相册界面
             activity.startActivityForResult(intent, REQUEST_PICK);
         } catch (ActivityNotFoundException e) {
-            Toast.makeText(activity, R.string.crop__pick_error, Toast.LENGTH_SHORT).show();
+
         }
     }
     
@@ -164,7 +162,7 @@ public class Crop {
         try {
         	fragment.startActivityForResult(intent, REQUEST_PICK);
         } catch (Exception e) {
-//            Toast.makeText(fragment, R.string.crop__pick_error, Toast.LENGTH_SHORT).show();
+
         }
     }
 
