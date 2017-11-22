@@ -544,7 +544,7 @@ public class MainActivity extends BaseActivity {
         slidingMenu.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                return true;
+                return false;
             }
         });
         //TODO 设置侧滑菜单的自适应宽度

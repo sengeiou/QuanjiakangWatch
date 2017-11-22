@@ -1,7 +1,6 @@
 package com.quanjiakan.activity.common.setting.healthinquiry;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
@@ -18,7 +17,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -41,11 +39,12 @@ import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.activity.base.ICommonActivityRequestCode;
+import com.quanjiakan.activity.base.ICommonActivityResultCode;
+import com.quanjiakan.activity.base.ICommonData;
 import com.quanjiakan.adapter.FreeInquiryAppendAdapter;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.entity.BaseHttpResultEntity_List;
 import com.quanjiakan.entity.FreeInquiryAnswerEntity;
-import com.quanjiakan.entity.HealthInquiryFurtherAskProblemStatus;
 import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.retrofit.result_entity.HealthInquiryFurtherAskDoctorInfoEntity;
 import com.quanjiakan.net.retrofit.result_entity.PostLastTenMessage;
@@ -53,6 +52,7 @@ import com.quanjiakan.net.upload.UploadUtil;
 import com.quanjiakan.net_presenter.HealthInquiryFurtherAskPresenter;
 import com.quanjiakan.net_presenter.IPresenterBusinessCode;
 import com.quanjiakan.util.common.IdHelper;
+import com.quanjiakan.util.common.KeyBoardUtil;
 import com.quanjiakan.util.common.LogUtil;
 import com.quanjiakan.util.common.ParseToGsonUtil;
 import com.quanjiakan.util.common.SerializeToObjectUtil;
@@ -330,7 +330,11 @@ public class HealthInquiryFurtherAskActivity extends BaseActivity {
                 break;
             }
             case IPresenterBusinessCode.COMMON_FILE_UPLOAD: {
-                getDialog(this, getString(R.string.hint_common_submit_data));//正在获取数据...
+                getDialog(this, getString(R.string.hint_common_submit_file_image));//正在获取数据...
+                break;
+            }
+            case IPresenterBusinessCode.COMMON_FILE_UPLOAD_VOICE:{
+                getDialog(this, getString(R.string.hint_common_submit_file_voice));//正在获取数据...
                 break;
             }
             case IPresenterBusinessCode.HEALTH_INQUIRY_PROBLEM_SEND_QUESTION: {
@@ -365,6 +369,9 @@ public class HealthInquiryFurtherAskActivity extends BaseActivity {
                 break;
             case IPresenterBusinessCode.COMMON_FILE_UPLOAD:
                 afterUpload(result);
+                break;
+            case IPresenterBusinessCode.COMMON_FILE_UPLOAD_VOICE:
+                afterVoiceUpload(result);
                 break;
             case IPresenterBusinessCode.HEALTH_INQUIRY_PROBLEM_SEND_QUESTION: {
                 setFurtherInquiryResult(result);
@@ -426,7 +433,7 @@ public class HealthInquiryFurtherAskActivity extends BaseActivity {
                 break;
             }
             case R.id.jmui_send_msg_btn: {
-                persistProblem();
+                sendAppendProblem();
                 break;
             }
             case R.id.jmui_switch_voice_ib: {
@@ -516,6 +523,7 @@ public class HealthInquiryFurtherAskActivity extends BaseActivity {
 
     public void loadInfoListView(Object result){
         if (result != null && result instanceof String) {
+            LogUtil.e("loadInfoListView:"+result);
             list.onRefreshComplete();
             if(result.toString()!=null && result.toString().length()>0 && !"null".equals(result.toString().toLowerCase())){
                 answerEntityBaseHttpResultEntity_list = (BaseHttpResultEntity_List<FreeInquiryAnswerEntity>)
@@ -534,7 +542,7 @@ public class HealthInquiryFurtherAskActivity extends BaseActivity {
                     questioin.setCreateMillisecond(answerEntityBaseHttpResultEntity_list.getList().get(0).getCreateMillisecond());
                     questioin.setTitle(answerEntityBaseHttpResultEntity_list.getList().get(0).getTitle());
                     freeInquiryAnswerEntityList.add(0,questioin);//单独抽出显示-------放到第一位
-
+                    //TODO 其实返回的回答数据中存在一个问题（排序问题---由于JOSN本身的数据是乱序的形式，）
                     appendAdapter.setData(freeInquiryAnswerEntityList);
                     appendAdapter.notifyDataSetChanged();
                     list.getRefreshableView().setSelection(list.getBottom());
@@ -554,7 +562,7 @@ public class HealthInquiryFurtherAskActivity extends BaseActivity {
             Picasso.with(this).load(doctorInfoEntity.getObject().getImage()).transform(new CircleTransformation()).into(docterInfoHead);
 
             docterInfoHospitalValue.setText(doctorInfoEntity.getObject().getHospital());
-            docterInfoClinic.setText(doctorInfoEntity.getObject().getClinic());
+            docterInfoClinicValue.setText(doctorInfoEntity.getObject().getClinic());
             docterInfoRankValue.setText(doctorInfoEntity.getObject().getLevelTitle());
         }
     }
@@ -628,6 +636,7 @@ public class HealthInquiryFurtherAskActivity extends BaseActivity {
                 public void onClick(View v) {
                     evaluateDialg.dismiss();
                     evaluateRank = mRatingBar.getRating();
+                    evaluateContent = mEvaluate.getText().toString();
                     submitEvaluate(mEvaluate);
                 }
             });
@@ -657,7 +666,7 @@ public class HealthInquiryFurtherAskActivity extends BaseActivity {
         presenter.evaluateDoctor(this);
     }
 
-    //************************************************************
+    //************************************************************************************************************************
     //TODO 输入框交互（文字、语音、图片）
 
     private final static int CANCEL_RECORD = 5;
@@ -851,6 +860,13 @@ public class HealthInquiryFurtherAskActivity extends BaseActivity {
     File rootDir = Environment.getExternalStorageDirectory();
 
     private void initDialogAndStartRecord() {
+        res = new int[]{
+                R.drawable.jmui_mic_1,
+                R.drawable.jmui_mic_2,
+                R.drawable.jmui_mic_3,
+                R.drawable.jmui_mic_4,
+                R.drawable.jmui_mic_5,
+                R.drawable.jmui_cancel_record};
         //存放录音文件目录
         if (rootDir == null) {
             rootDir = Environment.getExternalStorageDirectory();
@@ -1011,54 +1027,7 @@ public class HealthInquiryFurtherAskActivity extends BaseActivity {
                         /**
                          * 将文件上传，并将地址传递到服务器，并传递到另一个页面
                          */
-                        //********************************************************************************************************************************************************
-//                        dialog = QuanjiakanDialog.getInstance().getDialog(HealthInquiryFurtherAskActivity.this);
-//                        HashMap<String, String> params = new HashMap<>();
-//                        params.put("file", myRecAudioFile.toString());
-//                        params.put("filename", myRecAudioFile.getName());
-//                        params.put("audio", myRecAudioFile.getAbsolutePath());
-//                        Task task = new Task(new HttpResponseInterface() {
-//
-//                            @Override
-//                            public void handMsg(String val) {
-//                                dialog.dismiss();
-//                                // TODO Auto-generated method stub
-//                                if(val!=null && !val.equals("") && val.toLowerCase().startsWith("{")){
-//                                    //上传文件成功
-//                                    try {
-//                                        JSONObject json = new JSONObject(val);
-//                                        if(json.has("code") && "200".equals(json.getString("code"))){
-//                                            /**
-//                                             * 上传完成后获取的地址
-//                                             * json.getString("message")
-//                                             *
-//                                             *
-//                                             * 将地址传递到第二个页面
-//                                             */
-//                                            voicePath = json.getString("message");
-//                                            LogUtil.e("Last Voice File Net Path:"+voicePath);
-//                                            jmuiChatInputEt.setText("");
-//
-//
-//                                            /**
-//                                             * 不经过追问接口，直接更新UI显示
-//                                             */
-//                                            persistProblem();
-//                                        }else{
-//                                        }
-//                                    } catch (JSONException e) {
-//                                        e.printStackTrace();
-//                                        MobclickAgent.reportError(HealthInquiryFurtherAskActivity.this,e);
-//                                    }
-//
-//                                }else {
-//                                    //文件上传失败
-//                                }
-//                            }
-//                        }, HttpUrls.postFile()+"&storage=14", params, Task.TYPE_POST_FILE, null);
-//
-//                        MyHandler.putTask(HealthInquiryFurtherAskActivity.this,task);
-
+                        uploadVoiceFile(myRecAudioFile.getName(),myRecAudioFile.getAbsolutePath());
                         //********************************************************************************************************************************************************
 
                     } catch (Exception e) {
@@ -1154,527 +1123,21 @@ public class HealthInquiryFurtherAskActivity extends BaseActivity {
 
     }
 
-    //*****************************  可用 KeyBoardUtil 工具类进行替代
-    private InputMethodManager imm;
-
+    //*****************************  *****************************  *****************************  *****************************  *****************************
+    private KeyBoardUtil keyBoardUtil;
     public void showSoftInput(View view) {
-//        isOpenSoftInput();
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
-                | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        if (imm == null) {
-            imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if(keyBoardUtil==null){
+            keyBoardUtil = new KeyBoardUtil();
         }
-        imm.showSoftInput(view, InputMethodManager.SHOW_FORCED);
+        keyBoardUtil.showSoftInput(this,view);
     }
 
     public void hideSoftInput(View view) {
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
-                | WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        if (imm == null) {
-            imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if(keyBoardUtil==null){
+            keyBoardUtil = new KeyBoardUtil();
         }
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        keyBoardUtil.hideSoftInput(this,view);
     }
-    //********************************************************************************************************************
-
-    protected void persistProblem() {
-        if (jmuiChatInputEt.length() < 1 && voicePath == null && imagePath == null) {
-            CommonDialogHint.getInstance().showHint(this, getString(R.string.hint_health_inquiry_append_no_question));
-            return;
-        }
-
-        if (voicePath != null && !voicePath.toLowerCase().startsWith("http")) {
-            CommonDialogHint.getInstance().showHint(this, getString(R.string.hint_health_inquiry_append_voice_upload_fail));
-            return;
-        }
-
-        if (imagePath != null && !imagePath.toLowerCase().startsWith("http")) {
-            CommonDialogHint.getInstance().showHint(this, getString(R.string.hint_health_inquiry_append_image_upload_fail));
-            return;
-        }
-
-        presenter.sendProblem(this);
-
-//        MyHandler.putTask(this,new Task(new HttpResponseInterface() {
-//
-//            @Override
-//            public void handMsg(String val) {
-//                // TODO Auto-generated method stub
-//                //{"error_msg": "\u95ee\u9898ID\u9519\u8bef", "error": 1}
-//                JsonObject result = new ParseToGsonUtil(val).getJsonObject();
-//                if (result.has("error") && result.get("error").getAsInt()==0) {
-//                    BaseApplication.getInstances().toast(HealthInquiryFurtherAskActivity.this,"发送成功!");
-//                    /**
-//                     * 返回
-//                     */
-////                    setResult(RESULT_OK);
-////                    finish();
-//                    /**
-//                     * 刷新数据
-//                     */
-//                    FreeInquiryAnswerEntity temp = null;
-//                    if(appendAdapter.getData()==null || appendAdapter.getData().size()<1){
-//                        temp = new FreeInquiryAnswerEntity();
-//                        temp.setDoctorId(problemID.getDoctorId());
-//                        temp.setCreateMillisecond(problemID.getCreateMillisecond()+"");
-//                        temp.setPatient(problemID.getPatient());
-//
-//                        temp.setCreator(problemID.getCreator()+"");
-//                        temp.setCreatetime(problemID.getCreatetime());
-//                        temp.setChunyuId(problemID.getChunyuId()+"");
-//                        temp.setStatus(problemID.getStatus()+"");
-//                        temp.setTitle(problemID.getTitle());
-//
-//                        temp.setIsreply("0");
-//                        temp.setUserId(problemID.getUser_id());
-//                        temp.setSponsor("1");
-//                        temp.setContent(content + "");
-//                        temp.setFromtoken(problemID.getFromtoken());
-//
-//                        temp.setTotoken(problemID.getTotoken());
-//                        temp.setProblemContentStatus(problemID.getProblem_content_status());
-//                    }else{
-//                        temp = appendAdapter.getData().get(0);
-//                    }
-////                    FreeInquiryAnswerEntity temp = appendAdapter.getData().get(0);
-//                    if(jmuiChatInputEt.getText().toString().length()>0){
-//                        FreeInquiryAnswerEntity add = new FreeInquiryAnswerEntity();
-//
-////                        add.setId();
-////                        add.setPrice();
-//                        add.setDoctorId(temp.getDoctorId());
-//                        add.setCreateMillisecond(temp.getCreateMillisecond());
-//                        add.setPatient(temp.getPatient());
-//
-//                        add.setCreator(temp.getCreator());
-//                        add.setCreatetime(temp.getCreatetime());
-//                        add.setChunyuId(temp.getChunyuId());
-//                        add.setStatus(temp.getStatus());
-//                        add.setTitle(temp.getTitle());
-//
-//                        add.setIsreply("0");
-//                        add.setUserId(temp.getUserId());
-//                        add.setSponsor("1");
-//                        add.setContent(content + "");
-//                        add.setFromtoken(temp.getFromtoken());
-//
-//                        add.setTotoken(temp.getTotoken());
-//                        add.setProblemContentStatus(temp.getProblemContentStatus());
-//
-////                        appendAdapter.getData().add(add);
-////                        appendAdapter.notifyDataSetChanged();
-////                        list.setSelection(list.getBottom());
-//                    }else if(voicePath!=null){
-//                        FreeInquiryAnswerEntity add = new FreeInquiryAnswerEntity();
-//
-////                        add.setId();
-////                        add.setPrice();
-//                        add.setDoctorId(temp.getDoctorId());
-//                        add.setCreateMillisecond(temp.getCreateMillisecond());
-//                        add.setPatient(temp.getPatient());
-//
-//                        add.setCreator(temp.getCreator());
-//                        add.setCreatetime(temp.getCreatetime());
-//                        add.setChunyuId(temp.getChunyuId());
-//                        add.setStatus(temp.getStatus());
-//                        add.setTitle(temp.getTitle());
-//
-//                        add.setIsreply("0");
-//                        add.setUserId(temp.getUserId());
-//                        add.setSponsor("1");
-//                        add.setContent(content + "");
-//                        add.setFromtoken(temp.getFromtoken());
-//
-//                        add.setTotoken(temp.getTotoken());
-//                        add.setProblemContentStatus(temp.getProblemContentStatus());
-//
-////                        appendAdapter.getData().add(add);
-////                        appendAdapter.notifyDataSetChanged();
-////                        list.setSelection(list.getBottom());
-//                    }else if(imagePath!=null){
-//                        FreeInquiryAnswerEntity add = new FreeInquiryAnswerEntity();
-//
-////                        add.setId();
-////                        add.setPrice();
-//                        add.setDoctorId(temp.getDoctorId());
-//                        add.setCreateMillisecond(temp.getCreateMillisecond());
-//                        add.setPatient(temp.getPatient());
-//
-//                        add.setCreator(temp.getCreator());
-//                        add.setCreatetime(temp.getCreatetime());
-//                        add.setChunyuId(temp.getChunyuId());
-//                        add.setStatus(temp.getStatus());
-//                        add.setTitle(temp.getTitle());
-//
-//                        add.setIsreply("0");
-//                        add.setUserId(temp.getUserId());
-//                        add.setSponsor("1");
-//                        add.setContent(content + "");
-//                        add.setFromtoken(temp.getFromtoken());
-//
-//                        add.setTotoken(temp.getTotoken());
-//                        add.setProblemContentStatus(temp.getProblemContentStatus());
-//
-////                        appendAdapter.getData().add(add);
-////                        appendAdapter.notifyDataSetChanged();
-////                        list.setSelection(list.getBottom());
-//                    }
-//
-//                    jmuiChatInputEt.setText("");
-//                    voicePath = null;
-//                    imagePath = null;
-//                    loadListData();
-//                }else{
-//                    if(result.has("error_msg")){
-//                        Toast.makeText(HealthInquiryFurtherAskActivity.this, StringDecodeUtil.decodeUnicode(result.get("error_msg").getAsString()), Toast.LENGTH_LONG).show();
-//                        finish();
-//                    }else if(result.has("code") && "200".equals(result.get("code").getAsString())){
-//                        Toast.makeText(HealthInquiryFurtherAskActivity.this,
-//                                "追问成功!", Toast.LENGTH_LONG).show();
-//                        FreeInquiryAnswerEntity temp = null;
-//                        if(appendAdapter.getData()==null || appendAdapter.getData().size()<1){
-//                            temp = new FreeInquiryAnswerEntity();
-//                            temp.setDoctorId(problemID.getDoctorId());
-//                            temp.setCreateMillisecond(problemID.getCreateMillisecond()+"");
-//                            temp.setPatient(problemID.getPatient());
-//
-//                            temp.setCreator(problemID.getCreator()+"");
-//                            temp.setCreatetime(problemID.getCreatetime());
-//                            temp.setChunyuId(problemID.getChunyuId()+"");
-//                            temp.setStatus(problemID.getStatus()+"");
-//                            temp.setTitle(problemID.getTitle());
-//
-//                            temp.setIsreply("0");
-//                            temp.setUserId(problemID.getUser_id());
-//                            temp.setSponsor("1");
-//                            temp.setContent(content + "");
-//                            temp.setFromtoken(problemID.getFromtoken());
-//
-//                            temp.setTotoken(problemID.getTotoken());
-//                            temp.setProblemContentStatus(problemID.getProblem_content_status());
-//                        }else{
-//                            temp = appendAdapter.getData().get(0);
-//                        }
-//                        if(jmuiChatInputEt.getText().toString().length()>0){
-//                            FreeInquiryAnswerEntity add = new FreeInquiryAnswerEntity();
-//
-////                        add.setId();
-////                        add.setPrice();
-//                            add.setDoctorId(temp.getDoctorId());
-//                            add.setCreateMillisecond(temp.getCreateMillisecond());
-//                            add.setPatient(temp.getPatient());
-//
-//                            add.setCreator(temp.getCreator());
-//                            add.setCreatetime(temp.getCreatetime());
-//                            add.setChunyuId(temp.getChunyuId());
-//                            add.setStatus(temp.getStatus());
-//                            add.setTitle(temp.getTitle());
-//
-//                            add.setIsreply("0");
-//                            add.setUserId(temp.getUserId());
-//                            add.setSponsor("1");
-//                            add.setContent(content + "");
-//                            add.setFromtoken(temp.getFromtoken());
-//
-//                            add.setTotoken(temp.getTotoken());
-//                            add.setProblemContentStatus(temp.getProblemContentStatus());
-//
-////                            appendAdapter.getData().add(add);
-////                            appendAdapter.notifyDataSetChanged();
-////                            list.setSelection(list.getBottom());
-//                        }else if(voicePath!=null){
-//                            FreeInquiryAnswerEntity add = new FreeInquiryAnswerEntity();
-//
-////                        add.setId();
-////                        add.setPrice();
-//                            add.setDoctorId(temp.getDoctorId());
-//                            add.setCreateMillisecond(temp.getCreateMillisecond());
-//                            add.setPatient(temp.getPatient());
-//
-//                            add.setCreator(temp.getCreator());
-//                            add.setCreatetime(temp.getCreatetime());
-//                            add.setChunyuId(temp.getChunyuId());
-//                            add.setStatus(temp.getStatus());
-//                            add.setTitle(temp.getTitle());
-//
-//                            add.setIsreply("0");
-//                            add.setUserId(temp.getUserId());
-//                            add.setSponsor("1");
-//                            add.setContent(content + "");
-//                            add.setFromtoken(temp.getFromtoken());
-//
-//                            add.setTotoken(temp.getTotoken());
-//                            add.setProblemContentStatus(temp.getProblemContentStatus());
-//
-////                            appendAdapter.getData().add(add);
-////                            appendAdapter.notifyDataSetChanged();
-////                            list.setSelection(list.getBottom());
-//                        }else if(imagePath!=null){
-//                            FreeInquiryAnswerEntity add = new FreeInquiryAnswerEntity();
-//
-////                        add.setId();
-////                        add.setPrice();
-//                            add.setDoctorId(temp.getDoctorId());
-//                            add.setCreateMillisecond(temp.getCreateMillisecond());
-//                            add.setPatient(temp.getPatient());
-//
-//                            add.setCreator(temp.getCreator());
-//                            add.setCreatetime(temp.getCreatetime());
-//                            add.setChunyuId(temp.getChunyuId());
-//                            add.setStatus(temp.getStatus());
-//                            add.setTitle(temp.getTitle());
-//
-//                            add.setIsreply("0");
-//                            add.setUserId(temp.getUserId());
-//                            add.setSponsor("1");
-//                            add.setContent(content + "");
-//                            add.setFromtoken(temp.getFromtoken());
-//
-//                            add.setTotoken(temp.getTotoken());
-//                            add.setProblemContentStatus(temp.getProblemContentStatus());
-//
-////                            appendAdapter.getData().add(add);
-////                            appendAdapter.notifyDataSetChanged();
-////                            list.setSelection(list.getBottom());
-//                        }
-//
-//                        jmuiChatInputEt.setText("");
-//                        voicePath = null;
-//                        imagePath = null;
-//
-//
-//                        getAnswer();
-//                    }else if(result.has("code") && !"200".equals(result.get("code").getAsString())){
-//                        Toast.makeText(HealthInquiryFurtherAskActivity.this, result.get("message").getAsString(), Toast.LENGTH_LONG).show();
-//                        finish();
-//                    }
-//
-//                }
-//            }
-//        }, HttpUrls.getFreeInquiryAppand(), params, Task.TYPE_POST_DATA_PARAMS, null));
-
-    }
-
-    public void setFurtherInquiryResult(Object results) {
-        if (results != null && results instanceof String) {
-            JsonObject result = new ParseToGsonUtil(results.toString()).getJsonObject();
-            if (result.has("error") && result.get("error").getAsInt() == 0) {
-
-                /**
-                 * 返回
-                 */
-//                    setResult(RESULT_OK);
-//                    finish();
-                /**
-                 * 刷新数据
-                 */
-
-                FreeInquiryAnswerEntity temp = null;
-                if (appendAdapter.getData() == null || appendAdapter.getData().size() < 1) {
-                    temp = new FreeInquiryAnswerEntity();
-                    temp.setDoctorId(problemID.getDoctorId());
-                    temp.setCreateMillisecond(problemID.getCreateMillisecond() + "");
-                    temp.setPatient(problemID.getPatient());
-
-                    temp.setCreator(problemID.getCreator() + "");
-                    temp.setCreatetime(problemID.getCreatetime());
-                    temp.setChunyuId(problemID.getChunyuId() + "");
-                    temp.setStatus(problemID.getStatus() + "");
-                    temp.setTitle(problemID.getTitle());
-
-                    temp.setIsreply("0");
-                    temp.setUserId(BaseApplication.getInstances().getLoginInfo().getUserId());
-                    temp.setSponsor("1");
-                    temp.setContent(content + "");
-                    temp.setFromtoken(BaseApplication.getInstances().getLoginInfo().getUserId());
-
-                    temp.setTotoken(problemID.getDoctorId());
-                    temp.setProblemContentStatus(HealthInquiryFurtherAskProblemStatus.NO_RESPONSE.getStatus());
-                } else {
-                    temp = appendAdapter.getData().get(0);
-                }
-//                    FreeInquiryAnswerEntity temp = appendAdapter.getData().get(0);
-                if (jmuiChatInputEt.getText().toString().length() > 0) {
-                    FreeInquiryAnswerEntity add = new FreeInquiryAnswerEntity();
-
-//                        add.setId();
-//                        add.setPrice();
-                    add.setDoctorId(temp.getDoctorId());
-                    add.setCreateMillisecond(temp.getCreateMillisecond());
-                    add.setPatient(temp.getPatient());
-
-                    add.setCreator(temp.getCreator());
-                    add.setCreatetime(temp.getCreatetime());
-                    add.setChunyuId(temp.getChunyuId());
-                    add.setStatus(temp.getStatus());
-                    add.setTitle(temp.getTitle());
-
-                    add.setIsreply("0");
-                    add.setUserId(temp.getUserId());
-                    add.setSponsor("1");
-                    add.setContent(content + "");
-                    add.setFromtoken(temp.getFromtoken());
-
-                    add.setTotoken(temp.getTotoken());
-                    add.setProblemContentStatus(temp.getProblemContentStatus());
-
-//                        appendAdapter.getData().add(add);
-//                        appendAdapter.notifyDataSetChanged();
-//                        list.setSelection(list.getBottom());
-                } else if (voicePath != null) {
-                    FreeInquiryAnswerEntity add = new FreeInquiryAnswerEntity();
-
-//                        add.setId();
-//                        add.setPrice();
-                    add.setDoctorId(temp.getDoctorId());
-                    add.setCreateMillisecond(temp.getCreateMillisecond());
-                    add.setPatient(temp.getPatient());
-
-                    add.setCreator(temp.getCreator());
-                    add.setCreatetime(temp.getCreatetime());
-                    add.setChunyuId(temp.getChunyuId());
-                    add.setStatus(temp.getStatus());
-                    add.setTitle(temp.getTitle());
-
-                    add.setIsreply("0");
-                    add.setUserId(temp.getUserId());
-                    add.setSponsor("1");
-                    add.setContent(content + "");
-                    add.setFromtoken(temp.getFromtoken());
-
-                    add.setTotoken(temp.getTotoken());
-                    add.setProblemContentStatus(temp.getProblemContentStatus());
-
-                } else if (imagePath != null) {
-                    FreeInquiryAnswerEntity add = new FreeInquiryAnswerEntity();
-                    add.setDoctorId(temp.getDoctorId());
-                    add.setCreateMillisecond(temp.getCreateMillisecond());
-                    add.setPatient(temp.getPatient());
-
-                    add.setCreator(temp.getCreator());
-                    add.setCreatetime(temp.getCreatetime());
-                    add.setChunyuId(temp.getChunyuId());
-                    add.setStatus(temp.getStatus());
-                    add.setTitle(temp.getTitle());
-
-                    add.setIsreply("0");
-                    add.setUserId(temp.getUserId());
-                    add.setSponsor("1");
-                    add.setContent(content + "");
-                    add.setFromtoken(temp.getFromtoken());
-
-                    add.setTotoken(temp.getTotoken());
-                    add.setProblemContentStatus(temp.getProblemContentStatus());
-                }
-
-                jmuiChatInputEt.setText("");
-                voicePath = null;
-                imagePath = null;
-                getAnswer();
-            } else {
-                if (result.has("error_msg")) {
-                    Toast.makeText(HealthInquiryFurtherAskActivity.this, StringDecodeUtil.decodeUnicode(result.get("error_msg").getAsString()), Toast.LENGTH_LONG).show();
-                    finish();
-                } else if (result.has("code") && "200".equals(result.get("code").getAsString())) {
-                    Toast.makeText(HealthInquiryFurtherAskActivity.this,
-                            "追问成功!", Toast.LENGTH_LONG).show();
-                    FreeInquiryAnswerEntity temp = null;
-                    if (appendAdapter.getData() == null || appendAdapter.getData().size() < 1) {
-                        temp = new FreeInquiryAnswerEntity();
-                        temp.setDoctorId(problemID.getDoctorId());
-                        temp.setCreateMillisecond(problemID.getCreateMillisecond() + "");
-                        temp.setPatient(problemID.getPatient());
-
-                        temp.setCreator(problemID.getCreator() + "");
-                        temp.setCreatetime(problemID.getCreatetime());
-                        temp.setChunyuId(problemID.getChunyuId() + "");
-                        temp.setStatus(problemID.getStatus() + "");
-                        temp.setTitle(problemID.getTitle());
-
-                        temp.setIsreply("0");
-                        temp.setUserId(BaseApplication.getInstances().getLoginInfo().getUserId());
-                        temp.setSponsor("1");
-                        temp.setContent(content + "");
-                        temp.setFromtoken(BaseApplication.getInstances().getLoginInfo().getUserId());
-
-                        temp.setTotoken(problemID.getDoctorId());
-                        temp.setProblemContentStatus(HealthInquiryFurtherAskProblemStatus.NO_RESPONSE.getStatus());
-                    } else {
-                        temp = appendAdapter.getData().get(0);
-                    }
-                    if (jmuiChatInputEt.getText().toString().length() > 0) {
-                        FreeInquiryAnswerEntity add = new FreeInquiryAnswerEntity();
-                        add.setDoctorId(temp.getDoctorId());
-                        add.setCreateMillisecond(temp.getCreateMillisecond());
-                        add.setPatient(temp.getPatient());
-
-                        add.setCreator(temp.getCreator());
-                        add.setCreatetime(temp.getCreatetime());
-                        add.setChunyuId(temp.getChunyuId());
-                        add.setStatus(temp.getStatus());
-                        add.setTitle(temp.getTitle());
-
-                        add.setIsreply("0");
-                        add.setUserId(temp.getUserId());
-                        add.setSponsor("1");
-                        add.setContent(content + "");
-                        add.setFromtoken(temp.getFromtoken());
-
-                        add.setTotoken(temp.getTotoken());
-                        add.setProblemContentStatus(temp.getProblemContentStatus());
-                    } else if (voicePath != null) {
-                        FreeInquiryAnswerEntity add = new FreeInquiryAnswerEntity();
-                        add.setDoctorId(temp.getDoctorId());
-                        add.setCreateMillisecond(temp.getCreateMillisecond());
-                        add.setPatient(temp.getPatient());
-
-                        add.setCreator(temp.getCreator());
-                        add.setCreatetime(temp.getCreatetime());
-                        add.setChunyuId(temp.getChunyuId());
-                        add.setStatus(temp.getStatus());
-                        add.setTitle(temp.getTitle());
-
-                        add.setIsreply("0");
-                        add.setUserId(temp.getUserId());
-                        add.setSponsor("1");
-                        add.setContent(content + "");
-                        add.setFromtoken(temp.getFromtoken());
-
-                        add.setTotoken(temp.getTotoken());
-                        add.setProblemContentStatus(temp.getProblemContentStatus());
-                    } else if (imagePath != null) {
-                        FreeInquiryAnswerEntity add = new FreeInquiryAnswerEntity();
-                        add.setDoctorId(temp.getDoctorId());
-                        add.setCreateMillisecond(temp.getCreateMillisecond());
-                        add.setPatient(temp.getPatient());
-
-                        add.setCreator(temp.getCreator());
-                        add.setCreatetime(temp.getCreatetime());
-                        add.setChunyuId(temp.getChunyuId());
-                        add.setStatus(temp.getStatus());
-                        add.setTitle(temp.getTitle());
-
-                        add.setIsreply("0");
-                        add.setUserId(temp.getUserId());
-                        add.setSponsor("1");
-                        add.setContent(content + "");
-                        add.setFromtoken(temp.getFromtoken());
-
-                        add.setTotoken(temp.getTotoken());
-                        add.setProblemContentStatus(temp.getProblemContentStatus());
-                    }
-
-                    jmuiChatInputEt.setText("");
-                    voicePath = null;
-                    imagePath = null;
-                    getAnswer();
-                } else if (result.has("code") && !"200".equals(result.get("code").getAsString())) {
-                    Toast.makeText(HealthInquiryFurtherAskActivity.this, result.get("message").getAsString(), Toast.LENGTH_LONG).show();
-                }
-            }
-        }
-    }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -1702,6 +1165,7 @@ public class HealthInquiryFurtherAskActivity extends BaseActivity {
         }
     }
 
+    //TODO 处理图片的裁剪
     public void doCrop(final int requestCode, final int resultCode, final Intent data) {
         ImageCropHandler.handleCrop(null, resultCode, data, new IImageCropInterface() {
             @Override
@@ -1716,23 +1180,100 @@ public class HealthInquiryFurtherAskActivity extends BaseActivity {
                 String file_path = ImageUtils.saveBitmapToStorage(filename, smallBitmap);
                 file = new File(file_path);
 
-                String url = "http://picture.quanjiakan.com:9080/familycare-binary/upload?&platform=2&project=1" +
-                        "&token=" + BaseApplication.getInstances().getLoginInfo().getToken() +
-                        "&memberId=" + BaseApplication.getInstances().getLoginInfo().getUserId() +
-                        "&storage=13";//TODO 这个需要---如果没有可能会报参数错误的异常
-
-                HashMap<String, String> paramsFile = new HashMap<>();
-                paramsFile.put("file", file_path.toString());
-                paramsFile.put("filename", file.getName());
-                paramsFile.put("image", file.getAbsolutePath());
-                UploadUtil.uploadFile(HealthInquiryFurtherAskActivity.this, url, null, paramsFile);
+                uploadImageFile(null,file_path.toString());
             }
         });
     }
 
+    //********************************************************************************************************************
+    //TODO 发送追问问题
+    protected void sendAppendProblem() {
+        if (jmuiChatInputEt.length() < 1 && voicePath == null && imagePath == null) {
+            CommonDialogHint.getInstance().showHint(this, getString(R.string.hint_health_inquiry_append_no_question));
+            return;
+        }
 
+        if (voicePath != null && !voicePath.toLowerCase().startsWith("http")) {
+            CommonDialogHint.getInstance().showHint(this, getString(R.string.hint_health_inquiry_append_voice_upload_fail));
+            return;
+        }
+
+        if (imagePath != null && !imagePath.toLowerCase().startsWith("http")) {
+            CommonDialogHint.getInstance().showHint(this, getString(R.string.hint_health_inquiry_append_image_upload_fail));
+            return;
+        }
+
+        presenter.sendProblem(this);
+    }
+
+    //TODO 设置追问结果
+    public void setFurtherInquiryResult(Object results) {
+        if (results != null && results instanceof String) {
+            //{"code":"200","message":"返回成功","object":{"errmsg":"首问字数过少"}}
+            //
+            JsonObject result = new ParseToGsonUtil(results.toString()).getJsonObject();
+            if(result.has("code") && ICommonData.HTTP_OK.equals(result.get("code").getAsString()) &&
+                    result.has("object") && result.get("object").getAsJsonObject().has("errmsg")){
+                CommonDialogHint.getInstance().showHint(HealthInquiryFurtherAskActivity.this,StringDecodeUtil.
+                        decodeUnicode(result.get("object").getAsJsonObject().get("errmsg").getAsString()));
+            }else if (result.has("code") && ICommonData.HTTP_OK.equals(result.get("code").getAsString())) {
+                jmuiChatInputEt.setText("");
+                voicePath = null;
+                imagePath = null;
+                getAnswer();
+                setResult(ICommonActivityResultCode.RELOAD_DATA);
+            } else {
+                if (result.has("error_msg")) {
+                    CommonDialogHint.getInstance().showHint(HealthInquiryFurtherAskActivity.this,
+                            StringDecodeUtil.decodeUnicode(result.get("error_msg").getAsString()));
+                } else if (result.has("code") && ICommonData.HTTP_OK.equals(result.get("code").getAsString())) {
+                    jmuiChatInputEt.setText("");
+                    voicePath = null;
+                    imagePath = null;
+                    getAnswer();
+                    setResult(ICommonActivityResultCode.RELOAD_DATA);
+                } else if (result.has("code") && !ICommonData.HTTP_OK.equals(result.get("code").getAsString())) {
+                    CommonDialogHint.getInstance().showHint(this,result.get("message").getAsString());
+                }else{
+                    CommonDialogHint.getInstance().showHint(this,getString(R.string.hint_common_submit_data_fail));
+                }
+            }
+        }
+    }
+    //********************************************************************************************************************
+
+    public void uploadVoiceFile(String name,String imagePath){
+
+        String url = "http://picture.quanjiakan.com:9080/familycare-binary/upload?&platform=2&project=1" +
+                "&token=" + BaseApplication.getInstances().getLoginInfo().getToken() +
+                "&memberId=" + BaseApplication.getInstances().getLoginInfo().getUserId() +
+                "&storage=14";//TODO 这个需要---如果没有可能会报参数错误的异常
+
+        HashMap<String, String> paramsFile = new HashMap<>();
+        paramsFile.put("file", imagePath);
+        paramsFile.put("filename", name);
+        paramsFile.put("audio", imagePath);
+        UploadUtil.uploadVoiceFile(HealthInquiryFurtherAskActivity.this, url, null, paramsFile);
+    }
+
+
+    public void uploadImageFile(String name,String path){
+        String url = "http://picture.quanjiakan.com:9080/familycare-binary/upload?&platform=2&project=1" +
+                "&token=" + BaseApplication.getInstances().getLoginInfo().getToken() +
+                "&memberId=" + BaseApplication.getInstances().getLoginInfo().getUserId() +
+                "&storage=13";//TODO 这个需要---如果没有可能会报参数错误的异常
+
+        HashMap<String, String> paramsFile = new HashMap<>();
+        paramsFile.put("file", path);
+        paramsFile.put("filename", file.getName());
+        paramsFile.put("image", file.getAbsolutePath());
+        UploadUtil.uploadFile(HealthInquiryFurtherAskActivity.this, url, null, paramsFile);
+    }
+
+    //TODO 处理图片上传完成后的数据
     public void afterUpload(Object result) {
         if (result != null && result instanceof String) {
+            //  {"code":"200","message":"http://picture.quanjiakan.com/quanjiakan/resources/chunyu/images/20171122115337_y8isoq1jzyi3gtvh28rt.png"}
             LogUtil.e("afterUpload:" + result.toString());
             if (result.toString() != null && !result.toString().equals("") && result.toString().toLowerCase().startsWith("{")) {
                 //上传文件成功
@@ -1748,8 +1289,14 @@ public class HealthInquiryFurtherAskActivity extends BaseActivity {
                          */
                         imagePath = json.getString("message");
                         jmuiChatInputEt.setText("");
-                        persistProblem();
+                        voicePath = null;
+                        sendAppendProblem();
                     } else {
+                        if(json.has("message") && json.getString("message")!=null){
+                            CommonDialogHint.getInstance().showHint(this, json.getString("message"));
+                        }else{
+                            CommonDialogHint.getInstance().showHint(this, getString(R.string.hint_common_submit_upload_fail));
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -1758,10 +1305,50 @@ public class HealthInquiryFurtherAskActivity extends BaseActivity {
 
             } else {
                 //文件上传失败
+                CommonDialogHint.getInstance().showHint(this, getString(R.string.hint_common_submit_upload_fail));
             }
 
             if (file.exists()) {
                 file.delete();
+            }
+        }
+    }
+
+    // TODO 处理语音上传完成后的数据
+    public void afterVoiceUpload(Object result) {
+        if (result != null && result instanceof String) {
+            //{"code":"200","message":"http://picture.quanjiakan.com/quanjiakan/resources/chunyu/audios/20171122115357_97cjyywlk28ey8uv5i5n.mp3"}
+            if (result.toString() != null && !result.toString().equals("") && result.toString().toLowerCase().startsWith("{")) {
+                //上传文件成功
+                try {
+                    JSONObject json = new JSONObject(result.toString());
+                    if (json.has("code") && "200".equals(json.getString("code"))) {
+                        /**
+                         * 上传完成后获取的地址
+                         * json.getString("message")
+                         *
+                         *
+                         * 将地址传递到第二个页面
+                         */
+                        voicePath = json.getString("message");
+                        imagePath = null;
+                        jmuiChatInputEt.setText("");
+                        sendAppendProblem();
+                    } else {
+                        if(json.has("message") && json.getString("message")!=null){
+                            CommonDialogHint.getInstance().showHint(this, json.getString("message"));
+                        }else{
+                            CommonDialogHint.getInstance().showHint(this, getString(R.string.hint_common_submit_upload_fail));
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    MobclickAgent.reportError(HealthInquiryFurtherAskActivity.this, e);
+                }
+
+            } else {
+                //文件上传失败
+                CommonDialogHint.getInstance().showHint(this, getString(R.string.hint_common_submit_upload_fail));
             }
         }
     }

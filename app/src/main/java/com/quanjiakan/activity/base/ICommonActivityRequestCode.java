@@ -18,4 +18,6 @@ public interface ICommonActivityRequestCode {
     int REQUEST_CROP = 6709;
     int REQUEST_PICK = 9162;
 
+    int REQUEST_SCAN = 2002;
+
 }

@@ -41,6 +41,23 @@ public class UploadUtil {
         });
     }
 
+    public static void uploadVoiceFile(final BaseActivity activity,final  String serverUploadUrlPath, final Map<String, String> paramMap, final Map<String, String> fileMap){
+        activity.showMyDialog(IPresenterBusinessCode.COMMON_FILE_UPLOAD_VOICE);
+        BaseApplication.getInstances().addThreadTask(new Runnable() {
+            @Override
+            public void run() {
+                final String result = formUpload(activity,serverUploadUrlPath,paramMap,fileMap);
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        activity.dismissDialog();
+                        activity.onSuccess(IPresenterBusinessCode.COMMON_FILE_UPLOAD_VOICE,200,result);
+                    }
+                });
+            }
+        });
+    }
+
     private static String formUpload(Context context,String urlStr, Map<String, String> paramMap, Map<String, String> fileMap) {
         String res = "";
         HttpURLConnection conn = null;

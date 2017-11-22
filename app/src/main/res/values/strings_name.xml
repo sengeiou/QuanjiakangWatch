@@ -63,6 +63,7 @@
 
     <string name="health_inquiry_create_problem_title">我要咨询</string>
     <string name="health_inquiry_create_problem_menu_next">下一步</string>
+    <string name="health_inquiry_create_problem_list_title">历史咨询</string>
 
     <string name="health_inquiry_create_problem_init_number_hint">0/1000</string>
     <string name="health_inquiry_create_problem_init_number_middle">/</string>

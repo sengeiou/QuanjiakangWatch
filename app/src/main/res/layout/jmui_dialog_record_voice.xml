@@ -24,7 +24,7 @@
             android:layout_marginBottom="10dp"
             android:layout_gravity="bottom|center_horizontal"
             android:textColor="#FFFFFF"
-            android:textSize="14sp"/>
+            android:textSize="10sp"/>
 
     </FrameLayout>
 

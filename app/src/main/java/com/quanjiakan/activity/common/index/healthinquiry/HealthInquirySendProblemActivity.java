@@ -126,10 +126,10 @@ public class HealthInquirySendProblemActivity extends BaseActivity {
                 JsonArray array = new ParseToGsonUtil(problemData).getJsonArray();
                 JsonObject patient = new JsonObject();
                 HealthInquiryPatientDataEntity entity = mAdapter.getByPosition(mAdapter.getCheckedPosition());
-                patient.addProperty("type","patient_meta");
-                patient.addProperty("age",entity.getAge());
-                patient.addProperty("sex",entity.getGender());
-                patient.addProperty("name",entity.getName());
+                patient.addProperty(ICommonData.HEALTH_INQUIRY_SEND_TYPE,ICommonData.HEALTH_INQUIRY_SEND_TYPE_VALUE);
+                patient.addProperty(ICommonData.HEALTH_INQUIRY_SEND_AGE,entity.getAge());
+                patient.addProperty(ICommonData.HEALTH_INQUIRY_SEND_GENDER,entity.getGender());
+                patient.addProperty(ICommonData.HEALTH_INQUIRY_SEND_NAME,entity.getName());
                 array.add(patient);
 
                 params.put(IParamsName.PARAMS_HEALTH_INQURIRY_TYPE, ICommonData.HEALTH_INQUIRY_TYPE);

@@ -726,6 +726,7 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
                     if (IResponseResultCode.RESPONSE_SUCCESS.equals(entity.getCode())) {
                         saveWatchListDataAndShowList(entity);
                     } else {
+                        locateSelf(LOCATION_TYPE_SHOW_AND_MOVE_POSITION);
                         if (entity.getMessage() != null && entity.getMessage().length() > 0) {
                             CommonDialogHint.getInstance().showHint(getActivity(), entity.getMessage());
                         } else {
@@ -734,6 +735,7 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
                         }
                     }
                 } else {
+                    locateSelf(LOCATION_TYPE_SHOW_AND_MOVE_POSITION);
                     CommonDialogHint.getInstance().showHint(getActivity(),
                             getActivity().getString(R.string.error_common_net_request_fail));
                 }
@@ -816,6 +818,7 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
             }
         }else{
             //TODO 展示提示人进行绑定的Dialog
+            locateSelf(LOCATION_TYPE_SHOW_AND_MOVE_POSITION);
         }
     }
 

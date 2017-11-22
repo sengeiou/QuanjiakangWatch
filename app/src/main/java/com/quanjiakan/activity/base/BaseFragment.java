@@ -1,12 +1,19 @@
 package com.quanjiakan.activity.base;
 
+import android.app.Dialog;
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.TextView;
 
+import com.pingantong.main.R;
+import com.quanjiakan.util.common.UnitExchangeUtil;
 import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -108,5 +115,70 @@ public abstract class BaseFragment extends Fragment implements IBaseActivity{
     @Override
     public View getViewComponentByID(int viewID) {
         return null;
+    }
+
+    /**
+     * ************************************************************************************************************************
+     */
+
+    public Dialog mDialog;
+    public Dialog getDialog(Context context) {
+        if (mDialog != null && mDialog.isShowing()) {
+            mDialog.dismiss();
+            mDialog = null;
+        }
+        mDialog = new Dialog(context, R.style.dialog_loading);
+        View view = LayoutInflater.from(context).inflate(R.layout.dialog_loading, null);
+        WindowManager.LayoutParams lp = mDialog.getWindow().getAttributes();
+        lp.width = UnitExchangeUtil.dip2px(context, 80);
+        lp.height = UnitExchangeUtil.dip2px(context, 80);
+        lp.gravity = Gravity.CENTER;
+        mDialog.setContentView(view, lp);
+        mDialog.setCanceledOnTouchOutside(false);
+        mDialog.show();
+        return mDialog;
+    }
+
+    public Dialog getDialog(Context context,String msg) {
+        if (mDialog != null && mDialog.isShowing()) {
+            mDialog.dismiss();
+            mDialog = null;
+        }
+        mDialog = new Dialog(context, R.style.dialog_loading);
+        View view = LayoutInflater.from(context).inflate(R.layout.dialog_loading, null);
+        TextView tv = (TextView) view.findViewById(R.id.tv);
+        if(msg!=null && msg.length()>0){
+            tv.setVisibility(View.VISIBLE);
+            tv.setText(msg);
+        }else{
+            tv.setVisibility(View.GONE);
+        }
+        WindowManager.LayoutParams lp = mDialog.getWindow().getAttributes();
+        lp.width = UnitExchangeUtil.dip2px(context, 80);
+        lp.height = UnitExchangeUtil.dip2px(context, 80);
+        lp.gravity = Gravity.CENTER;
+        mDialog.setContentView(view, lp);
+        mDialog.setCanceledOnTouchOutside(false);
+        mDialog.show();
+        return mDialog;
+    }
+
+    public void dismissDialog(){
+        if(mDialog!=null && mDialog.isShowing()){
+            mDialog.dismiss();
+        }
+    }
+
+    public Dialog getNewDialog(Context context) {
+        Dialog mDialog = new Dialog(context, R.style.dialog_loading);
+        View view = LayoutInflater.from(context).inflate(R.layout.dialog_loading, null);
+        WindowManager.LayoutParams lp = mDialog.getWindow().getAttributes();
+        lp.width = UnitExchangeUtil.dip2px(context, 80);
+        lp.height = UnitExchangeUtil.dip2px(context, 80);
+        lp.gravity = Gravity.CENTER;
+        mDialog.setContentView(view, lp);
+        mDialog.setCanceledOnTouchOutside(false);
+        mDialog.show();
+        return mDialog;
     }
 }

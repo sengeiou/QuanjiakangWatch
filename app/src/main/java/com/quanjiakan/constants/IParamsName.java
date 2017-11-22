@@ -16,7 +16,7 @@ public interface IParamsName {
     String PARAMS_MAIN_TYPE = "type";
     String PARAMS_LAT = "lat";
     String PARAMS_LON = "lon";
-    String PARAMS_DEVICE_ID = "";
+    String PARAMS_DEVICE_ID = "deviceid";
 
     //TODO 电子围栏-进入需要进行的操作的类型
     String PARAMS_FANCE_TYPE = "type";

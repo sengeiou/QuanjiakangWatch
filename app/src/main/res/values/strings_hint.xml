@@ -7,6 +7,13 @@
 
     <string name="hint_common_get_data">正在获取数据...</string>
     <string name="hint_common_submit_data">正在提交数据...</string>
+    <string name="hint_common_submit_file">正在上传文件...</string>
+    <string name="hint_common_submit_file_image">正在上传图片...</string>
+    <string name="hint_common_submit_file_voice">正在上传语音...</string>
+    <string name="hint_common_submit_data_fail">提交失败,请重试!</string>
+
+    <string name="hint_common_submit_upload_fail">文件上传失败,请稍后重试!</string>
+
 
     <string name="hint_signup_check_code">获取验证码</string>
     <string name="hint_signup_check_code_remain_pre">剩余</string>

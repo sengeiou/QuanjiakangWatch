@@ -17,4 +17,6 @@ public interface ICommonActivityResultCode {
     int REQUEST_CODE_CAPTURE_CAMEIA = 2001;
     int REQUEST_CROP = 6709;
     int REQUEST_PICK = 9162;
+
+    int REQUEST_SCAN = 2002;
 }

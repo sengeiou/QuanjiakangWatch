@@ -44,6 +44,11 @@ public interface ICommonData {
 
     String HEALTH_INQUIRY_TYPE = "cy";
 
+    String HEALTH_INQUIRY_SEND_TYPE = "type";
+    String HEALTH_INQUIRY_SEND_TYPE_VALUE = "patient_meta";
+    String HEALTH_INQUIRY_SEND_AGE = "age";
+    String HEALTH_INQUIRY_SEND_GENDER = "sex";
+    String HEALTH_INQUIRY_SEND_NAME = "name";
 
     //TODO ************************************************
     //TODO 公共 数值 类型数据

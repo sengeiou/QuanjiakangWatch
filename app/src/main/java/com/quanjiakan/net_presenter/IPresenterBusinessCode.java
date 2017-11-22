@@ -43,6 +43,8 @@ public interface IPresenterBusinessCode {
 
     int COMMON_FILE_UPLOAD = 30301;
     int COMMON_FILE_DOWNLOAD = 30302;
+    int COMMON_FILE_UPLOAD_VOICE = 30303;
+    int COMMON_FILE_UPLOAD_IMAGE = 30304;
 
     //*******************************************************************************
     int ALI_PAY = 31100;

@@ -43,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:text="姓名"
+                android:text="@string/health_inquiry_create_patient_info_name"
                 android:textColor="@color/colorAlphaBlack_EE"
                 />
             
@@ -56,7 +56,7 @@
                 android:layout_centerVertical="true"
                 android:padding="@dimen/size_2"
                 android:gravity="right|center_vertical"
-                android:hint="请输入姓名"
+                android:hint="@string/health_inquiry_create_patient_info_name_hint"
 				android:textColorHint="@color/colorAlphaBlack_77"
                 android:textSize="@dimen/font_medium"
                 />
@@ -80,7 +80,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:text="性别"
+                android:text="@string/health_inquiry_create_patient_info_gender"
                 android:textColor="@color/colorAlphaBlack_EE"
                 />
             
@@ -98,7 +98,7 @@
                     android:layout_height="@dimen/height_30"
                     android:padding="@dimen/size_4"
                     android:drawableRight="@drawable/selector_patient_case_male"
-                    android:text="男"
+                    android:text="@string/health_inquiry_create_patient_info_male"
                     android:button="@null"
                     android:layout_marginRight="@dimen/size_4"
                     android:textColor="@color/colorAlphaBlack_EE"
@@ -111,7 +111,7 @@
                     android:layout_height="@dimen/height_30"
                     android:drawableRight="@drawable/selector_patient_case_female"
                     android:button="@null"
-                    android:text="女"
+                    android:text="@string/health_inquiry_create_patient_info_female"
                     android:padding="@dimen/size_4"
                     android:textColor="@color/colorAlphaBlack_EE"
                     android:textSize="@dimen/font_medium"
@@ -140,7 +140,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:text="年龄"
+                android:text="@string/health_inquiry_create_patient_info_age"
                	android:textColor="@color/colorAlphaBlack_EE"
                 />
             
@@ -153,7 +153,7 @@
                 android:layout_centerVertical="true"
                 android:padding="@dimen/size_2"
                 android:gravity="right|center_vertical"
-                android:hint="请输入年龄"
+                android:hint="@string/health_inquiry_create_patient_info_age_hint"
 				android:textColorHint="@color/colorAlphaBlack_77"
                 android:textSize="@dimen/font_medium"
                 android:inputType="text|number"
