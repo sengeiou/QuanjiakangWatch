@@ -146,6 +146,11 @@
     <string name="hint_common_scan_error1">无效的二维码，请确认是正确的设备后再次扫描!</string>
     <string name="hint_common_scan_error2">二维码解析失败,请重试!</string>
 
+    <string name="hint_common_sim_error">SIM卡读取异常</string>
+    <string name="hint_common_sim_read_error">SIM卡读取异常，是否需要重设资料!</string>
+
+
+
 
 </resources>
 

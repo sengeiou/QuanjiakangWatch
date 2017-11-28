@@ -115,7 +115,9 @@ dependencies {
     compile 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
     //************************* 二维码 SDK
     compile files('libs/zxing.jar')
-
+    //************************* 加密用的Apache包
+    compile files('libs/commons-lang3-3.1.jar')
+    compile files('libs/commons-codec-1.8.jar')
 
     compile project(path: ':pulltorefresh')
 }

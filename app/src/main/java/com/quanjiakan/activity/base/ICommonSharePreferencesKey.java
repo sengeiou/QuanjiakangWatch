@@ -6,4 +6,7 @@ package com.quanjiakan.activity.base;
 
 public interface ICommonSharePreferencesKey {
     String KEY_ACCESSED_WELCOME = "accessedWelcomePage";
+
+    String KEY_SHOW_NO_BIND = "showNoBindDialog";
+    String KEY_SHOW_NO_BIND_NOT_SHOW = "showNoBindDialog_no_show";
 }

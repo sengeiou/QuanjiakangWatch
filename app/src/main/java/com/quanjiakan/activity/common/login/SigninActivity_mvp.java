@@ -259,12 +259,18 @@ public class SigninActivity_mvp extends BaseActivity {
     public void onError(int type, int httpResponseCode, Object errorMsg) {
         switch (type) {
             case IPresenterBusinessCode.LOGIN:
-                if(errorMsg!=null){
-                    CommonDialogHint.getInstance().showHint(SigninActivity_mvp.this,"" + errorMsg.toString());
+                if(errorMsg!=null && errorMsg.toString().length()>0){
+                    CommonDialogHint.getInstance().showHint(this,errorMsg.toString());
+                }else{
+                    CommonDialogHint.getInstance().showHint(this,getString(R.string.error_common_net_request_fail));
                 }
                 break;
-            case IPresenterBusinessCode.NONE:
-                //TODO 不做任何事情，在获取参数为空时调用并返回，调用前会有对应参数相关的提示
+            default:
+                if(errorMsg!=null && errorMsg.toString().length()>0){
+                    CommonDialogHint.getInstance().showHint(this,errorMsg.toString());
+                }else{
+                    CommonDialogHint.getInstance().showHint(this,getString(R.string.error_common_net_request_fail));
+                }
                 break;
         }
     }

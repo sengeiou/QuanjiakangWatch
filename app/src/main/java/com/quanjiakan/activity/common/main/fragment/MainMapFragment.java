@@ -14,9 +14,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
@@ -44,7 +46,10 @@ import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.activity.base.BaseFragment;
 import com.quanjiakan.activity.base.ICommonActivityRequestCode;
+import com.quanjiakan.activity.base.ICommonActivityResultCode;
 import com.quanjiakan.activity.base.ICommonData;
+import com.quanjiakan.activity.base.ICommonSharePreferencesKey;
+import com.quanjiakan.activity.common.index.bind.BindStepOneActivity;
 import com.quanjiakan.activity.common.index.devices.WatchEntryActivity_old;
 import com.quanjiakan.activity.common.main.MainActivity;
 import com.quanjiakan.adapter.DeviceContainerAdapter;
@@ -132,6 +137,7 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
     private LinearLayout guide_line;//导航
     private LinearLayout phone_line;
     //******************
+    private Dialog noBindDialog;
 
     /**
      * ************************************************************************************************************************
@@ -492,7 +498,7 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_delete_manager, null);
 
         TextView title = (TextView) view.findViewById(R.id.tv_dialog_title);
-        title.setText("SIM卡读取异常");
+        title.setText(R.string.hint_common_sim_error);
 
         view.findViewById(R.id.btn_sure).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -511,7 +517,7 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
             }
         });
         TextView content = (TextView) view.findViewById(R.id.tv_content);
-        content.setText("SIM卡读取异常，是否需要重设资料！");
+        content.setText(R.string.hint_common_sim_read_error);
         content.setGravity(Gravity.CENTER);
 
 
@@ -656,10 +662,20 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode){
-            case ICommonActivityRequestCode.MAP_TO_DEVICE_CHILD:
+            case ICommonActivityRequestCode.MAP_TO_DEVICE_CHILD: {
+
                 break;
-            case ICommonActivityRequestCode.MAP_TO_DEVICE_OLD:
+            }
+            case ICommonActivityRequestCode.MAP_TO_DEVICE_OLD: {
+
                 break;
+            }
+            case ICommonActivityRequestCode.RELOAD_DATA: {
+                if(resultCode== ICommonActivityResultCode.RELOAD_DATA){
+                    presenter.getBindDeviceList(this);
+                }
+                break;
+            }
         }
     }
 
@@ -725,6 +741,10 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
                     GetWatchListEntity entity = (GetWatchListEntity) result;
                     if (IResponseResultCode.RESPONSE_SUCCESS.equals(entity.getCode())) {
                         saveWatchListDataAndShowList(entity);
+                    }else if(IResponseResultCode.RESPONSE_EMPTY_DATA.equals(entity.getCode())){
+                        locateSelf(LOCATION_TYPE_SHOW_AND_MOVE_POSITION);
+                        //TODO 提示需要进行绑定的对话框
+                        isShowNoBindDialog(true);
                     } else {
                         locateSelf(LOCATION_TYPE_SHOW_AND_MOVE_POSITION);
                         if (entity.getMessage() != null && entity.getMessage().length() > 0) {
@@ -767,6 +787,57 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
     /**
      * ************************************************************************************************************************
      */
+    public void isShowNoBindDialog(boolean isShow){
+        if(isShow && !ICommonSharePreferencesKey.KEY_SHOW_NO_BIND_NOT_SHOW.equals(BaseApplication.getInstances().getKeyValue(ICommonSharePreferencesKey.KEY_SHOW_NO_BIND))){
+            noBindDialog = new Dialog(getActivity(), R.style.dialog);
+            View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_main_map_entry_tips, null);
+            RelativeLayout exit = (RelativeLayout) view.findViewById(R.id.exit);
+            final CheckBox checkBox = (CheckBox) view.findViewById(R.id.check_status);
+            TextView btn_confirm = (TextView) view.findViewById(R.id.btn_confirm);
+            btn_confirm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (checkBox.isChecked()) {
+                        BaseApplication.getInstances().setKeyValue(ICommonSharePreferencesKey.KEY_SHOW_NO_BIND, ICommonSharePreferencesKey.KEY_SHOW_NO_BIND_NOT_SHOW);
+                    }
+                    if (noBindDialog != null) {
+                        noBindDialog.dismiss();
+                        //TODO 跳转至绑定页
+                        Intent intent = new Intent(getActivity(), BindStepOneActivity.class);
+                        startActivityForResult(intent, ICommonActivityRequestCode.RELOAD_DATA);
+                    }
+                }
+            });
+            exit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (checkBox.isChecked()) {
+                        BaseApplication.getInstances().setKeyValue(ICommonSharePreferencesKey.KEY_SHOW_NO_BIND, ICommonSharePreferencesKey.KEY_SHOW_NO_BIND_NOT_SHOW);
+                    }
+                    if (noBindDialog != null) {
+                        noBindDialog.dismiss();
+                    }
+                }
+            });
+
+            WindowManager.LayoutParams lp = noBindDialog.getWindow().getAttributes();
+            lp.width = UnitExchangeUtil.dip2px(getActivity(), 300);
+            lp.height = lp.WRAP_CONTENT;
+            lp.gravity = Gravity.CENTER;
+            noBindDialog.setContentView(view, lp);
+            noBindDialog.setCanceledOnTouchOutside(false);
+            if (noBindDialog!=null&&!noBindDialog.isShowing()) {
+                noBindDialog.show();
+            }
+        }else{
+            if(noBindDialog!=null){
+                noBindDialog.dismiss();
+            }
+        }
+    }
+
+
+
     //TODO 将数据持久化到本地数据库中，并展示数据到ListView上
     public void saveWatchListDataAndShowList(GetWatchListEntity entity) {
         //TODO 仅在数据有效，且数据数量不为0的情况下保存

@@ -28,6 +28,7 @@ public interface IParamsName {
 
 
     //TODO 网络请求参数
+    String PARAMS_COMMON_ENCRYPT = "ciphertext";
     String PARAMS_COMMON_PLATFORM = "platform";
     String PARAMS_COMMON_TOKEN = "token";
     String PARAMS_COMMON_PAGE = "page";

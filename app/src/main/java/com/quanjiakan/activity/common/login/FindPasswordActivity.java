@@ -24,6 +24,7 @@ import com.quanjiakan.net_presenter.IPresenterBusinessCode;
 import com.quanjiakan.util.common.EditTextFilter;
 import com.quanjiakan.util.common.StringCheckUtil;
 import com.quanjiakan.util.dialog.CommonDialogHint;
+import com.quanjiakan.util.encrypt.SMSValidateUtil;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.HashMap;
@@ -239,7 +240,7 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
 				if(!getSMSCode()){
 					return;
 				}
-				presenter.getSMSCode(this);
+				presenter.getSMSCodeEncrypt(this);
 				break;
 			}
 		}
@@ -248,6 +249,12 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
 	@Override
 	public Object getParamter(int type) {
 		switch (type){
+			case IPresenterBusinessCode.SMS_CODE_ENCRYPT:{
+				HashMap<String, String> params = new HashMap<>();
+				params.put(IParamsName.PARAMS_COMMON_ENCRYPT, getEncryptString());
+				params.put(IParamsName.PARAMS_COMMON_PLATFORM, IHttpUrlConstants.PLATFORM_ANDROID);
+				return params;
+			}
 			case IPresenterBusinessCode.SMS_CODE: {
 				HashMap<String, String> params = new HashMap<>();
 				params.put(IParamsName.PARAMS_COMMON_MOBILE, etUsername.getText().toString());
@@ -272,6 +279,9 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
 	@Override
 	public void showMyDialog(int type) {
 		switch (type){
+			case IPresenterBusinessCode.SMS_CODE_ENCRYPT:
+				getDialog(this);
+				break;
 			case IPresenterBusinessCode.SMS_CODE:
 				getDialog(this);
 				break;
@@ -286,6 +296,9 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
 	@Override
 	public void dismissMyDialog(int type) {
 		switch (type){
+			case IPresenterBusinessCode.SMS_CODE_ENCRYPT:
+				dismissDialog();
+				break;
 			case IPresenterBusinessCode.SMS_CODE:
 				dismissDialog();
 				break;
@@ -300,6 +313,27 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
 	@Override
 	public void onSuccess(int type, int httpResponseCode, Object result) {
 		switch (type){
+			case IPresenterBusinessCode.SMS_CODE_ENCRYPT: {
+				//TODO 操作成功，开始倒计时
+				//TODO 保存验证码数据
+				if(result!=null && result instanceof PostSMSEntity){
+					PostSMSEntity sms = (PostSMSEntity) result;
+					if (IResponseResultCode.RESPONSE_SUCCESS.equals(sms.getCode())) {
+						//TODO 获取验证码成功
+						etCode.setTag(sms.getObject().getSmscode());
+						lastSMSPhone = getPhoneNumber();
+						//TODO 成功获取验证码
+						showSmsCodeTime();
+					} else {
+						if (sms.getMessage() != null && sms.getMessage().length() > 0) {
+							CommonDialogHint.getInstance().showHint(FindPasswordActivity.this, sms.getMessage());
+						} else {
+							CommonDialogHint.getInstance().showHint(FindPasswordActivity.this, getString(R.string.error_sign_up_get_sms_error));
+						}
+					}
+				}
+				break;
+			}
 			case IPresenterBusinessCode.SMS_CODE: {
 				//TODO 操作成功，开始倒计时
 				//TODO 保存验证码数据
@@ -350,6 +384,8 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
 	@Override
 	public void onError(int type, int httpResponseCode, Object errorMsg) {
 		switch (type){
+			case IPresenterBusinessCode.SMS_CODE_ENCRYPT:
+				break;
 			case IPresenterBusinessCode.SMS_CODE:
 				break;
 			case IPresenterBusinessCode.PASSWORD_RESET:
@@ -357,5 +393,19 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
 			default:
 				break;
 		}
+		if(errorMsg!=null && errorMsg.toString().length()>0){
+			CommonDialogHint.getInstance().showHint(this,errorMsg.toString());
+		}else{
+			CommonDialogHint.getInstance().showHint(this,getString(R.string.error_common_net_request_fail));
+		}
+	}
+
+	public String getEncryptString(){
+		try {
+			return SMSValidateUtil.getCiphertext(etUsername.getText().toString(),2);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "";
 	}
 }

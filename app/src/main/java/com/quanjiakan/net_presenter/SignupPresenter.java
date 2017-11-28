@@ -6,6 +6,7 @@ import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.Retrofit2Util;
 import com.quanjiakan.net.retrofit.result_entity.PostSMSEntity;
 import com.quanjiakan.net.retrofit.result_entity.PostSignupEntity;
+import com.quanjiakan.net.retrofit.service.post.object.RxPostSMSEncryptEntityService;
 import com.quanjiakan.net.retrofit.service.post.object.RxPostSMSEntityService;
 import com.quanjiakan.net.retrofit.service.post.object.RxPostSignupService;
 
@@ -53,6 +54,42 @@ public class SignupPresenter implements IBasePresenter {
                     public void onNext(PostSMSEntity response) {
                         activityMvp.dismissMyDialog(IPresenterBusinessCode.SMS_CODE);
                         activityMvp.onSuccess(IPresenterBusinessCode.SMS_CODE,200,response);
+                    }
+                });
+    }
+
+    public void getSMSCodeEncrypt(final SignupActivity activityMvp){
+        HashMap<String, String> params = (HashMap<String, String>) activityMvp.getParamter(IPresenterBusinessCode.SMS_CODE_ENCRYPT);
+        if(params==null){
+            //TODO 控制无效的参数，需要针对不同的业务进行区分，当业务本身即为Get,不需要参数时，这个判断与回调也就不需要了
+            activityMvp.onError(IPresenterBusinessCode.NONE,200,null);//TODO
+            return ;
+        }
+        activityMvp.showMyDialog(IPresenterBusinessCode.SMS_CODE_ENCRYPT);
+
+        //TODO
+        Retrofit retrofit = Retrofit2Util.getRetrofit(IHttpUrlConstants.BASEURL_QUANJIAKANG);
+        RxPostSMSEncryptEntityService rxGetRequest = retrofit.create(RxPostSMSEncryptEntityService.class);
+        rxGetRequest.doGetSMSCode(params.get(IParamsName.PARAMS_COMMON_ENCRYPT),
+                params.get(IParamsName.PARAMS_COMMON_PLATFORM))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<PostSMSEntity>() {
+                    @Override
+                    public void onCompleted() {
+                        activityMvp.dismissMyDialog(IPresenterBusinessCode.SMS_CODE_ENCRYPT);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        activityMvp.dismissMyDialog(IPresenterBusinessCode.SMS_CODE_ENCRYPT);
+                        activityMvp.onError(IPresenterBusinessCode.SMS_CODE_ENCRYPT,200,e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(PostSMSEntity response) {
+                        activityMvp.dismissMyDialog(IPresenterBusinessCode.SMS_CODE_ENCRYPT);
+                        activityMvp.onSuccess(IPresenterBusinessCode.SMS_CODE_ENCRYPT,200,response);
                     }
                 });
     }
