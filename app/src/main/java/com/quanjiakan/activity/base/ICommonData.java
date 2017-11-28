@@ -10,6 +10,8 @@ public interface ICommonData {
 
     String HTTP_OK = "200";
 
+    String HTTP_PREFIX = "http";
+
     String ENCODE_DECODE_UTF_8 = "utf-8";
     String ENCODE_DECODE_UTF_8_BIG = "UTF-8";
     String ENCODE_DECODE_URL_PREFIX = "%";

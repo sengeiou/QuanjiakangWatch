@@ -9,14 +9,21 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.reflect.TypeToken;
 import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseActivity;
+import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.activity.base.BaseConstants;
 import com.quanjiakan.activity.base.ICommonActivityRequestCode;
+import com.quanjiakan.activity.base.ICommonData;
+import com.quanjiakan.activity.common.web.CommonWebForBindChildActivity;
 import com.quanjiakan.constants.IParamsName;
+import com.quanjiakan.net.IHttpUrlConstants;
+import com.quanjiakan.net.retrofit.result_entity.PostCheckIMEIEntity;
 import com.quanjiakan.net_presenter.BindStepOnePresenter;
 import com.quanjiakan.net_presenter.IPresenterBusinessCode;
 import com.quanjiakan.util.common.LogUtil;
+import com.quanjiakan.util.common.SerializeToObjectUtil;
 import com.quanjiakan.util.dialog.CommonDialogHint;
 import com.umeng.analytics.MobclickAgent;
 import com.zxing.qrcode.BindDeviceActivity;
@@ -83,8 +90,11 @@ public class BindStepOneActivity extends BaseActivity {
     @Override
     public Object getParamter(int type) {
         switch (type) {
-            case IPresenterBusinessCode.EMPTY:
+            case IPresenterBusinessCode.DEVICE_BIND_STEP_ONE:
                 HashMap<String, String> params = new HashMap<>();
+                params.put(IParamsName.PARAMS_COMMON_IMEI,bindDevice2dcodeValue.getText().toString());
+                params.put(IParamsName.PARAMS_COMMON_TOKEN, BaseApplication.getInstances().getLoginInfo().getToken());
+                params.put(IParamsName.PARAMS_COMMON_PLATFORM, IHttpUrlConstants.PLATFORM_ANDROID);
                 return params;
         }
         return null;
@@ -93,7 +103,7 @@ public class BindStepOneActivity extends BaseActivity {
     @Override
     public void showMyDialog(int type) {
         switch (type) {
-            case IPresenterBusinessCode.EMPTY:
+            case IPresenterBusinessCode.DEVICE_BIND_STEP_ONE:
                 getDialog(this, getString(R.string.hint_common_get_data));//正在获取数据...
                 break;
         }
@@ -102,7 +112,7 @@ public class BindStepOneActivity extends BaseActivity {
     @Override
     public void dismissMyDialog(int type) {
         switch (type) {
-            case IPresenterBusinessCode.EMPTY:
+            case IPresenterBusinessCode.DEVICE_BIND_STEP_ONE:
                 break;
         }
         dismissDialog();
@@ -111,7 +121,8 @@ public class BindStepOneActivity extends BaseActivity {
     @Override
     public void onSuccess(int type, int httpResponseCode, Object result) {
         switch (type) {
-            case IPresenterBusinessCode.EMPTY:
+            case IPresenterBusinessCode.DEVICE_BIND_STEP_ONE:
+                setResult(result);
                 break;
         }
     }
@@ -119,13 +130,50 @@ public class BindStepOneActivity extends BaseActivity {
     @Override
     public void onError(int type, int httpResponseCode, Object errorMsg) {
         switch (type) {
-            case IPresenterBusinessCode.EMPTY:
+            case IPresenterBusinessCode.DEVICE_BIND_STEP_ONE:
                 break;
         }
         if (errorMsg != null && errorMsg.toString().length() > 0) {
             CommonDialogHint.getInstance().showHint(this, errorMsg.toString());
         } else {
             CommonDialogHint.getInstance().showHint(this, getString(R.string.error_common_net_request_fail));
+        }
+    }
+
+    public void setResult(Object result){
+        if(result!=null && result instanceof String){
+            /**
+             {
+             "code": "200",
+             "message": "返回成功",
+             "object": {
+             "acTime": "2017-04-25 13:58:11.0",
+             "actStatus": 1,   是否已经激活  1已激活  0未激活
+             "deviceType": 0,
+             //设备类型0.老人手表
+             1.儿童手表
+             2.定位器
+             3.睡眠监测仪
+             4.拐杖
+             5呼吸监测仪
+             6体态监测仪
+
+             "deviceid": 240207489205306450,
+             "imei": "355637052788452"
+             }
+             */
+            PostCheckIMEIEntity entity = (PostCheckIMEIEntity) SerializeToObjectUtil.getInstances().jsonToObject(result.toString(),new TypeToken<PostCheckIMEIEntity>(){}.getType());
+            if(entity!=null && ICommonData.HTTP_OK.equals(entity.getCode()) && entity.getObject()!=null){
+                if(entity.getObject().getActStatus()==1){//TODO 已经激活---跳转至第二步
+
+                }else{//TODO 尚未激活---跳转至激活页面
+                    //
+                    Intent intent = new Intent(BindStepOneActivity.this, CommonWebForBindChildActivity.class);
+
+                }
+            }else{
+                onError(IPresenterBusinessCode.DEVICE_BIND_STEP_ONE,200,null);
+            }
         }
     }
 
@@ -143,8 +191,24 @@ public class BindStepOneActivity extends BaseActivity {
                 toScanActivity();
                 break;
             case R.id.btn_submit:
+                doSubmitIMEI();
                 break;
         }
+    }
+
+    public void doSubmitIMEI(){
+        if(bindDevice2dcodeValue.length()<0){
+            // 请填入设备的IMEI号码，或扫描设备二维码获取IMEI号码
+            CommonDialogHint.getInstance().showHint(this,getString(R.string.hint_bind_step_one_no_imei));
+            return ;
+        }
+        if(bindDevice2dcodeValue.length()!=15){
+            // 请确认输入的IMEI号码是有效的
+            CommonDialogHint.getInstance().showHint(this,getString(R.string.hint_bind_step_one_wrony_imei));
+            return ;
+        }
+
+        presenter.checkIMEI(this);
     }
 
     public void toScanActivity(){

@@ -185,6 +185,19 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
+        <activity
+            android:name="com.quanjiakan.activity.common.web.CommonWebActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name="com.quanjiakan.activity.common.web.CommonWebForBindChildActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity
+            android:name="com.quanjiakan.activity.common.web.CommonWebForBindOldActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
         <!-- ********************  微信支付  ************************************************************************************ -->
 
         <activity

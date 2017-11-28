@@ -150,6 +150,11 @@
     <string name="hint_common_sim_read_error">SIM卡读取异常，是否需要重设资料!</string>
 
 
+    <string name="hint_bind_step_one_no_imei">请填入设备的IMEI号码，或扫描设备二维码获取IMEI号码!</string>
+    <string name="hint_bind_step_one_wrony_imei">请确认输入的IMEI号码是有效的!</string>
+
+
+    <string name="hint_web_tilte">网页</string>
 
 
 </resources>

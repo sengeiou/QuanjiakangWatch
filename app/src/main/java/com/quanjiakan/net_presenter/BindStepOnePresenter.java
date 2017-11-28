@@ -5,6 +5,7 @@ import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.Retrofit2Util;
 import com.quanjiakan.net.retrofit.service.get.string.RxPostHealthInquiryProblemAnswerListService;
+import com.quanjiakan.net.retrofit.service.post.string.RxPostBindStepOneStringService;
 import com.quanjiakan.util.common.LogUtil;
 
 import java.util.HashMap;
@@ -30,12 +31,11 @@ public class BindStepOnePresenter implements IBasePresenter {
 
         //TODO
         //+BaseApplication.getInstances().getSessionID()
-        Retrofit retrofit = Retrofit2Util.getRetrofitStringResult(IHttpUrlConstants.BASEURL_APP);
-        RxPostHealthInquiryProblemAnswerListService rxGetRequest = retrofit.create(RxPostHealthInquiryProblemAnswerListService.class);
-        rxGetRequest.doGetAnswerList(params.get(IParamsName.PARAMS_COMMON_MEMBERID),
+        Retrofit retrofit = Retrofit2Util.getRetrofitStringResult(IHttpUrlConstants.BASEURL_DEVICE);
+        RxPostBindStepOneStringService rxGetRequest = retrofit.create(RxPostBindStepOneStringService.class);
+        rxGetRequest.doCheckIMEI(params.get(IParamsName.PARAMS_COMMON_IMEI),
                 params.get(IParamsName.PARAMS_COMMON_PLATFORM),
-                params.get(IParamsName.PARAMS_COMMON_TOKEN),
-                params.get(IParamsName.PARAMS_HEALTH_INQURIRY_PROBLEM_ID))
+                params.get(IParamsName.PARAMS_COMMON_TOKEN))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<String>() {

@@ -36,16 +36,19 @@ public interface IParamsName {
     String PARAMS_COMMON_USERID = "user_id";
     String PARAMS_COMMON_DATA = "data";
 
+    String PARAMS_COMMON_WEB_URL = "url_string";
+    String PARAMS_COMMON_WEB_TITLE = "url_title";
+
     String PARAMS_COMMON_DEVICE_TYPE = "devicetype";
     String PARAMS_COMMON_DEVICE_CLIENT = "client";
 
 
 
 
-
-
     String PARAMS_COMMON_MOBILE = "mobile";
     String PARAMS_COMMON_PASSWORD = "password";
+
+    String PARAMS_COMMON_IMEI = "imei";
 
     String PARAMS_COMMON_VALIDATE_TYPE = "validateType";
     String PARAMS_COMMON_VALIDATE_CODE = "validateCode";
