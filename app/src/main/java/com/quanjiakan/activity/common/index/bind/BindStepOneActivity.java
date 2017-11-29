@@ -15,8 +15,10 @@ import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.activity.base.BaseConstants;
 import com.quanjiakan.activity.base.ICommonActivityRequestCode;
+import com.quanjiakan.activity.base.ICommonActivityResultCode;
 import com.quanjiakan.activity.base.ICommonData;
 import com.quanjiakan.activity.common.web.CommonWebForBindChildActivity;
+import com.quanjiakan.activity.common.web.CommonWebForBindOldActivity;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.retrofit.result_entity.PostCheckIMEIEntity;
@@ -59,6 +61,8 @@ public class BindStepOneActivity extends BaseActivity {
     @BindView(R.id.btn_submit)
     Button btnSubmit;
 
+
+    boolean isGoWebActivation;
     private BindStepOnePresenter presenter;
 
     @Override
@@ -67,6 +71,7 @@ public class BindStepOneActivity extends BaseActivity {
         setContentView(R.layout.layout_device_bind_step_one);
         ButterKnife.bind(this);
         initTitle();
+        isGoWebActivation = false;
     }
 
     @Override
@@ -168,8 +173,23 @@ public class BindStepOneActivity extends BaseActivity {
 
                 }else{//TODO 尚未激活---跳转至激活页面
                     //
-                    Intent intent = new Intent(BindStepOneActivity.this, CommonWebForBindChildActivity.class);
-
+                    if(!isGoWebActivation){
+                        if(entity.getObject().getDeviceType()==1){//TODO 儿童手表
+                            Intent intent = new Intent(BindStepOneActivity.this, CommonWebForBindChildActivity.class);
+                            intent.putExtra(IParamsName.PARAMS_COMMON_WEB_URL,"http://static.quanjiakan.com/familycare/activate?IMEI=" + bindDevice2dcodeValue.getText().toString().trim());
+                            intent.putExtra(IParamsName.PARAMS_COMMON_WEB_TITLE,getString(R.string.web_bind_old_title));
+                            startActivityForResult(intent, ICommonActivityResultCode.RELOAD_DATA);
+                            isGoWebActivation = true;
+                        }else{//TODO 老人手表  非儿童的设备都在老人激活页进行激活
+                            Intent intent = new Intent(BindStepOneActivity.this, CommonWebForBindOldActivity.class);
+                            intent.putExtra(IParamsName.PARAMS_COMMON_WEB_URL,"http://static.quanjiakan.com/qjk/pages/qjk/device/activation_login.jsp");
+                            intent.putExtra(IParamsName.PARAMS_COMMON_WEB_TITLE,getString(R.string.web_bind_child_title));
+                            startActivityForResult(intent, ICommonActivityResultCode.RELOAD_DATA);
+                            isGoWebActivation = true;
+                        }
+                    }else{
+                        CommonDialogHint.getInstance().showHint(this,getString(R.string.bind_step_one_device_active_hint));
+                    }
                 }
             }else{
                 onError(IPresenterBusinessCode.DEVICE_BIND_STEP_ONE,200,null);
@@ -256,6 +276,9 @@ public class BindStepOneActivity extends BaseActivity {
                     }
                 }
                 break;
+            }
+            case ICommonActivityRequestCode.RELOAD_DATA:{
+                presenter.checkIMEI(this);
             }
         }
     }

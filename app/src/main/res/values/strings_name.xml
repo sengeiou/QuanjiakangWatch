@@ -120,7 +120,14 @@
     <string name="health_inquiry_append_evaluate_result_fail">评价问题失败!</string>
     <string name="health_inquiry_append_evaluate_result_server_error">评价接口返回数据异常!</string>
 
+    <!-- ********************************************************************** -->
+    <!-- *********  激活   ******* -->
+    <string name="web_bind_child_title">设备激活</string>
+    <string name="web_bind_old_title">设备激活</string>
+    <string name="bind_step_one_unsupport_device">暂不支持的激活设备</string>
+    <string name="bind_step_one_device_active_hint">设备激活失败或未进行激活操作，请重试!</string>
 
+    <!-- ********************************************************************** -->
 
 
 </resources>
