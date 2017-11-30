@@ -10,6 +10,9 @@ public interface IParamsIntValue {
     int COMMON_INVALIDED_VALUE = -1;
     int COMMON_INIT_VALUE = 0;
 
+    int COMMON_SMS_SIGNIN_TYPE = 1;
+    int COMMON_SMS_RESET_PASSWORD_TYPE = 2;
+
     //TODO MainActivity OnNewIntent类型
     int COMMON_MAIN_TYPE_SHOW_SPECIFIC_POINT = 1;
     int COMMON_MAIN_TYPE_SHOW_WARN_SOS = 2;
@@ -20,4 +23,13 @@ public interface IParamsIntValue {
     int COMMON_MAIN_TYPE_SHOW_WARN_BIND = 7;
     int COMMON_MAIN_TYPE_SHOW_CHECK_PERMISSION = 8;
     int COMMON_MAIN_TYPE_SHOW_MATTERSS_WARN = 9;
+
+
+    int DEVICE_TYPE_0_OLD = 0;
+    int DEVICE_TYPE_1_CHILD = 1;
+    int DEVICE_TYPE_2_LOCATER = 2;
+    int DEVICE_TYPE_3_SLEEP = 3;
+    int DEVICE_TYPE_4_STICK = 4;
+    int DEVICE_TYPE_5_BREATH = 5;
+    int DEVICE_TYPE_6_POSTURE = 6;
 }

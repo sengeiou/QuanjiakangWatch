@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
+import com.quanjiakan.constants.IParamsIntValue;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.IResponseResultCode;
@@ -534,7 +535,7 @@ public class SignupActivity extends BaseActivity {
 
     public String getEncryptString(){
         try {
-            return SMSValidateUtil.getCiphertext(etUsername.getText().toString(),2);
+            return SMSValidateUtil.getCiphertext(etUsername.getText().toString(), IParamsIntValue.COMMON_SMS_SIGNIN_TYPE);
         } catch (Exception e) {
             e.printStackTrace();
         }

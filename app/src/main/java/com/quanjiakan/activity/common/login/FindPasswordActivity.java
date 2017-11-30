@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
+import com.quanjiakan.constants.IParamsIntValue;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.IResponseResultCode;
@@ -402,7 +403,7 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
 
 	public String getEncryptString(){
 		try {
-			return SMSValidateUtil.getCiphertext(etUsername.getText().toString(),2);
+			return SMSValidateUtil.getCiphertext(etUsername.getText().toString(), IParamsIntValue.COMMON_SMS_RESET_PASSWORD_TYPE);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

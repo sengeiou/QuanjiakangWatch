@@ -9,6 +9,7 @@ import com.quanjiakan.net.retrofit.result_entity.PostSMSEntity;
 import com.quanjiakan.net.retrofit.service.post.object.RxPostSMSEncryptEntityService;
 import com.quanjiakan.net.retrofit.service.post.string.RxPostResetPasswordService;
 import com.quanjiakan.net.retrofit.service.post.object.RxPostSMSEntityService;
+import com.quanjiakan.util.common.LogUtil;
 
 import java.util.HashMap;
 
@@ -90,6 +91,7 @@ public class FindPasswordPresenter implements IBasePresenter {
 
                     @Override
                     public void onNext(PostSMSEntity response) {
+                        LogUtil.e("SMS_CODE_ENCRYPT(修改密码):"+response.toString());
                         activityMvp.dismissMyDialog(IPresenterBusinessCode.SMS_CODE_ENCRYPT);
                         activityMvp.onSuccess(IPresenterBusinessCode.SMS_CODE_ENCRYPT,200,response);
                     }

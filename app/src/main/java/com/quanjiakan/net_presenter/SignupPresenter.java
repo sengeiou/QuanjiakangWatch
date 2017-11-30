@@ -9,6 +9,7 @@ import com.quanjiakan.net.retrofit.result_entity.PostSignupEntity;
 import com.quanjiakan.net.retrofit.service.post.object.RxPostSMSEncryptEntityService;
 import com.quanjiakan.net.retrofit.service.post.object.RxPostSMSEntityService;
 import com.quanjiakan.net.retrofit.service.post.object.RxPostSignupService;
+import com.quanjiakan.util.common.LogUtil;
 
 import java.util.HashMap;
 
@@ -88,6 +89,7 @@ public class SignupPresenter implements IBasePresenter {
 
                     @Override
                     public void onNext(PostSMSEntity response) {
+                        LogUtil.e("SMS_CODE_ENCRYPT(注册用户):"+response.toString());
                         activityMvp.dismissMyDialog(IPresenterBusinessCode.SMS_CODE_ENCRYPT);
                         activityMvp.onSuccess(IPresenterBusinessCode.SMS_CODE_ENCRYPT,200,response);
                     }
