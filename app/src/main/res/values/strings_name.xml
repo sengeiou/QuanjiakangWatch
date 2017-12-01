@@ -129,6 +129,8 @@
 
     <!-- ********************************************************************** -->
     <string name="cancel">取消</string>
+    <string name="confirm">确定</string>
+    <string name="login">登录</string>
 
 
 </resources>

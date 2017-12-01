@@ -24,6 +24,18 @@ import java.util.Map;
 
 public class UploadUtil {
 
+    /**
+     * 上传文件接口
+     *
+     * storage=13:	//春雨图片
+     storage=14:	//春雨声音
+     storage=15:	//病例图片
+     storage=16:	//设备图片
+     &storage=19    //寻人启事
+     &storage=20    //用户健康档案
+     storage=2 头像
+     * @return
+     */
     public static void uploadFile(final BaseActivity activity,final  String serverUploadUrlPath, final Map<String, String> paramMap, final Map<String, String> fileMap){
         activity.showMyDialog(IPresenterBusinessCode.COMMON_FILE_UPLOAD);
         BaseApplication.getInstances().addThreadTask(new Runnable() {

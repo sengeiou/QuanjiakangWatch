@@ -1,5 +1,7 @@
 package com.quanjiakan.net.retrofit.result_entity;
 
+import java.io.Serializable;
+
 /**
  * Created by john on 2017-11-24.
  */
@@ -40,7 +42,7 @@ public class PostCheckIMEIEntity {
         this.object = object;
     }
 
-    public static class ObjectBean {
+    public static class ObjectBean implements Serializable{
         /**
          * acTime : 2017-04-25 13:58:11.0
          * actStatus : 1

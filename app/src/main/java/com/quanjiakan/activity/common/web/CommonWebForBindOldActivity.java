@@ -1,31 +1,49 @@
 package com.quanjiakan.activity.common.web;
 
-import android.annotation.TargetApi;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.webkit.JavascriptInterface;
+import android.webkit.JsResult;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseActivity;
+import com.quanjiakan.activity.base.BaseApplication;
+import com.quanjiakan.activity.base.ICommonActivityRequestCode;
 import com.quanjiakan.activity.base.ICommonData;
 import com.quanjiakan.constants.IParamsName;
+import com.quanjiakan.net.upload.UploadUtil;
+import com.quanjiakan.net_presenter.IPresenterBusinessCode;
+import com.quanjiakan.util.common.LogUtil;
 import com.quanjiakan.util.common.NetTypeCheckUtil;
 import com.quanjiakan.util.dialog.CommonDialogHint;
+import com.quanjiakan.util.image.BitmapUtil;
+import com.quanjiakan.util.image.IImageCropInterface;
+import com.quanjiakan.util.image.ImageCropHandler;
+import com.quanjiakan.util.image.ImageUtils;
+import com.quanjiakan.view.dialog.BottomSelectImageDialog;
 import com.umeng.analytics.MobclickAgent;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,11 +71,6 @@ public class CommonWebForBindOldActivity extends BaseActivity {
 
     private String last_url;
 
-    private static final int REQUEST_SELECT_FILE = 100;
-    private final static int FILECHOOSER_RESULTCODE = 1;
-    private ValueCallback<Uri[]> uploadMessage;
-    private ValueCallback<Uri> mUploadMessage;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +89,7 @@ public class CommonWebForBindOldActivity extends BaseActivity {
             return;
         }
         resetTitle();
+        initView();
     }
 
     @Override
@@ -110,7 +124,12 @@ public class CommonWebForBindOldActivity extends BaseActivity {
         }
     }
 
-    public void initView(){
+    public void initView() {
+
+        progress.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 5, 0));
+        progress.setMax(100);
+
+
         mWebview = (WebView) findViewById(R.id.webview);
 
         mWebview.getSettings().setJavaScriptEnabled(true);
@@ -149,72 +168,32 @@ public class CommonWebForBindOldActivity extends BaseActivity {
                 }
             }
 
-            //************     由于4.4WebView被系统禁止调用，需要使用JS互相调用的形式进行传递
-            //The undocumented magic method override
-            //Eclipse will swear at you if you try to put @Override here
-            // For Android 3.0+
-            public void openFileChooser(ValueCallback<Uri> uploadMsg) {
-
-                mUploadMessage = uploadMsg;
-                Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-                i.addCategory(Intent.CATEGORY_OPENABLE);
-                i.setType("image/*");
-                startActivityForResult(Intent.createChooser(i, "File Chooser"), FILECHOOSER_RESULTCODE);
-
+            @Override
+            public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
+                return super.onJsAlert(view, url, message, result);
             }
-
-            // For Android 3.0+
-            public void openFileChooser(ValueCallback uploadMsg, String acceptType) {
-                mUploadMessage = uploadMsg;
-                Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-                i.addCategory(Intent.CATEGORY_OPENABLE);
-                i.setType("*/*");
-                startActivityForResult(Intent.createChooser(i, "File Browser"), FILECHOOSER_RESULTCODE);
-            }
-
-            //For Android 4.1
-            public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
-                mUploadMessage = uploadMsg;
-                Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-                i.addCategory(Intent.CATEGORY_OPENABLE);
-                i.setType("image/*");
-                startActivityForResult(Intent.createChooser(i, "File Chooser"), FILECHOOSER_RESULTCODE);
-
-            }
-
-            //For Android 5.0
-            @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-            public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
-                // make sure there is no existing message
-                if (uploadMessage != null) {
-                    uploadMessage.onReceiveValue(null);
-                    uploadMessage = null;
-                }
-                uploadMessage = filePathCallback;
-                Intent intent = fileChooserParams.createIntent();
-                try {
-                    startActivityForResult(intent, REQUEST_SELECT_FILE);
-                } catch (ActivityNotFoundException e) {
-                    uploadMessage = null;
-                    return false;
-                }
-                return true;
-            }
-
         });
+
+        mWebview.addJavascriptInterface(new JSInterface(), "hgj");
 
         mWebview.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                // 返回值是true的时候控制去WebView打开，为false调用系统浏览器或第三方浏览器
                 last_url = url;
-                if (last_url!=null&&last_url.contains("goods.php?id=301")) {  //这个网页存在问题特殊处理
-                    refresh.setEnabled(false);
-                }else {
-                    refresh.setEnabled(true);
+                if (url.contains("activate_success.html")) {
+                    //提示激活成功
+                    CommonDialogHint.getInstance().showHint(CommonWebForBindOldActivity.this, getString(R.string.hint_web_active_success), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            finish();
+                        }
+                    });
+                } else if (url.contains("hgj://take/photo")) {
+                    showImageSelectDialog();
+                    return true;
                 }
-//				view.loadUrl(last_url);
-                return false;//解决跳转第三方页面重定向问题，返回false交给webview处理
+                view.loadUrl(url);
+                return true;
             }
 
             @Override
@@ -228,19 +207,20 @@ public class CommonWebForBindOldActivity extends BaseActivity {
             }
         });
 
-        if(NetTypeCheckUtil.isNetAvailable(this)){
+        if (NetTypeCheckUtil.isNetAvailable(this)) {
             mWebview.loadUrl(urlPath);
-        }else{
+        } else {
             mWebview.setVisibility(View.GONE);
         }
 
         refresh.setColorSchemeResources(R.color.holo_green_light);
+        refresh.setEnabled(false);//激活流程中禁止刷新
         refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 refresh.setRefreshing(false);
 
-                if(!NetTypeCheckUtil.isNetAvailable(CommonWebForBindOldActivity.this)){
+                if (!NetTypeCheckUtil.isNetAvailable(CommonWebForBindOldActivity.this)) {
                     return;
                 }
                 if (last_url != null) {
@@ -253,19 +233,84 @@ public class CommonWebForBindOldActivity extends BaseActivity {
         });
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (requestCode == FILECHOOSER_RESULTCODE) {
-            if (null == mUploadMessage) return;
-            Uri result = intent == null || resultCode != RESULT_OK ? null : intent.getData();
-            mUploadMessage.onReceiveValue(result);
-            mUploadMessage = null;
+    private File file;
+    private String imagePath = null;
+    private String mCurrentPhotoPath = null;
 
-        } else if (requestCode == REQUEST_SELECT_FILE) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                if (uploadMessage == null) return;
-                uploadMessage.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, intent));
-                uploadMessage = null;
+    protected void showImageSelectDialog() {
+        BottomSelectImageDialog dialog = new BottomSelectImageDialog(this);
+        dialog.setmCameraResultListener(new BottomSelectImageDialog.onCameraResultListener() {
+            @Override
+            public void OnFilePath(String path) {
+                mCurrentPhotoPath = path;
             }
+        });
+        dialog.show();
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        switch (requestCode) {
+            case ICommonActivityRequestCode.REQUEST_CODE_CAPTURE_CAMEIA:
+                if (resultCode == RESULT_OK) {
+                    if (mCurrentPhotoPath != null) {
+                        ImageCropHandler.beginCrop(this, Uri.fromFile(new File(mCurrentPhotoPath)));
+                        /**
+                         * 是否进行裁剪：裁剪则进行上面的操作，否则，直接进行文件上传
+                         */
+                    }
+                }
+                break;
+            case ICommonActivityRequestCode.REQUEST_PICK:
+                if (resultCode == RESULT_OK) {
+                    ImageCropHandler.beginCrop(this, intent.getData());
+                    /**
+                     * sourcePath = ImageUtils.uri2Path(data, HealthInquiryFurtherAskActivity.this);
+                     */
+                }
+            case ICommonActivityRequestCode.REQUEST_CROP:
+                doCrop(requestCode, resultCode, intent);
+                break;
+        }
+    }
+
+    //TODO 处理图片的裁剪
+    public void doCrop(final int requestCode, final int resultCode, final Intent data) {
+        ImageCropHandler.handleCrop(null, resultCode, data, new IImageCropInterface() {
+            @Override
+            public void getFilePath(String path) {
+                imagePath = null;
+                mCurrentPhotoPath = path;
+                //TODO 修正上传图片为 400*400的分辨率，而不是默认的160*160
+                Bitmap smallBitmap = BitmapUtil.getSmallBitmap(mCurrentPhotoPath, 400, 400);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                smallBitmap.compress(Bitmap.CompressFormat.PNG, 25, baos);
+                String filename = System.currentTimeMillis() + ".png";
+                String file_path = ImageUtils.saveBitmapToStorage(filename, smallBitmap);
+                file = new File(file_path);
+
+                uploadImageFile(null, file_path.toString());
+            }
+        });
+    }
+
+    public void uploadImageFile(String name, String path) {
+        String url = "http://picture.quanjiakan.com:9080/familycare-binary/upload?&platform=2&project=1" +
+                "&token=" + BaseApplication.getInstances().getLoginInfo().getToken() +
+                "&memberId=" + BaseApplication.getInstances().getLoginInfo().getUserId() +
+                "&storage=12";//TODO 这个需要---如果没有可能会报参数错误的异常
+
+        HashMap<String, String> paramsFile = new HashMap<>();
+        paramsFile.put("file", path);
+        paramsFile.put("filename", file.getName());
+        paramsFile.put("image", file.getAbsolutePath());
+        UploadUtil.uploadFile(this, url, null, paramsFile);
+    }
+
+    private class JSInterface {
+
+        @JavascriptInterface
+        public void acceptUrl(String imgUrl) {//此方法是将android端获取的url返给js
+
         }
     }
 
@@ -283,10 +328,103 @@ public class CommonWebForBindOldActivity extends BaseActivity {
 
     @OnClick(R.id.ibtn_back)
     public void onViewClicked() {
-        if(mWebview.canGoBack()){
+        if (mWebview.canGoBack()) {
             mWebview.goBack();
-        }else{
+        } else {
             finish();
+        }
+    }
+
+
+    @Override
+    public Object getParamter(int type) {
+        switch (type) {
+            case IPresenterBusinessCode.COMMON_FILE_UPLOAD:
+                HashMap<String, String> params = new HashMap<>();
+                return params;
+        }
+        return null;
+    }
+
+    @Override
+    public void showMyDialog(int type) {
+        switch (type) {
+            case IPresenterBusinessCode.COMMON_FILE_UPLOAD:
+                getDialog(this, getString(R.string.hint_common_submit_file_image));//正在获取数据...
+                break;
+        }
+    }
+
+    @Override
+    public void dismissMyDialog(int type) {
+        switch (type) {
+            case IPresenterBusinessCode.COMMON_FILE_UPLOAD:
+                break;
+        }
+        dismissDialog();
+    }
+
+    @Override
+    public void onSuccess(int type, int httpResponseCode, Object result) {
+        switch (type) {
+            case IPresenterBusinessCode.COMMON_FILE_UPLOAD:
+                afterUpload(result);
+                break;
+        }
+    }
+
+    @Override
+    public void onError(int type, int httpResponseCode, Object errorMsg) {
+        switch (type) {
+            case IPresenterBusinessCode.COMMON_FILE_UPLOAD:
+                break;
+        }
+        if (errorMsg != null && errorMsg.toString().length() > 0) {
+            CommonDialogHint.getInstance().showHint(this, errorMsg.toString());
+        } else {
+            CommonDialogHint.getInstance().showHint(this, getString(R.string.error_common_net_request_fail));
+        }
+    }
+
+    //TODO 处理图片上传完成后的数据
+    public void afterUpload(Object result) {
+        if (result != null && result instanceof String) {
+            //  {"code":"200","message":"http://picture.quanjiakan.com/quanjiakan/resources/chunyu/images/20171122115337_y8isoq1jzyi3gtvh28rt.png"}
+            LogUtil.e("afterUpload:" + result.toString());
+            if (result.toString() != null && !result.toString().equals("") && result.toString().toLowerCase().startsWith("{")) {
+                //上传文件成功
+                try {
+                    JSONObject json = new JSONObject(result.toString());
+                    if (json.has("code") && "200".equals(json.getString("code"))) {
+                        /**
+                         * 上传完成后获取的地址
+                         * json.getString("message")
+                         *
+                         *
+                         * 将地址传递到第二个页面
+                         */
+                        imagePath = json.getString("message");
+                        mWebview.loadUrl("javascript:acceptUrl('" + imagePath + "')");
+                    } else {
+                        if (json.has("message") && json.getString("message") != null) {
+                            CommonDialogHint.getInstance().showHint(this, json.getString("message"));
+                        } else {
+                            CommonDialogHint.getInstance().showHint(this, getString(R.string.hint_common_submit_upload_fail));
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    MobclickAgent.reportError(this, e);
+                }
+
+            } else {
+                //文件上传失败
+                CommonDialogHint.getInstance().showHint(this, getString(R.string.hint_common_submit_upload_fail));
+            }
+
+            if (file.exists()) {
+                file.delete();
+            }
         }
     }
 }

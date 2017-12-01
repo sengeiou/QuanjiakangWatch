@@ -28,8 +28,6 @@
     <string name="hint_guide_item_baidu_map">百度导航</string>
     <string name="hint_guide_item_no_map">您没有地图,请先安装高德地图或者百度地图</string>
 
-    <string name="hint_addr">地址:</string>
-
     <string name="hint_locating">正在获取定位...</string>
     <string name="hint_get_house_keeper_data">正在获取家政\n数据...</string>
     <string name="hint_get_house_keeper_type_data">正在获取服务类型\n数据...</string>
@@ -155,6 +153,32 @@
 
 
     <string name="hint_web_tilte">网页</string>
+
+    <string name="hint_web_active_success">激活成功</string>
+
+    <string name="hint_bind_step_two_no_name">请输入名称!</string>
+    <string name="hint_bind_step_two_right_name">请输入正确的名称!</string>
+    <string name="hint_bind_step_two_illegal_char">名称中含有非法字符!</string>
+    <string name="hint_bind_step_two_length_limit">请输入8个字符以内的名称!</string>
+    <string name="hint_bind_step_illegal_imei">无效的设备ID,请重新输入或获取!</string>
+
+
+
+    <string name="hint_device_get_contacts">正在获取设备联系人信息!</string>
+
+    <string name="hint_device_get_contacts_ready_has">该联系人名字已存在!</string>
+
+
+    <string name="hint_bind_step_two_applied">已发送过绑定申请!</string>
+    <string name="hint_bind_step_two_no_imei">设备ID不存在!</string>
+    <string name="hint_bind_step_two_no_user">用户ID不存在!</string>
+    <string name="hint_bind_step_two_unactive">设备未激活!</string>
+
+    <string name="hint_bind_step_two_success">绑定申请发送成功!</string>
+    <string name="hint_bind_step_two_admin">设备绑定成功,您已成为管理员!</string>
+
+
+
 
 
 </resources>

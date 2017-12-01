@@ -172,6 +172,10 @@ public class BaseApplication extends MultiDexApplication {
         LogUtil.e("Start Natty Client");
     }
 
+    public NattyClient getNattyClient(){
+        return nattyClient;
+    }
+
     public int startupNattyClient(){
         return nattyClient.ntyStartupClient();
     }

@@ -904,7 +904,7 @@
 
     <string name="hint_no_bind_device">暂无绑定设备</string>
 
-    <string name="hint_loss_device_server_connection">已与手表服务器断开连接</string>
+    <string name="hint_loss_device_server_connection">已与手表服务器断开连接!</string>
     <string name="hint_loss_device_server_connection_retry">已与手表服务器断开连接,请在重连成功后重试</string>
 
 

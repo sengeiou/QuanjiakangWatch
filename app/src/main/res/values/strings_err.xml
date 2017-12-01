@@ -34,5 +34,15 @@
 
     <string name="error_housekeeper_wrong_phonenumber">未获取到公司服务电话!</string>
 
+    <string name="error_image_path">无效的图像地址!</string>
+
+
+    <string name="error_bind_step_two_no_nick_name">未设置使用者昵称!</string>
+    <string name="error_bind_step_two_nick_name_contain_illegal_char">昵称中含有非法字符!</string>
+    <string name="error_bind_step_two_no_head_icon">未上传头像!</string>
+    <string name="error_bind_step_two_head_icon_upload_fail">上传头像失败!</string>
+
+
+
 </resources>
 

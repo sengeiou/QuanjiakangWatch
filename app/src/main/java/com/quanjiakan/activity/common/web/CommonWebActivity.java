@@ -10,12 +10,14 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -76,6 +78,7 @@ public class CommonWebActivity extends BaseActivity {
             return;
         }
         resetTitle();
+        initView();
     }
 
     @Override
@@ -111,6 +114,10 @@ public class CommonWebActivity extends BaseActivity {
     }
 
     public void initView(){
+
+        progress.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 5, 0));
+        progress.setMax(100);
+
         mWebview = (WebView) findViewById(R.id.webview);
 
         mWebview.getSettings().setJavaScriptEnabled(true);

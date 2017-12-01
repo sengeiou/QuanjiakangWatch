@@ -170,13 +170,15 @@ public class BindStepOneActivity extends BaseActivity {
             PostCheckIMEIEntity entity = (PostCheckIMEIEntity) SerializeToObjectUtil.getInstances().jsonToObject(result.toString(),new TypeToken<PostCheckIMEIEntity>(){}.getType());
             if(entity!=null && ICommonData.HTTP_OK.equals(entity.getCode()) && entity.getObject()!=null){
                 if(entity.getObject().getActStatus()==1){//TODO 已经激活---跳转至第二步
-
+                    Intent intent = new Intent(this,BindStepTwoActivity.class);
+                    intent.putExtra(IParamsName.PARAMS_COMMON_DATA,entity.getObject());
+                    startActivityForResult(intent,ICommonActivityRequestCode.BACK_TO_MAIN);
                 }else{//TODO 尚未激活---跳转至激活页面
                     //
                     if(!isGoWebActivation){
                         if(entity.getObject().getDeviceType()==1){//TODO 儿童手表
                             Intent intent = new Intent(BindStepOneActivity.this, CommonWebForBindChildActivity.class);
-                            intent.putExtra(IParamsName.PARAMS_COMMON_WEB_URL,"http://static.quanjiakan.com/familycare/activate?IMEI=" + bindDevice2dcodeValue.getText().toString().trim());
+                            intent.putExtra(IParamsName.PARAMS_COMMON_WEB_URL,"http://static.quanjiakan.com/familycare/activate?version=1&IMEI=" + bindDevice2dcodeValue.getText().toString().trim());
                             intent.putExtra(IParamsName.PARAMS_COMMON_WEB_TITLE,getString(R.string.web_bind_old_title));
                             startActivityForResult(intent, ICommonActivityResultCode.RELOAD_DATA);
                             isGoWebActivation = true;
@@ -279,6 +281,14 @@ public class BindStepOneActivity extends BaseActivity {
             }
             case ICommonActivityRequestCode.RELOAD_DATA:{
                 presenter.checkIMEI(this);
+                break;
+            }
+            case ICommonActivityRequestCode.BACK_TO_MAIN:{
+                if(resultCode==ICommonActivityResultCode.RELOAD_DATA){
+                    setResult(ICommonActivityResultCode.RELOAD_DATA);
+                    finish();
+                }
+                break;
             }
         }
     }
