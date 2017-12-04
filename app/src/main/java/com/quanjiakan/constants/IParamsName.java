@@ -49,6 +49,7 @@ public interface IParamsName {
     String PARAMS_COMMON_PASSWORD = "password";
 
     String PARAMS_COMMON_IMEI = "imei";
+    String PARAMS_COMMON_BIND_STATE = "state";
 
     String PARAMS_COMMON_VALIDATE_TYPE = "validateType";
     String PARAMS_COMMON_VALIDATE_CODE = "validateCode";

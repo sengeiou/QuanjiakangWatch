@@ -37,9 +37,9 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
-import com.quanjiakan.activity.base.ICommonActivityRequestCode;
-import com.quanjiakan.activity.base.ICommonActivityResultCode;
-import com.quanjiakan.activity.base.ICommonData;
+import com.quanjiakan.constants.ICommonActivityRequestCode;
+import com.quanjiakan.constants.ICommonActivityResultCode;
+import com.quanjiakan.constants.ICommonData;
 import com.quanjiakan.adapter.FreeInquiryAppendAdapter;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.entity.BaseHttpResultEntity_List;
@@ -1250,7 +1250,7 @@ public class HealthInquiryFurtherAskActivity extends BaseActivity {
         UploadUtil.uploadVoiceFile(HealthInquiryFurtherAskActivity.this, url, null, paramsFile);
     }
 
-
+    //TODO 已经可以提取到Presenter中，不过，URL则需要从Params中进行获取
     public void uploadImageFile(String name,String path){
         String url = "http://picture.quanjiakan.com:9080/familycare-binary/upload?&platform=2&project=1" +
                 "&token=" + BaseApplication.getInstances().getLoginInfo().getToken() +

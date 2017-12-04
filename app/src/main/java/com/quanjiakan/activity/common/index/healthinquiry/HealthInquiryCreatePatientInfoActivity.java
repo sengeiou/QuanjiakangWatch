@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
-import com.quanjiakan.activity.base.ICommonActivityResultCode;
+import com.quanjiakan.constants.ICommonActivityResultCode;
 import com.quanjiakan.db.entity.HealthInquiryPatientDataEntity;
 import com.quanjiakan.db.manager.DaoManager;
 import com.quanjiakan.util.dialog.CommonDialogHint;

@@ -1,4 +1,4 @@
-package com.quanjiakan.activity.base;
+package com.quanjiakan.constants;
 
 /**
  * Created by Administrator on 2017/10/12.

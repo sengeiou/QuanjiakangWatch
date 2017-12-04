@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.pingantong.main.R;
-import com.quanjiakan.activity.base.ICommonData;
+import com.quanjiakan.constants.ICommonData;
 import com.quanjiakan.adapterholder.DeviceContainerHolder;
 import com.quanjiakan.db.entity.BindWatchInfoEntity;
 import com.quanjiakan.view.MaterialBadgeTextView;

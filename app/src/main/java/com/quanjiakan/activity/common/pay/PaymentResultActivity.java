@@ -9,8 +9,8 @@ import android.widget.TextView;
 
 import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseActivity;
-import com.quanjiakan.activity.base.ICommonActivityRequestCode;
-import com.quanjiakan.activity.base.ICommonActivityResultCode;
+import com.quanjiakan.constants.ICommonActivityRequestCode;
+import com.quanjiakan.constants.ICommonActivityResultCode;
 import com.quanjiakan.activity.common.index.housekeeper.HouseKeeperOrderActivity;
 import com.quanjiakan.activity.common.setting.orders.housekeeper.HouseKeeperOrderDetailActivity;
 import com.quanjiakan.constants.IParamsName;

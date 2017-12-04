@@ -1,6 +1,6 @@
 package com.quanjiakan.net.retrofit.result_entity;
 
-import com.quanjiakan.activity.base.ICommonData;
+import com.quanjiakan.constants.ICommonData;
 
 import org.json.JSONArray;
 import org.json.JSONException;

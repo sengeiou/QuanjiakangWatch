@@ -45,10 +45,10 @@ import com.amap.api.services.geocoder.RegeocodeResult;
 import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.activity.base.BaseFragment;
-import com.quanjiakan.activity.base.ICommonActivityRequestCode;
-import com.quanjiakan.activity.base.ICommonActivityResultCode;
-import com.quanjiakan.activity.base.ICommonData;
-import com.quanjiakan.activity.base.ICommonSharePreferencesKey;
+import com.quanjiakan.constants.ICommonActivityRequestCode;
+import com.quanjiakan.constants.ICommonActivityResultCode;
+import com.quanjiakan.constants.ICommonData;
+import com.quanjiakan.constants.ICommonSharePreferencesKey;
 import com.quanjiakan.activity.common.index.bind.BindStepOneActivity;
 import com.quanjiakan.activity.common.index.devices.WatchEntryActivity_old;
 import com.quanjiakan.activity.common.main.MainActivity;
@@ -687,12 +687,10 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
      * 网络
      */
     public void getBindWatchListFromNet() {
-        presenter = new BindDeviceListPresenter();
+        if(presenter==null){
+            presenter = new BindDeviceListPresenter();
+        }
         presenter.getBindDeviceList(this);
-    }
-
-    public void getBindWatchListFromLocalDataBase() {
-
     }
 
     /**

@@ -5,7 +5,7 @@ import android.media.MediaPlayer;
 
 import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseApplication;
-import com.quanjiakan.activity.base.ICommonData;
+import com.quanjiakan.constants.ICommonData;
 import com.quanjiakan.db.entity.MircoChatRecordEntity;
 import com.quanjiakan.db.entity.MircoChatUnreadNumberRecordEntity;
 import com.quanjiakan.db.manager.DaoManager;

@@ -16,14 +16,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
-import com.quanjiakan.activity.base.ICommonActivityRequestCode;
+import com.quanjiakan.constants.ICommonActivityRequestCode;
 import com.quanjiakan.activity.common.web.CommonWebForBindChildActivity;
 import com.quanjiakan.activity.common.web.CommonWebForBindOldActivity;
 import com.quanjiakan.constants.IParamsIntValue;
@@ -864,10 +863,10 @@ public class BindStepTwoActivity extends BaseActivity {
                     CommonDialogHint.getInstance().showHint(this, getString(R.string.hint_bind_step_two_success), new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-//                    Intent intent = new Intent(this, DevicesBindStateActivity.class);
-//                    intent.putExtra(BaseConstants.PARAMS_STATE, DevicesBindStateActivity.WAIT);
-//                    intent.putExtra(BaseConstants.PARAMS_ID, imeiString);
-//                    startActivityForResult(intent,ICommonActivityRequestCode.BIND_STEP_TWO_RESULT);
+                            Intent intent = new Intent(BindStepTwoActivity.this, BindStateActivity.class);
+                            intent.putExtra(IParamsName.PARAMS_COMMON_BIND_STATE, BindStateActivity.WAIT);
+                            intent.putExtra(IParamsName.PARAMS_COMMON_IMEI, deviceInfo.getImei());
+                            startActivityForResult(intent,ICommonActivityRequestCode.BIND_STEP_TWO_RESULT);
                         }
                     });
                 } else if ("1".equals(res)) {
@@ -922,24 +921,31 @@ public class BindStepTwoActivity extends BaseActivity {
                     CommonDialogHint.getInstance().showHint(this, getString(R.string.hint_bind_step_two_admin), new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-//                    Intent intent = new Intent(DevicesBindStepTwoActivity.this, DevicesBindStateActivity.class);
-//                    intent.putExtra(BaseConstants.PARAMS_STATE, DevicesBindStateActivity.ACCESS);
-//                    intent.putExtra(BaseConstants.PARAMS_ID, imeiString);
-//                    startActivityForResult(intent,ICommonActivityRequestCode.BIND_STEP_TWO_RESULT);
+                            Intent intent = new Intent(BindStepTwoActivity.this, BindStateActivity.class);
+                            intent.putExtra(IParamsName.PARAMS_COMMON_BIND_STATE, BindStateActivity.ACCESS);
+                            intent.putExtra(IParamsName.PARAMS_COMMON_IMEI, deviceInfo.getImei());
+                            startActivityForResult(intent,ICommonActivityRequestCode.BIND_STEP_TWO_RESULT);
                         }
                     });
-                } else if ("6".equals(res)) {//第一个绑定
+                } else if ("6".equals(res)) {//拒绝
                     CommonDialogHint.getInstance().showHint(this, getString(R.string.hint_bind_step_two_unactive), new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-//                    Intent intent = new Intent(DevicesBindStepTwoActivity.this, DevicesBindStateActivity.class);
-//                    intent.putExtra(BaseConstants.PARAMS_STATE, DevicesBindStateActivity.ACCESS);
-//                    intent.putExtra(BaseConstants.PARAMS_ID, imeiString);
-//                    startActivityForResult(intent,ICommonActivityRequestCode.BIND_STEP_TWO_RESULT);
+                            Intent intent = new Intent(BindStepTwoActivity.this, BindStateActivity.class);
+                            intent.putExtra(IParamsName.PARAMS_COMMON_BIND_STATE, BindStateActivity.REJECT);
+                            intent.putExtra(IParamsName.PARAMS_COMMON_IMEI, deviceInfo.getImei());
+                            startActivityForResult(intent,ICommonActivityRequestCode.BIND_STEP_TWO_RESULT);
                         }
                     });
                 } else {
+                    CommonDialogHint.getInstance().showHint(this, getString(R.string.hint_bind_step_two_unknown_state_code)+res+
+                                    getString(R.string.hint_bind_step_two_unknown_state_code_2)
+                            , new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
 
+                        }
+                    });
                 }
                 break;
             }

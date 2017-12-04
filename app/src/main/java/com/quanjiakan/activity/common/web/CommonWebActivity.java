@@ -23,7 +23,7 @@ import android.widget.TextView;
 
 import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseActivity;
-import com.quanjiakan.activity.base.ICommonData;
+import com.quanjiakan.constants.ICommonData;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.util.common.NetTypeCheckUtil;
 import com.quanjiakan.util.dialog.CommonDialogHint;

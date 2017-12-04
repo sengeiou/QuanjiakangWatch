@@ -17,22 +17,23 @@ import android.widget.TextView;
 import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
-import com.quanjiakan.activity.base.ICommonActivityRequestCode;
-import com.quanjiakan.activity.base.ICommonData;
+import com.quanjiakan.constants.ICommonActivityRequestCode;
+import com.quanjiakan.constants.ICommonActivityResultCode;
+import com.quanjiakan.constants.ICommonData;
 import com.quanjiakan.activity.base.ISetFragmentBeforeShow;
-import com.quanjiakan.activity.common.image.ImageViewerActivity;
 import com.quanjiakan.activity.common.index.bind.BindStepOneActivity;
 import com.quanjiakan.activity.common.index.healthinquiry.HealthInquiryCreateProblemActivity;
 import com.quanjiakan.activity.common.index.housekeeper.HouseKeeperListActivity;
 import com.quanjiakan.activity.common.main.fragment.MainMapFragment;
 import com.quanjiakan.activity.common.main.fragment.MessageListFragment;
 import com.quanjiakan.activity.common.main.fragment.SettingFragment;
-import com.quanjiakan.constants.IActivityRequestValue;
+import com.quanjiakan.activity.common.web.CommonWebForBindChildActivity;
 import com.quanjiakan.constants.IParamsIntValue;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.device.entity.CommonNattyData;
 import com.quanjiakan.view.SlidingMenu;
 import com.umeng.analytics.MobclickAgent;
+import com.wbj.ndk.natty.client.NattyProtocolFilter;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -208,10 +209,34 @@ public class MainActivity extends BaseActivity {
 
                 break;
             }
+            case IParamsIntValue.COMMON_MAIN_TYPE_SHOW_FRESH_LIST: {
+                //TODO 刷新List
+                refreshList();
+                break;
+            }
             default: {
                 //TODO 暂未录入的类型，不进行处理
 
                 break;
+            }
+        }
+    }
+
+    public void refreshList(){
+        if (currentFragment == ICommonData.MAIN_TAB_ITEM_MAIN) {
+            fragmentMain.setDefaultValue();
+        }else{
+            setCurrentTabItem(ICommonData.MAIN_TAB_ITEM_MAIN);
+            fragmentMain.setDefaultValue();
+        }
+    }
+
+    public void refreshListData(){
+        if (currentFragment == ICommonData.MAIN_TAB_ITEM_MAIN) {
+            fragmentMain.setDefaultValue();
+        }else{
+            if(fragmentMain!=null){
+                fragmentMain.setDefaultValue();
             }
         }
     }
@@ -576,7 +601,27 @@ public class MainActivity extends BaseActivity {
             return;
         }
         switch (result.getType()) {
-
+            case NattyProtocolFilter.DISPLAY_UPDATE_DATA_COMMON_BROADCAST:
+                //{"IMEI":"355637053077723","Category":"BindConfirmReq","Proposer":"","Answer":"Agree"}
+                //{"IMEI":"355637053077723","Category":"BindConfirmReq","Answer":"Agree"}
+                //{"IMEI":"355637053995130","Category": "BindConfirmReq","Proposer":"","Answer":"Agree"}}
+                //{"IMEI":"355637052788452","Category":"BindConfirmReq","Proposer":"18011935659","Answer":"Agree"}
+                String stringData = result.getData();
+                try{
+                    if(stringData!=null &&
+                            (       stringData.contains("BindConfirmReq") ||
+                                    stringData.contains("BindConfirm") ||
+                                    stringData.toLowerCase().contains("bindconfirmreq") ||
+                                    stringData.toLowerCase().contains("bindconfirm")  )
+                            ){
+                        if((stringData.contains("Agree") ||stringData.toLowerCase().contains("agree"))){
+                            refreshListData();
+                        }
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                break;
         }
     }
 
@@ -610,40 +655,50 @@ public class MainActivity extends BaseActivity {
     }
 
     public void testToImageViewer(){
-        Intent intent = new Intent(this, ImageViewerActivity.class);
-        // test url :  http://picture.quanjiakan.com:9080/quanjiakan/resources/housekeeper/20161109200708_v5wdnp.jpg
-        intent.putExtra(IParamsName.PARAMS_URL,"http://picture.quanjiakan.com:9080/quanjiakan/resources/housekeeper/20161109200708_v5wdnp.jpg");
-        startActivityForResult(intent, IActivityRequestValue.REQUEST_TO_IMAGE_VIEWER);
+//        Intent intent = new Intent(this, ImageViewerActivity.class);
+//        // test url :  http://picture.quanjiakan.com:9080/quanjiakan/resources/housekeeper/20161109200708_v5wdnp.jpg
+//        intent.putExtra(IParamsName.PARAMS_URL,"http://picture.quanjiakan.com:9080/quanjiakan/resources/housekeeper/20161109200708_v5wdnp.jpg");
+//        startActivityForResult(intent, ICommonActivityRequestCode.REQUEST_TO_IMAGE_VIEWER);
     }
 
     public void toHealthConsult(){
+        //TODO 健康咨询
         Intent intent = new Intent(this, HealthInquiryCreateProblemActivity.class);
-        startActivityForResult(intent,IActivityRequestValue.REQUEST_TO_HEALTH_CONSULT);
+        startActivityForResult(intent,ICommonActivityRequestCode.REQUEST_TO_HEALTH_CONSULT);
     }
 
     public void toHouseKeeper(){
+        //TODO 家政
         Intent intent = new Intent(this, HouseKeeperListActivity.class);
-        startActivityForResult(intent,IActivityRequestValue.REQUEST_TO_HOUSE_KEEPER);
+        startActivityForResult(intent,ICommonActivityRequestCode.REQUEST_TO_HOUSE_KEEPER);
     }
 
     public void toRefferal(){
-        Intent intent = new Intent(this, HouseKeeperListActivity.class);
-        startActivityForResult(intent,IActivityRequestValue.REQUEST_TO_REFERRAL);
+        //TODO 咨询转介
+//        Intent intent = new Intent(this, HouseKeeperListActivity.class);
+//        startActivityForResult(intent,ICommonActivityRequestCode.REQUEST_TO_REFERRAL);
     }
 
     public void toMiss(){
-        Intent intent = new Intent(this, HouseKeeperListActivity.class);
-        startActivityForResult(intent,IActivityRequestValue.REQUEST_TO_MISS);
+        //TODO 防走失
+//        Intent intent = new Intent(this, HouseKeeperListActivity.class);
+//        startActivityForResult(intent,ICommonActivityRequestCode.REQUEST_TO_MISS);
     }
 
     public void toBabyGoHome(){
-        Intent intent = new Intent(this, HouseKeeperListActivity.class);
-        startActivityForResult(intent,IActivityRequestValue.REQUEST_TO_BABY_GO_HOME);
+        // TODO 宝贝回家
+        Intent intent = new Intent(this, CommonWebForBindChildActivity.class);
+        intent.putExtra(IParamsName.PARAMS_COMMON_WEB_URL,"http://www.baobeihuijia.com/");
+        intent.putExtra(IParamsName.PARAMS_COMMON_WEB_TITLE,getString(R.string.web_baby_go_home));
+        startActivityForResult(intent, ICommonActivityRequestCode.REQUEST_TO_BABY_GO_HOME);
     }
 
     public void toMall(){
-        Intent intent = new Intent(this, HouseKeeperListActivity.class);
-        startActivityForResult(intent,IActivityRequestValue.REQUEST_TO_MALL);
+        //TODO 商城
+        Intent intent = new Intent(this, CommonWebForBindChildActivity.class);
+        intent.putExtra(IParamsName.PARAMS_COMMON_WEB_URL,"http://www.quanjiakan.net/");
+        intent.putExtra(IParamsName.PARAMS_COMMON_WEB_TITLE,getString(R.string.web_shop));
+        startActivityForResult(intent, ICommonActivityResultCode.REQUEST_TO_MALL);
     }
 
     /**
@@ -653,31 +708,33 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode){
-            case IActivityRequestValue.REQUEST_TO_IMAGE_VIEWER: {
+            case ICommonActivityRequestCode.REQUEST_TO_IMAGE_VIEWER: {
                 break;
             }
-            case IActivityRequestValue.REQUEST_TO_HEALTH_CONSULT: {
+            case ICommonActivityRequestCode.REQUEST_TO_HEALTH_CONSULT: {
                 break;
             }
-            case IActivityRequestValue.REQUEST_TO_HOUSE_KEEPER: {
+            case ICommonActivityRequestCode.REQUEST_TO_HOUSE_KEEPER: {
                 break;
             }
-            case IActivityRequestValue.REQUEST_TO_REFERRAL: {
+            case ICommonActivityRequestCode.REQUEST_TO_REFERRAL: {
                 break;
             }
-            case IActivityRequestValue.REQUEST_TO_MISS: {
+            case ICommonActivityRequestCode.REQUEST_TO_MISS: {
                 break;
             }
-            case IActivityRequestValue.REQUEST_TO_BABY_GO_HOME: {
+            case ICommonActivityRequestCode.REQUEST_TO_BABY_GO_HOME: {
                 break;
             }
-            case IActivityRequestValue.REQUEST_TO_MALL: {
+            case ICommonActivityRequestCode.REQUEST_TO_MALL: {
                 break;
             }
         }
         closeSlidemenu();
     }
-
+    /**
+     * *****************************************************************************************************************************
+     */
     @OnClick({R.id.main_tab_item_main, R.id.main_tab_item_msg, R.id.main_tab_item_setting,
             R.id.hint, R.id.inquiry, R.id.housekeeper,
             R.id.old_care, R.id.child_missing, R.id.go_home,
@@ -690,7 +747,6 @@ public class MainActivity extends BaseActivity {
 //                if(currentFragment==ICommonData.MAIN_TAB_ITEM_MAIN){
 //                    fragmentMain.getBindWatchListFromNet();
 //                }
-                testToImageViewer();
 
                 break;
             }

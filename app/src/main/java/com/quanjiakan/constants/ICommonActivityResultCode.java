@@ -1,22 +1,21 @@
-package com.quanjiakan.activity.base;
+package com.quanjiakan.constants;
 
 /**
  * Created by Administrator on 2017/10/21.
  */
 
-public interface ICommonActivityRequestCode {
+public interface ICommonActivityResultCode {
     int MAP_TO_DEVICE_OLD = 1;
     int MAP_TO_DEVICE_CHILD = 2;
 
-    int BACK_TO_MAIN = 1000;
 
+    int BACK_TO_MAIN = 1000;
     int RELOAD_DATA = 1001;
     int HEALTH_INQUIRY_CREATE_PATIENT_INFO = 1002;
     int HEALTH_INQUIRY_EDIT_PATIENT_INFO = 1003;
 
     int BIND_STEP_TWO_NET_3 = 1004;
     int BIND_STEP_TWO_NET_4 = 1005;
-    int BIND_STEP_TWO_RESULT = 1006;
 
     int REQUEST_CODE_CAPTURE_CAMEIA = 2001;
     int REQUEST_CROP = 6709;
@@ -24,4 +23,13 @@ public interface ICommonActivityRequestCode {
 
     int REQUEST_SCAN = 2002;
 
+
+    int REQUEST_TO_IMAGE_VIEWER = 10001;
+    int REQUEST_TO_WEB = 10002;
+    int REQUEST_TO_HEALTH_CONSULT = 10011;
+    int REQUEST_TO_HOUSE_KEEPER = 10012;
+    int REQUEST_TO_REFERRAL = 10013;
+    int REQUEST_TO_MISS = 10014;
+    int REQUEST_TO_BABY_GO_HOME = 10015;
+    int REQUEST_TO_MALL = 10016;
 }

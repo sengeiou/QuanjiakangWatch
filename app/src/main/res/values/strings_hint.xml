@@ -173,12 +173,25 @@
     <string name="hint_bind_step_two_no_imei">设备ID不存在!</string>
     <string name="hint_bind_step_two_no_user">用户ID不存在!</string>
     <string name="hint_bind_step_two_unactive">设备未激活!</string>
+    <string name="hint_bind_step_two_unknown_state_code">收到未定义的状态码： </string>
+    <string name="hint_bind_step_two_unknown_state_code_2"> ,请通知服务人员!</string>
 
     <string name="hint_bind_step_two_success">绑定申请发送成功!</string>
     <string name="hint_bind_step_two_admin">设备绑定成功,您已成为管理员!</string>
 
 
+    <string name="hint_bind_state_title_wait">等待审核</string>
+    <string name="hint_bind_state_title_success">审核通过</string>
 
+    <string name="hint_bind_state_hint_wait">稍等片刻</string>
+    <string name="hint_bind_state_hint_success">恭喜,您的申请已通过!</string>
+    <string name="hint_bind_state_hint_fail">很遗憾,您的申请被管理员拒绝</string>
+    <string name="hint_bind_state_hint_net_error">网络无法连接</string>
+
+    <string name="hint_bind_state_result_wait">您的申请已发送,请等待管理员审核确认!</string>
+    <string name="hint_bind_state_result_success">点击进入</string>
+    <string name="hint_bind_state_result_fail">点击屏幕重试</string>
+    <string name="hint_bind_state_result_net_error">重新申请</string>
 
 
 </resources>

@@ -95,6 +95,12 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
+        <activity
+            android:name="com.quanjiakan.activity.common.index.bind.BindStateActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
 
         <activity
             android:name="com.quanjiakan.activity.common.index.devices.WatchEntryActivity_child"

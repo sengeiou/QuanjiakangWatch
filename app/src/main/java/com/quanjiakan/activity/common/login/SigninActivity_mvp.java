@@ -285,7 +285,7 @@ public class SigninActivity_mvp extends BaseActivity {
         entity.setLoginPhone(getUsername());//保存登录使用的电话，在收到发给自己的广播时进行判断使用
         entity.setPasswordDigest(MessageDigestUtil.getSHA1String(getPassword()));//保存密码的签名
         //TODO 服务器返回的数据
-        entity.setNickName(res.getObject().getNickname());
+        entity.setNickName((res.getObject().getNickname()==null ? "":res.getObject().getNickname()));
         entity.setUserId(res.getObject().getId()+"");
         entity.setToken(res.getObject().getToken());
         //TODO 保存或替换当前用户数据

@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
-import com.quanjiakan.activity.base.ICommonSharePreferencesKey;
+import com.quanjiakan.constants.ICommonSharePreferencesKey;
 import com.quanjiakan.activity.common.login.SigninActivity_mvp;
 import com.quanjiakan.activity.common.main.MainActivity;
 import com.umeng.analytics.MobclickAgent;

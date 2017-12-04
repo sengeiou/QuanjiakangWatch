@@ -14,7 +14,7 @@ import android.provider.MediaStore;
 import android.widget.ImageView;
 
 import com.quanjiakan.activity.base.BaseApplication;
-import com.quanjiakan.activity.base.ICommonActivityRequestCode;
+import com.quanjiakan.constants.ICommonActivityRequestCode;
 import com.quanjiakan.util.widget.CircleTransformation;
 import com.soundcloud.android.crop.Crop;
 import com.squareup.picasso.Picasso;
