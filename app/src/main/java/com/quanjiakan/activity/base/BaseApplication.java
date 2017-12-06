@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.support.multidex.MultiDexApplication;
 
 import com.quanjiakan.activity.common.login.SigninActivity_mvp;
+import com.quanjiakan.activity.common.main.MainActivity;
+import com.quanjiakan.constants.ICommonActivityRequestCode;
 import com.quanjiakan.db.entity.LoginUserInfoEntity;
 import com.quanjiakan.db.manager.DaoManager;
 import com.quanjiakan.service.DevicesService;
@@ -39,6 +41,8 @@ public class BaseApplication extends MultiDexApplication {
         return instances;
     }
 
+    private MainActivity mainActivity;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -52,6 +56,10 @@ public class BaseApplication extends MultiDexApplication {
         initDB();
         // TODO 初始化线程
         initThreadPool();
+    }
+
+    public void setMainActivity(MainActivity mainActivity) {
+        this.mainActivity = mainActivity;
     }
 
     /**
@@ -237,8 +245,13 @@ public class BaseApplication extends MultiDexApplication {
     public void onLogout(BaseActivity context){
         //TODO 退出到登录界面-----
         Intent intent = new Intent(context, SigninActivity_mvp.class);
-        context.startActivity(intent);
+        context.startActivityForResult(intent, ICommonActivityRequestCode.TO_SIGN_IN);
         context.finish();
+
+        if(mainActivity!=null){
+            mainActivity.finish();
+            mainActivity = null;
+        }
 
         //TODO 释放发送通知占用的资源（如果登录前不需要发送通知的话）
         NotificationUtil.getInstances(this).release();
@@ -250,8 +263,6 @@ public class BaseApplication extends MultiDexApplication {
 
         //TODO 关闭SDK的连接
         stopSDK(context);
-
-
     }
 
     //TODO 登录信息 获取

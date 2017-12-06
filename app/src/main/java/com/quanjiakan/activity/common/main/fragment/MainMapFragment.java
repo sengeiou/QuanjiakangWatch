@@ -65,7 +65,7 @@ import com.quanjiakan.net_presenter.IPresenterBusinessCode;
 import com.quanjiakan.util.common.StringCheckUtil;
 import com.quanjiakan.util.common.UnitExchangeUtil;
 import com.quanjiakan.util.dialog.CommonDialogHint;
-import com.quanjiakan.util.dialog.QuanjiakanDialog;
+import com.quanjiakan.util.dialog.CommonDialog;
 import com.quanjiakan.util.map.MapUtil;
 import com.quanjiakan.util.map.NaviMapUtil;
 import com.umeng.analytics.MobclickAgent;
@@ -531,7 +531,7 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
 
     public void openGudieDialog(final LatLng latLng) {
 
-        final Dialog selectNaviDialog = QuanjiakanDialog.getInstance().getCardDialog(getActivity());
+        final Dialog selectNaviDialog = CommonDialog.getInstance().getCardDialog(getActivity());
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_select_navimap, null);
 
         //判断是否安装高德地图,处理点击事件
@@ -715,7 +715,6 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
     public void showMyDialog(int type) {
         switch (type) {
             case IPresenterBusinessCode.DEVICE_WATCH_LIST: {
-                ((MainActivity) getActivity()).getDialog(getActivity());
                 break;
             }
         }
@@ -725,7 +724,6 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
     public void dismissMyDialog(int type) {
         switch (type) {
             case IPresenterBusinessCode.DEVICE_WATCH_LIST: {
-                ((MainActivity) getActivity()).dismissDialog();
                 break;
             }
         }
@@ -831,6 +829,12 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
             if(noBindDialog!=null){
                 noBindDialog.dismiss();
             }
+        }
+    }
+
+    public void dimissNoBindDialog(){
+        if(noBindDialog!=null && noBindDialog.isShowing()){
+            noBindDialog.dismiss();
         }
     }
 

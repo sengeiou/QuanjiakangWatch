@@ -128,6 +128,7 @@
     <string name="setting_entry_my_reserve">我的预约</string>
     <string name="setting_entry_my_consult">我的咨询</string>
     <string name="setting_entry_my_insure">我的保险</string>
+    <string name="setting_entry_my_housekeeper">我的家政</string>
     <string name="setting_entry_bind_devices">绑定设备</string>
     <string name="setting_entry_volunteer">义工消息</string>
     <string name="setting_entry_missing">寻人启事</string>

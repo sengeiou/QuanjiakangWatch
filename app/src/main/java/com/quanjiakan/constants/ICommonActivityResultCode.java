@@ -8,7 +8,7 @@ public interface ICommonActivityResultCode {
     int MAP_TO_DEVICE_OLD = 1;
     int MAP_TO_DEVICE_CHILD = 2;
 
-
+    int TO_SIGN_IN = 999;
     int BACK_TO_MAIN = 1000;
     int RELOAD_DATA = 1001;
     int HEALTH_INQUIRY_CREATE_PATIENT_INFO = 1002;
@@ -32,4 +32,8 @@ public interface ICommonActivityResultCode {
     int REQUEST_TO_MISS = 10014;
     int REQUEST_TO_BABY_GO_HOME = 10015;
     int REQUEST_TO_MALL = 10016;
+
+    int REQUEST_TO_IMPROVE_USER_INFO = 1010;
+    int REQUEST_TO_MODIFY_PASSWORD = 1011;
+    int REQUEST_TO_FEEDBACK = 1012;
 }

@@ -50,6 +50,10 @@ public interface IPresenterBusinessCode {
 
     int DEVICE_GET_WATCH_CONTACT = 30306;
 
+    int COMMON_UPDATE_APP = 30307;
+
+    int COMMON_USERINFO = 30308;
+
     //*******************************************************************************
     int ALI_PAY = 31100;
     int ALI_PAY_VERIFY_RESULT = 31101;

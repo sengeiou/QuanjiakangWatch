@@ -139,5 +139,13 @@
     <string name="login">登录</string>
 
 
+    <string name="setting_more_title">更多设置</string>
+    <string name="setting_improve_user_info">完善资料</string>
+    <string name="setting_modify_password">修改密码</string>
+    <string name="setting_feedback">用户反馈</string>
+    <string name="setting_version">当前版本</string>
+    <string name="setting_disturb">消息免打扰</string>
+    <string name="setting_update_check">检查更新</string>
+
 </resources>
 

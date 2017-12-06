@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.reflect.TypeToken;
 import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
@@ -31,12 +32,22 @@ import com.quanjiakan.activity.common.web.CommonWebForBindChildActivity;
 import com.quanjiakan.constants.IParamsIntValue;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.device.entity.CommonNattyData;
+import com.quanjiakan.net.retrofit.result_entity.GetUpdateEntity;
+import com.quanjiakan.net_presenter.IPresenterBusinessCode;
+import com.quanjiakan.net_presenter.UpdatePresenter;
+import com.quanjiakan.util.common.SerializeToObjectUtil;
+import com.quanjiakan.util.common.VersionInfoUtil;
+import com.quanjiakan.util.dialog.CommonDialogHint;
+import com.quanjiakan.util.dialog.update.CommonDownloadDialog;
+import com.quanjiakan.util.download.IDownloadCallback;
 import com.quanjiakan.view.SlidingMenu;
 import com.umeng.analytics.MobclickAgent;
 import com.wbj.ndk.natty.client.NattyProtocolFilter;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -93,7 +104,6 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.menu_text)
     TextView menuText;
 
-
     /**
      */
     private Handler mHandler = new Handler();
@@ -115,10 +125,11 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.layout_main);
         ButterKnife.bind(this);
 
-
         initView();
 
         startNattySDK();
+
+        BaseApplication.getInstances().setMainActivity(this);
     }
 
     public void startNattySDK(){
@@ -500,7 +511,7 @@ public class MainActivity extends BaseActivity {
                 break;
             }
             case ICommonData.MAIN_TAB_ITEM_SETTING: {
-                ibtnBack.setVisibility(View.VISIBLE);
+                ibtnBack.setVisibility(View.GONE);
                 ibtnBack.setImageResource(R.drawable.main_map_menu_item_left);
 
                 tvTitle.setVisibility(View.VISIBLE);
@@ -564,6 +575,9 @@ public class MainActivity extends BaseActivity {
         setCurrentTabItem(ICommonData.MAIN_TAB_ITEM_MAIN);
 
         initSlideMenu();
+        //TODO 检查更新
+        presenter = new UpdatePresenter();
+        checkUpdate();
     }
 
     public void initSlideMenu() {
@@ -819,6 +833,89 @@ public class MainActivity extends BaseActivity {
 
     /**
      * *****************************************************************************************************************************
+     * 更新版本
      */
 
+    private UpdatePresenter presenter;
+
+    public void checkUpdate(){
+        presenter.checkUpdate(this);
+    }
+
+    @Override
+    public Object getParamter(int type) {
+        switch (type){
+            case IPresenterBusinessCode.COMMON_UPDATE_APP:{
+                HashMap<String,String> params = new HashMap<>();
+                params.put(IParamsName.PARAMS_COMMON_TOKEN,BaseApplication.getInstances().getLoginInfo().getToken());
+                return params;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void showMyDialog(int type) {
+        switch (type){
+            case IPresenterBusinessCode.COMMON_UPDATE_APP:{
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void dismissMyDialog(int type) {
+        switch (type){
+            case IPresenterBusinessCode.COMMON_UPDATE_APP:{
+
+                break;
+            }
+        }
+        dismissDialog();
+    }
+
+    @Override
+    public void onSuccess(int type, int httpResponseCode, Object result) {
+        switch (type){
+            case IPresenterBusinessCode.COMMON_UPDATE_APP:{
+                setUpdateResult(result);
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void onError(int type, int httpResponseCode, Object errorMsg) {
+        switch (type){
+            case IPresenterBusinessCode.COMMON_UPDATE_APP:{
+
+                break;
+            }
+        }
+        if(errorMsg!=null && errorMsg.toString().length()>0){
+            CommonDialogHint.getInstance().showHint(this,errorMsg.toString());
+        }else{
+            CommonDialogHint.getInstance().showHint(this,getString(R.string.error_common_net_request_fail));
+        }
+    }
+
+    public void setUpdateResult(Object result){
+        if(result!=null && result instanceof String){
+            final GetUpdateEntity entity = (GetUpdateEntity) SerializeToObjectUtil.getInstances().jsonToObject(result.toString(),new TypeToken<GetUpdateEntity>(){}.getType());
+            //TODO 避免由于接口访问慢，导致中间突然显示了未绑定对话框
+            if(entity.getObject().getVersionCode() > VersionInfoUtil.getVersionCodeInt(this)){
+                fragmentMain.dimissNoBindDialog();
+            }
+            CommonDownloadDialog.getInstance().showUpdateDialog(this, entity.getObject(), new IDownloadCallback() {
+                @Override
+                public void updateProgress(int progress, String rate) {
+                    //TODO 避免由于接口访问慢，导致中间突然显示了未绑定对话框
+                    if(entity.getObject().getVersionCode() > VersionInfoUtil.getVersionCodeInt(MainActivity.this)){
+                        fragmentMain.dimissNoBindDialog();
+                    }
+                    CommonDownloadDialog.getInstance().updateProgress(progress,rate);
+                }
+            });
+        }
+    }
 }

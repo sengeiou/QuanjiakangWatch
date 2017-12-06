@@ -4,4 +4,251 @@
     android:layout_height="fill_parent"
     android:background="@color/main_bg_color"
     android:orientation="vertical" >
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title"
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <!--  背景图需要变更
+            -->
+            <LinearLayout
+                android:id="@+id/layout_myinfo"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/height_180"
+                android:orientation="vertical"
+                android:background="@drawable/my_bg"
+                >
+                <ImageView
+                    android:id="@+id/user_header_img"
+                    android:layout_width="@dimen/height_65"
+                    android:layout_height="@dimen/height_65"
+                    android:src="@drawable/touxiang_big_icon"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/margin_10"
+                    />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/size_7"
+                    android:layout_marginBottom="@dimen/size_5"
+                    android:layout_gravity="center_horizontal"
+                    android:orientation="horizontal"
+                    >
+                    <TextView
+                        android:id="@+id/user_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="用户名"
+                        android:textColor="@color/white"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginRight="@dimen/margin_5"
+                        />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/layout_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/layout_myinfo"
+                android:orientation="vertical"
+                android:visibility="gone"
+                >
+
+                <!--android:drawableLeft="@drawable/ic_shop_cart"-->
+                <TextView
+                    android:id="@+id/tv_medcine"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/font_16"
+                    android:textColor="@color/hei222"
+                    android:paddingTop="@dimen/size_15"
+                    android:paddingBottom="@dimen/size_15"
+                    android:paddingLeft="@dimen/size_15"
+                    android:text="@string/setting_entry_my_orders"
+                    android:gravity="center_vertical"
+                    />
+
+                <View
+                    android:id="@+id/tv_fenge"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/size_1"
+                    android:background="@color/font_color_EEEEEE"
+                    android:layout_marginLeft="@dimen/margin_10"
+                    android:layout_marginRight="@dimen/margin_10"
+                    />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="@dimen/margin_20"
+                    android:layout_marginTop="@dimen/margin_10"
+                    >
+
+
+                    <LinearLayout
+                        android:id="@+id/ll_housekeeper"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal"
+                        >
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/order_homemaking_grey"
+                            android:layout_marginLeft="@dimen/margin_10"
+                            android:layout_marginRight="@dimen/margin_10"
+                            android:id="@+id/imageView" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="我的家政"
+                            />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/ll_insure"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal"
+                        >
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/order_insurance_grey"
+                            android:layout_marginLeft="@dimen/margin_10"
+                            android:layout_marginRight="@dimen/margin_10"
+                            />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="我的保单"
+                            />
+                    </LinearLayout>
+                </LinearLayout>
+                <!--android:drawableLeft="@drawable/ic_order"-->
+                <View
+                    android:id="@+id/tv_div"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/size_1"
+                    android:background="@color/font_color_EEEEEE"
+                    android:layout_marginLeft="@dimen/margin_10"
+                    android:layout_marginRight="@dimen/margin_10"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@+id/layout_1"
+                android:layout_marginBottom="@dimen/margin_20"
+                >
+                <!-- *************************************************************** -->
+                <TextView
+                    android:id="@+id/tv_house_keeper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/font_medium"
+                    android:textColor="@color/hei222"
+                    android:paddingTop="@dimen/size_15"
+                    android:paddingBottom="@dimen/size_15"
+                    android:paddingLeft="@dimen/size_15"
+                    android:text="@string/setting_entry_my_housekeeper"
+                    android:gravity="center_vertical"
+                    android:drawableRight="@drawable/setting_arrow"
+                    android:paddingRight="@dimen/margin_20"
+                    />
+
+                <View
+                    android:id="@+id/tv_house_keeper_div"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/size_1"
+                    android:background="@color/font_color_EEEEEE"
+                    android:layout_marginLeft="@dimen/margin_10"
+                    android:layout_marginRight="@dimen/margin_10"
+                    />
+                <!-- *************************************************************** -->
+                <TextView
+                    android:id="@+id/tv_health_document"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/font_medium"
+                    android:textColor="@color/hei222"
+                    android:paddingTop="@dimen/size_15"
+                    android:paddingBottom="@dimen/size_15"
+                    android:paddingLeft="@dimen/size_15"
+                    android:text="@string/setting_entry_health"
+                    android:gravity="center_vertical"
+                    android:drawableRight="@drawable/setting_arrow"
+                    android:paddingRight="@dimen/margin_20"
+                    />
+
+
+                <View
+                    android:id="@+id/tv_health_document_div"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/size_1"
+                    android:background="@color/font_color_EEEEEE"
+                    android:layout_marginLeft="@dimen/margin_10"
+                    android:layout_marginRight="@dimen/margin_10"
+                    />
+                <!-- *************************************************************** -->
+                <!--android:drawableLeft="@drawable/ic_about_us"
+                android:drawablePadding="6dp"-->
+                <TextView
+                    android:id="@+id/tv_aboutus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/font_medium"
+                    android:textColor="@color/hei222"
+                    android:text="@string/setting_entry_about_us"
+                    android:paddingTop="@dimen/size_15"
+                    android:paddingBottom="@dimen/size_15"
+                    android:paddingLeft="@dimen/size_15"
+                    android:gravity="center_vertical"
+                    android:drawableRight="@drawable/setting_arrow"
+                    android:paddingRight="@dimen/margin_20"
+                    />
+
+                <View
+                    android:id="@+id/tv_aboutus_div"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/size_1"
+                    android:background="@color/font_color_EEEEEE"
+                    android:layout_marginLeft="@dimen/margin_10"
+                    android:layout_marginRight="@dimen/margin_10"
+                    />
+                <!-- *************************************************************** -->
+                <!--android:drawableLeft="@drawable/ic_setting"-->
+                <TextView
+                    android:id="@+id/tv_setting"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/font_medium"
+                    android:textColor="@color/hei222"
+                    android:text="@string/setting_entry_more"
+                    android:paddingTop="@dimen/size_15"
+                    android:paddingBottom="@dimen/size_15"
+                    android:paddingLeft="@dimen/size_15"
+                    android:gravity="center_vertical"
+                    android:drawableRight="@drawable/setting_arrow"
+                    android:paddingRight="@dimen/margin_20"
+                    />
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
 </RelativeLayout>

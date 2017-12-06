@@ -25,19 +25,19 @@ import com.quanjiakan.util.common.UnitExchangeUtil;
 
 import java.util.List;
 
-public class QuanjiakanDialog {
+public class CommonDialog {
 	
-	private static QuanjiakanDialog instance;
+	private static CommonDialog instance;
 	private View dialogView;
 
-	public static QuanjiakanDialog getInstance() {
+	public static CommonDialog getInstance() {
 		if (instance == null) {
-			instance = new QuanjiakanDialog();
+			instance = new CommonDialog();
 		}
 		return instance;
 	}
 
-	private QuanjiakanDialog() {
+	private CommonDialog() {
 
 	}
 
