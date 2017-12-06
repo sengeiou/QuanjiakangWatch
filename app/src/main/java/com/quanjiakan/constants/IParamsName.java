@@ -96,4 +96,7 @@ public interface IParamsName {
     String PARAMS_HEALTH_INQUIRY_STAR = "star";
     String PARAMS_HEALTH_INQUIRY_CONTENT = "content";
 
+    String PARAMS_MODIFY_NAME = "nickname";
+    String PARAMS_MODIFY_HEAD_ICON = "icon";
+
 }

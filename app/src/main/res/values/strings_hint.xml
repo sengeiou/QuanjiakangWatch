@@ -12,6 +12,9 @@
     <string name="hint_common_submit_file_voice">正在上传语音...</string>
     <string name="hint_common_submit_data_fail">提交失败,请重试!</string>
 
+    <string name="hint_common_update_success">更新信息成功</string>
+
+
     <string name="hint_common_submit_upload_fail">文件上传失败,请稍后重试!</string>
 
 

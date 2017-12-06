@@ -13,7 +13,7 @@ import com.google.gson.reflect.TypeToken;
 import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
-import com.quanjiakan.activity.common.main.MainActivity;
+import com.quanjiakan.activity.common.setting.more.improveinfo.ImproveUserInfoActivity;
 import com.quanjiakan.constants.ICommonActivityRequestCode;
 import com.quanjiakan.constants.ICommonActivityResultCode;
 import com.quanjiakan.constants.IParamsName;
@@ -156,8 +156,8 @@ public class SettingMoreActivity extends BaseActivity {
     }
 
     public void toImproveUserInfo(){
-//        Intent intent = new Intent(this, MainActivity.class);
-//        startActivityForResult(intent,ICommonActivityRequestCode.REQUEST_TO_IMPROVE_USER_INFO);
+        Intent intent = new Intent(this, ImproveUserInfoActivity.class);
+        startActivityForResult(intent,ICommonActivityRequestCode.REQUEST_TO_IMPROVE_USER_INFO);
     }
 
     public void toModifyPassword(){
@@ -284,7 +284,9 @@ public class SettingMoreActivity extends BaseActivity {
         switch (requestCode){
             case ICommonActivityRequestCode.REQUEST_TO_IMPROVE_USER_INFO:{
                 //TODO 若更新了用户的信息，则需要通知上一个页面，刷新或用户的新信息
-                setResult(ICommonActivityResultCode.REQUEST_TO_IMPROVE_USER_INFO);
+                if(resultCode == ICommonActivityResultCode.REQUEST_TO_IMPROVE_USER_INFO){
+                    setResult(ICommonActivityResultCode.REQUEST_TO_IMPROVE_USER_INFO);
+                }
                 break;
             }
             case ICommonActivityRequestCode.REQUEST_TO_MODIFY_PASSWORD:{

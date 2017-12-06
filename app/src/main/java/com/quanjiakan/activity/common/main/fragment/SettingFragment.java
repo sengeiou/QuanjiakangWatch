@@ -150,7 +150,13 @@ public class SettingFragment extends BaseFragment {
 
     public void setViewValue(){
         userHeaderImg.setImageResource(R.drawable.touxiang_big_icon);
-        userName.setText(R.string.jmui_username);
+
+        if(BaseApplication.getInstances().getLoginInfo().getNickName()!=null){
+            userName.setText(BaseApplication.getInstances().getLoginInfo().getNickName());
+        }else{
+            userName.setText(R.string.jmui_username);
+        }
+
 
         tvHouseKeeper.setText(R.string.setting_entry_my_housekeeper);
         tvHealthDocument.setText(R.string.setting_entry_health);
@@ -209,15 +215,32 @@ public class SettingFragment extends BaseFragment {
             if(entity!=null){
                 if(entity.getObject()!=null){
                     if(entity.getObject().getNickname()!=null){
+                        if(BaseApplication.getInstances().getLoginInfo().getNickName().equals(entity.getObject().getNickname())){
+
+                        }else{
+                            //entity.getObject().getNickname()
+                            BaseApplication.getInstances().getLoginInfo().setNickName(entity.getObject().getNickname());
+                        }
                         userName.setText(entity.getObject().getNickname());
                     }else{
-                        userName.setText(BaseApplication.getInstances().getLoginInfo().getUserId());
+                        if(BaseApplication.getInstances().getLoginInfo().getNickName()!=null){
+                            userName.setText(BaseApplication.getInstances().getLoginInfo().getNickName());
+                        }else{
+                            userName.setText(BaseApplication.getInstances().getLoginInfo().getUserId());
+                        }
                     }
 
                     if(entity.getObject().getPicture()!=null && entity.getObject().getPicture().toLowerCase().startsWith("http")){
                         Picasso.with(getActivity()).load(entity.getObject().getPicture()).transform(new CircleTransformation()).into(userHeaderImg);
+                        BaseApplication.getInstances().getLoginInfo().setTempHeadIcon(entity.getObject().getPicture());
                     }else{
-                        userHeaderImg.setImageResource(R.drawable.touxiang_big_icon);
+                        if(BaseApplication.getInstances().getLoginInfo().getTempHeadIcon()!=null &&
+                                BaseApplication.getInstances().getLoginInfo().getTempHeadIcon().toLowerCase().startsWith("http")){
+                            Picasso.with(getActivity()).load(BaseApplication.getInstances().getLoginInfo().getTempHeadIcon()).
+                                    transform(new CircleTransformation()).into(userHeaderImg);
+                        }else{
+                            userHeaderImg.setImageResource(R.drawable.touxiang_big_icon);
+                        }
                     }
                 }
             }
@@ -233,12 +256,28 @@ public class SettingFragment extends BaseFragment {
             case ICommonActivityRequestCode.RELOAD_DATA:{
                 if(resultCode == ICommonActivityResultCode.REQUEST_TO_IMPROVE_USER_INFO){
                     //更新过个人信息，则重新获取用户头像，姓名数据
-                    presenter.getUserInfo(this);
+                    setLocalInfo();
                 }else if(resultCode == ICommonActivityResultCode.TO_SIGN_IN){
                     //TODO 关闭MainActivity
                     getActivity().finish();
                 }
             }
+        }
+    }
+
+    public void setLocalInfo(){
+        if(BaseApplication.getInstances().getLoginInfo().getNickName()!=null){
+            userName.setText(BaseApplication.getInstances().getLoginInfo().getNickName());
+        }else{
+            userName.setText(BaseApplication.getInstances().getLoginInfo().getUserId());
+        }
+
+        if(BaseApplication.getInstances().getLoginInfo().getTempHeadIcon()!=null &&
+                BaseApplication.getInstances().getLoginInfo().getTempHeadIcon().toLowerCase().startsWith("http")){
+            Picasso.with(getActivity()).load(BaseApplication.getInstances().getLoginInfo().getTempHeadIcon()).
+                    transform(new CircleTransformation()).into(userHeaderImg);
+        }else{
+            userHeaderImg.setImageResource(R.drawable.touxiang_big_icon);
         }
     }
 

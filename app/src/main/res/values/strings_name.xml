@@ -147,5 +147,22 @@
     <string name="setting_disturb">消息免打扰</string>
     <string name="setting_update_check">检查更新</string>
 
+    <string name="setting_improve_user_info_title">修改</string>
+    <string name="setting_improve_user_info_head_icon_name">修改头像</string>
+    <string name="setting_improve_user_info_nick_name">修改昵称</string>
+    <string name="setting_improve_user_info_save">保存</string>
+
+    <string name="setting_improve_user_info_name_dialog_title">修改昵称</string>
+    <string name="setting_improve_user_info_name_dialog_hint">请输入您想要的昵称</string>
+    <string name="setting_improve_user_info_name_dialog_invaild_name">无效的昵称,请重新输入!</string>
+    <string name="setting_improve_user_info_name_dialog_contain_specfic">昵称存在特殊字符,请重新输入!</string>
+    <string name="setting_improve_user_info_name_submit_no_modify">尚未修改任何信息!</string>
+
+    <string name="setting_improve_user_info_name_submit_all_modify">请两个信息都修改!</string>
+
+
+
+
+
 </resources>
 

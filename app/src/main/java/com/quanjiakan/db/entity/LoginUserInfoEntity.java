@@ -34,7 +34,7 @@ public class LoginUserInfoEntity {
     private String token;//TODO 登录时获得的Token
 
     @Transient
-    private String tempPS;//TODO 临时数据，不会进行持久化
+    private String tempHeadIcon;//TODO 临时数据，不会进行持久化
 
     //TODO **************************************************************************
 
@@ -84,6 +84,14 @@ public class LoginUserInfoEntity {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getTempHeadIcon() {
+        return tempHeadIcon;
+    }
+
+    public void setTempHeadIcon(String tempHeadIcon) {
+        this.tempHeadIcon = tempHeadIcon;
     }
 
     @Generated(hash = 1155984786)
