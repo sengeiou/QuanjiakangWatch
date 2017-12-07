@@ -160,7 +160,14 @@
 
     <string name="setting_improve_user_info_name_submit_all_modify">请两个信息都修改!</string>
 
+    <string name="setting_feedback_title">建议反馈</string>
+    <string name="setting_feedback_mail">请输入联系邮箱</string>
+    <string name="setting_feedback_content">请输入建议反馈内容</string>
 
+    <string name="setting_feedback_check1">请填写必填信息!</string>
+    <string name="setting_feedback_check2">请填写正确的邮箱地址!</string>
+    <string name="setting_feedback_commit_success">建议反馈提交成功</string>
+    <string name="setting_feedback_commit_fail">建议反馈提交失败，请重试!</string>
 
 
 

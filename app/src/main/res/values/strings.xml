@@ -165,6 +165,8 @@
     <string name="setting_password_check12">请输入密码</string>
     <string name="setting_password_check13">新密码与原密码一致,请重新输入新密码</string>
     <string name="setting_password_check14">请输入用户姓名</string>
+    <string name="setting_password_check15">请至少包含字母、数字或字符中的两种，长度限制为6~15位</string>
+
 
     <string name="setting_more_perfect">完善资料</string>
     <string name="setting_more_pw_modify">修改密码</string>

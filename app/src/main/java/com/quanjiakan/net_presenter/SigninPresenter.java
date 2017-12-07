@@ -6,7 +6,7 @@ import com.quanjiakan.entity.LoginInfoEntity;
 import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.Retrofit2Util;
 import com.quanjiakan.net.retrofit.result_entity.PostLoginEntity;
-import com.quanjiakan.net.retrofit.service.post.object.RxPostLoginEntityService;
+import com.quanjiakan.net.retrofit.service.post.string.RxPostLoginStringService;
 
 import java.util.HashMap;
 
@@ -20,7 +20,6 @@ import rx.schedulers.Schedulers;
  */
 
 public class SigninPresenter implements IBasePresenter {
-    private LoginInfoEntity entity;
     public void doLogin(final SigninActivity_mvp activityMvp){
         HashMap<String, String> params = (HashMap<String, String>) activityMvp.getParamter(IPresenterBusinessCode.LOGIN);
         if(params==null){
@@ -31,14 +30,14 @@ public class SigninPresenter implements IBasePresenter {
         activityMvp.showMyDialog(IPresenterBusinessCode.LOGIN);
 
         //TODO 使用 getRetrofitStringResult 方法在获取JSON格式的数据返回时会现JSON转换的异常
-        Retrofit retrofit = Retrofit2Util.getRetrofit(IHttpUrlConstants.BASEURL_QUANJIAKANG);
-        RxPostLoginEntityService rxGetRequest = retrofit.create(RxPostLoginEntityService.class);
+        Retrofit retrofit = Retrofit2Util.getRetrofitStringResult(IHttpUrlConstants.BASEURL_QUANJIAKANG);
+        RxPostLoginStringService rxGetRequest = retrofit.create(RxPostLoginStringService.class);
         rxGetRequest.doLogin(params.get(IParamsName.PARAMS_COMMON_PASSWORD),
                 params.get(IParamsName.PARAMS_COMMON_PLATFORM),
                 params.get(IParamsName.PARAMS_COMMON_MOBILE))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<PostLoginEntity>() {
+                .subscribe(new Subscriber<String>() {
                     @Override
                     public void onCompleted() {
                         activityMvp.dismissMyDialog(IPresenterBusinessCode.LOGIN);
@@ -51,7 +50,7 @@ public class SigninPresenter implements IBasePresenter {
                     }
 
                     @Override
-                    public void onNext(PostLoginEntity response) {
+                    public void onNext(String response) {
                         activityMvp.dismissMyDialog(IPresenterBusinessCode.LOGIN);
                         activityMvp.onSuccess(IPresenterBusinessCode.LOGIN,200,response);
                     }

@@ -13,7 +13,9 @@ import com.google.gson.reflect.TypeToken;
 import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
+import com.quanjiakan.activity.common.setting.more.feedback.FeedbackActivity;
 import com.quanjiakan.activity.common.setting.more.improveinfo.ImproveUserInfoActivity;
+import com.quanjiakan.activity.common.setting.more.modifypassword.ModifyPasswordActivity;
 import com.quanjiakan.constants.ICommonActivityRequestCode;
 import com.quanjiakan.constants.ICommonActivityResultCode;
 import com.quanjiakan.constants.IParamsName;
@@ -161,13 +163,13 @@ public class SettingMoreActivity extends BaseActivity {
     }
 
     public void toModifyPassword(){
-//        Intent intent = new Intent(this, MainActivity.class);
-//        startActivityForResult(intent,ICommonActivityRequestCode.REQUEST_TO_MODIFY_PASSWORD);
+        Intent intent = new Intent(this, ModifyPasswordActivity.class);
+        startActivity(intent);
     }
 
     public void toFeedback(){
-//        Intent intent = new Intent(this, MainActivity.class);
-//        startActivityForResult(intent,ICommonActivityRequestCode.REQUEST_TO_FEEDBACK);
+        Intent intent = new Intent(this, FeedbackActivity.class);
+        startActivity(intent);
     }
 
     public void doLogout(){
@@ -262,7 +264,7 @@ public class SettingMoreActivity extends BaseActivity {
             }else{//TODO 关闭免打扰
                 entity.setDisturbStatus(0);
             }
-            DaoManager.getInstances(this).getDaoSession().getDisturbStatusEntityDao().insert(entity);
+            DaoManager.getInstances(this).getDaoSession().getDisturbStatusEntityDao().update(entity);
         }else{
             entity = new DisturbStatusEntity();
             entity.setBelongUserId(BaseApplication.getInstances().getLoginInfo().getUserId());

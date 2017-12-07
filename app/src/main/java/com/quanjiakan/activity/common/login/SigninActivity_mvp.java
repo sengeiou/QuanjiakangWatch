@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.reflect.TypeToken;
 import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
@@ -26,6 +27,7 @@ import com.quanjiakan.net_presenter.IPresenterBusinessCode;
 import com.quanjiakan.net_presenter.SigninPresenter;
 import com.quanjiakan.util.common.LogUtil;
 import com.quanjiakan.util.common.MessageDigestUtil;
+import com.quanjiakan.util.common.SerializeToObjectUtil;
 import com.quanjiakan.util.dialog.CommonDialogHint;
 import com.umeng.analytics.MobclickAgent;
 
@@ -216,8 +218,9 @@ public class SigninActivity_mvp extends BaseActivity {
         switch (type) {
             case IPresenterBusinessCode.LOGIN:
                 //TODO 使用String格式的Retrofit
-                if(result!=null && result instanceof PostLoginEntity) {//TODO 避免空指针异常与数据类型的异常
-                    PostLoginEntity res = (PostLoginEntity) result;
+                if(result!=null && result instanceof String) {//TODO 避免空指针异常与数据类型的异常
+                    PostLoginEntity res = (PostLoginEntity) SerializeToObjectUtil.getInstances().jsonToObject(result.toString(),
+                            new TypeToken<PostLoginEntity>(){}.getType());
                     //TODO 实际上仍然需要判断数据中是否是返回200 ，得到用户名，Token，ID等数据
                     /**
                      * 用户名，
@@ -226,7 +229,7 @@ public class SigninActivity_mvp extends BaseActivity {
                      * Token，
                      * ID，
                      */
-                    LogUtil.e(""+res.toString());
+                    LogUtil.e(""+result.toString());
                     //TODO 先按照罗工的那个步骤序列化数据
                     /**
                      SharePreferencesSetting.getInstance().setPhone("");

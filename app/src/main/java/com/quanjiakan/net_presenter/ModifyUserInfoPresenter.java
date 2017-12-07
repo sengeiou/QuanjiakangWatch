@@ -32,7 +32,7 @@ public class ModifyUserInfoPresenter implements IBasePresenter {
 
         //TODO
         //+BaseApplication.getInstances().getSessionID()
-        Retrofit retrofit = Retrofit2Util.getRetrofitStringResult(IHttpUrlConstants.BASEURL_DEVICE);
+        Retrofit retrofit = Retrofit2Util.getRetrofitStringResult(IHttpUrlConstants.BASEURL_APP);
         RxGetModifyUserInfoService rxGetRequest = retrofit.create(RxGetModifyUserInfoService.class);
         if(params.get(IParamsName.PARAMS_MODIFY_HEAD_ICON)==null){
             //TODO 不传入头像参数

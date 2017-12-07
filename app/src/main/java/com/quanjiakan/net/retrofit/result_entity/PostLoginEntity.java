@@ -79,15 +79,6 @@ public class PostLoginEntity implements Serializable {
         public void setToken(String token) {
             this.token = token;
         }
-
-        @Override
-        public String toString() {
-            return "\nObjectBean{" +
-                    "id=" + id +
-                    ", nickname='" + nickname + '\'' +
-                    ", token='" + token + '\'' +
-                    '}';
-        }
     }
 
     @Override

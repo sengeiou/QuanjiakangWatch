@@ -99,4 +99,7 @@ public interface IParamsName {
     String PARAMS_MODIFY_NAME = "nickname";
     String PARAMS_MODIFY_HEAD_ICON = "icon";
 
+    String PARAMS_FEEDBACK_EMAIL = "mail";
+    String PARAMS_FEEDBACK_CONTENT = "content";
+
 }
