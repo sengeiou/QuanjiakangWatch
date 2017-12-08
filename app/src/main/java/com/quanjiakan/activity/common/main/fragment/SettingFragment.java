@@ -14,6 +14,7 @@ import com.google.gson.reflect.TypeToken;
 import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.activity.base.BaseFragment;
+import com.quanjiakan.activity.common.setting.housekeeper.HouseKeeperOrderListActivity;
 import com.quanjiakan.activity.common.setting.more.SettingMoreActivity;
 import com.quanjiakan.constants.ICommonActivityRequestCode;
 import com.quanjiakan.constants.ICommonActivityResultCode;
@@ -193,7 +194,8 @@ public class SettingFragment extends BaseFragment {
      */
 
     public void toHouseKeeperOrderList(){
-
+        Intent intent = new Intent(getActivity(), HouseKeeperOrderListActivity.class);
+        startActivity(intent);
     }
 
     public void toHealthDocument(){

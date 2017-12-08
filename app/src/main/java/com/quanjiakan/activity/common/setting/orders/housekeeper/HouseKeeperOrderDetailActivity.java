@@ -80,7 +80,6 @@ public class HouseKeeperOrderDetailActivity extends BaseActivity {
     @BindView(R.id.tv_order_address)
     TextView tvOrderAddress;
 
-
     private String data;
     private HouseKeeperOrderDetailEntity entity;
 
@@ -90,10 +89,10 @@ public class HouseKeeperOrderDetailActivity extends BaseActivity {
         setContentView(R.layout.layout_housekeeper_order_detail);
         ButterKnife.bind(this);
         data = getIntent().getStringExtra(IParamsName.PARAMS_COMMON_DATA);
-
+        entity = (HouseKeeperOrderDetailEntity) getIntent().getSerializableExtra(IParamsName.PARAMS_COMMON_ENTITY);
         initTitle();
 
-        if (data == null) {
+        if (data == null && entity == null) {
             CommonDialogHint.getInstance().showHint(this, getString(R.string.error_common_error_activity_parameters), new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -203,8 +202,11 @@ public class HouseKeeperOrderDetailActivity extends BaseActivity {
 
 
     public void bindViewValue(){
-        entity = (HouseKeeperOrderDetailEntity) SerializeToObjectUtil.getInstances().jsonToObject(data,
-                new TypeToken<HouseKeeperOrderDetailEntity>(){}.getType());
+        if(data!=null && data.length()>0){
+            entity = (HouseKeeperOrderDetailEntity) SerializeToObjectUtil.getInstances().jsonToObject(data,
+                    new TypeToken<HouseKeeperOrderDetailEntity>(){}.getType());
+        }
+
 
         tvName.setText(entity.getHousekeeperName());
         if (entity.getPrice()==null || entity.getPrice().length() < 1) {

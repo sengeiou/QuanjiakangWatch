@@ -181,6 +181,11 @@
             android:name="com.quanjiakan.activity.common.setting.more.feedback.FeedbackActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <activity
+            android:name="com.quanjiakan.activity.common.setting.housekeeper.HouseKeeperOrderListActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <!-- ******************************************************************************************************** -->
 
         <activity

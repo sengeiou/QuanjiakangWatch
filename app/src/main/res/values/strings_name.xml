@@ -169,6 +169,9 @@
     <string name="setting_feedback_commit_success">建议反馈提交成功</string>
     <string name="setting_feedback_commit_fail">建议反馈提交失败，请重试!</string>
 
+    <string name="setting_house_keeper_order_list_title">家政护理订单</string>
+
+
 
 
 </resources>

@@ -57,6 +57,7 @@ public interface IPresenterBusinessCode {
     int MODIFY_USER_INFO = 30309;
     int MODIFY_PASSWORD = 30310;
     int FEEDBACK = 30311;
+    int HOUSE_KEEPER_ORDER_LIST = 30312;
 
     //*******************************************************************************
     int ALI_PAY = 31100;
