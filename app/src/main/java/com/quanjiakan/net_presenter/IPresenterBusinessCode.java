@@ -67,12 +67,15 @@ public interface IPresenterBusinessCode {
     int ABOUT_US_INFO_EMAIL = 30317;
     int ABOUT_US_INFO_WECHAT = 30318;
 
+    int PAY_GET_PRIVATE_KEY = 30319;
+    int HOUSE_KEEPER_ORDER_ENCRYPT = 30320;
     //*******************************************************************************
     int ALI_PAY = 31100;
     int ALI_PAY_VERIFY_RESULT = 31101;
     int WECHAT_PAY = 31102;
     int WECHAT_PAY_VERIFY_RESULT = 31103;
-
+    int ALI_PAY_VERIFY_RESULT_ENCRYPT = 31104;
+    int WECHAT_PAY_VERIFY_RESULT_ENCRYPT = 31105;
 
 
 

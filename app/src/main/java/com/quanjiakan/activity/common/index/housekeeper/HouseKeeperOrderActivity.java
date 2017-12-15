@@ -27,16 +27,19 @@ import com.quanjiakan.activity.common.pay.PaymentResultActivity;
 import com.quanjiakan.constants.ICommonData;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.net.IHttpUrlConstants;
+import com.quanjiakan.net.format.CommonPublicKeyEntity;
 import com.quanjiakan.net.format.CommonResultEntity;
 import com.quanjiakan.net.retrofit.result_entity.GetHouseKeeperListEntity;
 import com.quanjiakan.net_presenter.HouseKeeperOrderPresenter;
 import com.quanjiakan.net_presenter.IPresenterBusinessCode;
+import com.quanjiakan.net_presenter.PayEncryptPresenter;
 import com.quanjiakan.util.common.LogUtil;
 import com.quanjiakan.util.common.ParseToGsonUtil;
 import com.quanjiakan.util.common.SerializeToObjectUtil;
 import com.quanjiakan.util.common.StringCheckUtil;
 import com.quanjiakan.util.common.UnitExchangeUtil;
 import com.quanjiakan.util.dialog.CommonDialogHint;
+import com.quanjiakan.util.encrypt.SMSValidateUtil;
 import com.quanjiakan.util.pay.AlipayHandler;
 import com.quanjiakan.util.pay.WeixinPayHandler;
 import com.quanjiakan.util.widget.RoundTransform;
@@ -164,6 +167,8 @@ public class HouseKeeperOrderActivity extends BaseActivity {
     private String aliOrderId;
     private String wechatOrderId;
 
+    private String publicKey;
+
     private JsonObject orderDetail = new JsonObject();
 
     private Dialog noticeDialog;
@@ -171,6 +176,8 @@ public class HouseKeeperOrderActivity extends BaseActivity {
     private GetHouseKeeperListEntity.ListBean entity;
 
     private HouseKeeperOrderPresenter presenter;
+
+    private PayEncryptPresenter payEncryptPresenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -234,6 +241,53 @@ public class HouseKeeperOrderActivity extends BaseActivity {
     @Override
     public Object getParamter(int type) {
         switch (type) {
+            case IPresenterBusinessCode.PAY_GET_PRIVATE_KEY:{
+                HashMap<String, String> params = new HashMap<>();
+                params.put(IParamsName.PARAMS_COMMON_PLATFORM, IHttpUrlConstants.PLATFORM_ANDROID);
+                params.put(IParamsName.PARAMS_COMMON_TOKEN, BaseApplication.getInstances().getLoginInfo().getToken());
+                params.put(IParamsName.PARAMS_COMMON_MEMBERID, BaseApplication.getInstances().getLoginInfo().getUserId());
+                return params;
+            }
+            case IPresenterBusinessCode.HOUSE_KEEPER_ORDER_ENCRYPT: {
+
+                //TODO 构建数据
+                if(rbtn1.isChecked()){
+                    selectedPayType = PAY_CHANNEL.ALI;
+                }else if(rbtn2.isChecked()){
+                    selectedPayType = PAY_CHANNEL.WECHAT;
+                }else{
+                    selectedPayType = PAY_CHANNEL.ALI;
+                }
+
+                String jsonString = "{" +
+                        "\"housekeeperId\":"+entity.getId()+
+                        ",\"mobile\":"+"\""+etMobile.getText().toString()+"\""+
+                        ",\"orderUserId\":"+BaseApplication.getInstances().getLoginInfo().getUserId()+
+                        ",\"paymentChannel\":"+selectedPayType.getValue()+"}";
+
+                HashMap<String, String> params = new HashMap<>();
+                params.put(IParamsName.PARAMS_COMMON_MEMBERID, BaseApplication.getInstances().getLoginInfo().getUserId());
+                params.put(IParamsName.PARAMS_COMMON_PLATFORM, IHttpUrlConstants.PLATFORM_ANDROID);
+                params.put(IParamsName.PARAMS_COMMON_TOKEN, BaseApplication.getInstances().getLoginInfo().getToken());
+
+                params.put(IParamsName.PARAMS_HOUSE_KEEPER_ENCRYPT_NOTE, "");
+                params.put(IParamsName.PARAMS_HOUSE_KEEPER_ENCRYPT_BEGINDATE, tvBeginDateValue.getTag().toString());
+                params.put(IParamsName.PARAMS_HOUSE_KEEPER_ENCRYPT_ENDDATE, tvEndDateValue.getTag().toString());
+                params.put(IParamsName.PARAMS_HOUSE_KEEPER_ENCRYPT_COMPANYID, entity.getCompanyId()+"");
+                params.put(IParamsName.PARAMS_HOUSE_KEEPER_ENCRYPT_ADDRESS, etAddress.getText().toString());
+                params.put(IParamsName.PARAMS_HOUSE_KEEPER_ENCRYPT_ORDER_USERNAME, etContactName.getText().toString());
+                try {
+                    params.put(IParamsName.PARAMS_HOUSE_KEEPER_ENCRYPT_CIPHERTEXT, SMSValidateUtil.getCiphertextHouseKeeperOrder(
+                            entity.getId(),
+                            etMobile.getText().toString(),
+                            Integer.parseInt(BaseApplication.getInstances().getLoginInfo().getUserId()),
+                            selectedPayType.getValue(),
+                            publicKey));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return params;
+            }
             case IPresenterBusinessCode.HOUSE_KEEPER_ORDER: {
                 //TYPE_GET_STRING_NOCACHE
                 //http://pay.quanjiakan.com:7080/familycore-pay/core/api_get?devicetype=0&platform=2&client=1&token=849f2bbb87dc5c049f20b85be3047e3b&user_id=11303&code=pay&action=housekeeper_produceorder&
@@ -282,6 +336,14 @@ public class HouseKeeperOrderActivity extends BaseActivity {
                 params.put(IParamsName.PARAMS_COMMON_DATA, jsonString);
                 return params;
             }
+            case IPresenterBusinessCode.ALI_PAY_VERIFY_RESULT_ENCRYPT: {
+                HashMap<String, String> params = new HashMap<>();
+                params.put(IParamsName.PARAMS_COMMON_MEMBERID, BaseApplication.getInstances().getLoginInfo().getUserId());
+                params.put(IParamsName.PARAMS_COMMON_TOKEN, BaseApplication.getInstances().getLoginInfo().getToken());
+                params.put(IParamsName.PARAMS_COMMON_PLATFORM, IHttpUrlConstants.PLATFORM_ANDROID);
+                params.put(IParamsName.PARAMS_HOUSE_KEEPER_ENCRYPT_ORDERID, aliOrderId);
+                return params;
+            }
             case IPresenterBusinessCode.WECHAT_PAY: {
                 HashMap<String, String> params = new HashMap<>();
                 params.put(IParamsName.PARAMS_COMMON_TOKEN, BaseApplication.getInstances().getLoginInfo().getToken());
@@ -304,6 +366,19 @@ public class HouseKeeperOrderActivity extends BaseActivity {
                 params.put(IParamsName.PARAMS_COMMON_DATA, jsonString);
                 return params;
             }
+            case IPresenterBusinessCode.WECHAT_PAY_VERIFY_RESULT_ENCRYPT: {
+                HashMap<String, String> params = new HashMap<>();
+                //TODO 若上次微信支付成功后，但校验未成功，则再次点击确定是，直接校验订单，不再进行支付
+                params.put(IParamsName.PARAMS_COMMON_MEMBERID, BaseApplication.getInstances().getLoginInfo().getUserId());
+                params.put(IParamsName.PARAMS_COMMON_TOKEN, BaseApplication.getInstances().getLoginInfo().getToken());
+                params.put(IParamsName.PARAMS_COMMON_PLATFORM, IHttpUrlConstants.PLATFORM_ANDROID);
+                params.put(IParamsName.PARAMS_HOUSE_KEEPER_ENCRYPT_ORDERID, wechatOrderId);
+                if(BaseApplication.getInstances().hasWxPayLastInfo() &&//TODO 校验当次支付是否完成----存在则表明进行过
+                        BaseApplication.getInstances().isCurrentOrder(IPresenterBusinessCode.HOUSE_KEEPER_ORDER)){
+                    params.put(IParamsName.PARAMS_HOUSE_KEEPER_ENCRYPT_ORDERID, BaseApplication.getInstances().getWxPayLastInfoOrderId());
+                }
+                return params;
+            }
             default:
                 return null;
         }
@@ -312,6 +387,13 @@ public class HouseKeeperOrderActivity extends BaseActivity {
     @Override
     public void showMyDialog(int type) {
         switch (type) {
+            case IPresenterBusinessCode.PAY_GET_PRIVATE_KEY:{
+                getDialog(this, getString(R.string.hint_common_get_data));
+                break;
+            }
+            case IPresenterBusinessCode.HOUSE_KEEPER_ORDER_ENCRYPT:
+                getDialog(this, getString(R.string.hint_get_house_keeper_order));
+                break;
             case IPresenterBusinessCode.HOUSE_KEEPER_ORDER:
                 getDialog(this, getString(R.string.hint_get_house_keeper_order));
                 break;
@@ -321,10 +403,16 @@ public class HouseKeeperOrderActivity extends BaseActivity {
             case IPresenterBusinessCode.ALI_PAY_VERIFY_RESULT:
                 getDialog(this, getString(R.string.hint_get_house_keeper_order_ali_verify));
                 break;
+            case IPresenterBusinessCode.ALI_PAY_VERIFY_RESULT_ENCRYPT:
+                getDialog(this, getString(R.string.hint_get_house_keeper_order_ali_verify));
+                break;
             case IPresenterBusinessCode.WECHAT_PAY:
                 getDialog(this, getString(R.string.hint_get_house_keeper_order_wechat));
                 break;
             case IPresenterBusinessCode.WECHAT_PAY_VERIFY_RESULT:
+                getDialog(this, getString(R.string.hint_get_house_keeper_order_wechat_verify));
+                break;
+            case IPresenterBusinessCode.WECHAT_PAY_VERIFY_RESULT_ENCRYPT:
                 getDialog(this, getString(R.string.hint_get_house_keeper_order_wechat_verify));
                 break;
             default:
@@ -335,11 +423,15 @@ public class HouseKeeperOrderActivity extends BaseActivity {
     @Override
     public void dismissMyDialog(int type) {
         switch (type) {
+            case IPresenterBusinessCode.PAY_GET_PRIVATE_KEY:
+            case IPresenterBusinessCode.HOUSE_KEEPER_ORDER_ENCRYPT:
             case IPresenterBusinessCode.HOUSE_KEEPER_ORDER:
             case IPresenterBusinessCode.ALI_PAY:
             case IPresenterBusinessCode.ALI_PAY_VERIFY_RESULT:
+            case IPresenterBusinessCode.ALI_PAY_VERIFY_RESULT_ENCRYPT:
             case IPresenterBusinessCode.WECHAT_PAY:
             case IPresenterBusinessCode.WECHAT_PAY_VERIFY_RESULT:
+            case IPresenterBusinessCode.WECHAT_PAY_VERIFY_RESULT_ENCRYPT:
             default:
                 break;
         }
@@ -349,6 +441,13 @@ public class HouseKeeperOrderActivity extends BaseActivity {
     @Override
     public void onSuccess(int type, int httpResponseCode, Object result) {
         switch (type) {
+            case IPresenterBusinessCode.PAY_GET_PRIVATE_KEY:{
+                setPrivateKey(result);
+                break;
+            }
+            case IPresenterBusinessCode.HOUSE_KEEPER_ORDER_ENCRYPT:
+                setServerOrder(result);
+                break;
             case IPresenterBusinessCode.HOUSE_KEEPER_ORDER:
                 setServerOrder(result);
                 break;
@@ -357,9 +456,15 @@ public class HouseKeeperOrderActivity extends BaseActivity {
             case IPresenterBusinessCode.ALI_PAY_VERIFY_RESULT:
                 setAliResult(result);
                 break;
+            case IPresenterBusinessCode.ALI_PAY_VERIFY_RESULT_ENCRYPT:
+                setAliResult(result);
+                break;
             case IPresenterBusinessCode.WECHAT_PAY:
                 break;
             case IPresenterBusinessCode.WECHAT_PAY_VERIFY_RESULT:
+                setWechatResult(result);
+                break;
+            case IPresenterBusinessCode.WECHAT_PAY_VERIFY_RESULT_ENCRYPT:
                 setWechatResult(result);
                 break;
             default:
@@ -371,6 +476,14 @@ public class HouseKeeperOrderActivity extends BaseActivity {
     public void onError(int type, int httpResponseCode, Object errorMsg) {
 
         switch (type) {
+            case IPresenterBusinessCode.PAY_GET_PRIVATE_KEY: {
+                if (errorMsg != null) {
+                    CommonDialogHint.getInstance().showHint(this, errorMsg.toString());
+                } else {
+                    CommonDialogHint.getInstance().showHint(this, getString(R.string.error_common_pay_public_key));
+                }
+                break;
+            }
             case IPresenterBusinessCode.ALI_PAY_VERIFY_RESULT:
                 currentPayResult = PAY_RESULT.FAILURE;
                 goToPaymentResult(aliOrderId);
@@ -379,7 +492,16 @@ public class HouseKeeperOrderActivity extends BaseActivity {
                 currentPayResult = PAY_RESULT.FAILURE;
                 goToPaymentResult(wechatOrderId);
                 break;
+            case IPresenterBusinessCode.ALI_PAY_VERIFY_RESULT_ENCRYPT:
+                currentPayResult = PAY_RESULT.FAILURE;
+                goToPaymentResult(aliOrderId);
+                break;
+            case IPresenterBusinessCode.WECHAT_PAY_VERIFY_RESULT_ENCRYPT:
+                currentPayResult = PAY_RESULT.FAILURE;
+                goToPaymentResult(wechatOrderId);
+                break;
             //**************************************************** 以上为支付结果校验
+            case IPresenterBusinessCode.HOUSE_KEEPER_ORDER_ENCRYPT:
             case IPresenterBusinessCode.HOUSE_KEEPER_ORDER:
             case IPresenterBusinessCode.ALI_PAY:
             case IPresenterBusinessCode.WECHAT_PAY:
@@ -419,6 +541,19 @@ public class HouseKeeperOrderActivity extends BaseActivity {
     }
     //***********************************************************************
 
+    private void setPrivateKey(Object result){
+        if(result!=null && result instanceof String){
+            CommonPublicKeyEntity entity = (CommonPublicKeyEntity) SerializeToObjectUtil.getInstances().
+                    jsonToObject(result.toString(),new TypeToken<CommonPublicKeyEntity>(){}.getType());
+            if(entity!=null && ICommonData.HTTP_OK.equals(entity.getCode()) && entity.getObject()!=null){
+                publicKey = entity.getObject().getPublicKey();
+            }else{
+                publicKey = null;
+            }
+        }else{
+            publicKey = null;
+        }
+    }
     /**
      * 展示用户须知对话框
      */
@@ -529,7 +664,7 @@ public class HouseKeeperOrderActivity extends BaseActivity {
                 BaseApplication.getInstances().isCurrentOrder(IPresenterBusinessCode.HOUSE_KEEPER_ORDER)){
             vertifyWechatPayment(BaseApplication.getInstances().getWxPayLastInfoOrderId());
         }else{
-            presenter.doGetHouseKeeperOrder(this);
+            presenter.doGetHouseKeeperOrderEncrypt(this);
         }
     }
 
@@ -544,26 +679,59 @@ public class HouseKeeperOrderActivity extends BaseActivity {
   "code": "200",
   "message": "{\"orderid\":\"QJKKEEPER20171113110956262592\",\"paidinfo\":{\"partner\":\"2088021868486397\",\"seller_id\":\"13510237554@163.com\",\"out_trade_no\":\"QJKKEEPER20171113110956262592\",\"subject\":\"全家康支付\",\"body\":\"支付家政人员服务费用\",\"total_fee\":\"200.0\",\"notify_url\":\"http://pay.quanjiakan.com:7080/familycore-pay/notify_alipay.jsp\",\"service\":\"mobile.securitypay.pay\",\"payment_type\":\"1\",\"_input_charset\":\"utf-8\",\"it_b_pay\":\"30m\",\"return_url\":\"m.alipay.com\",\"sign\":\"FToxLQaeEBeNh9O/JpyCxoaLl7UHm2IGb44L8cFL0ZzNTmp3aH1niFRdKYyntE2HUoRDrBqqVNNHwPM5u5mYDINqXe6fsr9/m19dgtZBV20ccWhwH0/jfRN9EgcAaaETLtnXVeJKHG5skC4RoyKmEuo7NBY9PZYSRw17RmHtAP0=\",\"code\":\"200\"}}"
 }
+
+------------------------------------- 新数据格式
+{
+  "code": "200",
+  "message": "返回成功",
+  "object": {
+    "orderid": "QJKKEEPER20171215053415442757",
+    "paidinfo": "{\"return_code\":\"SUCCESS\",\"return_msg\":\"OK\",\"appid\":\"wx513e10652f1e89b6\",\"mch_id\":\"1491214032\",\"nonce_str\":\"6eafebe9722244e990f44580a7ea2a45\",\"sign\":\"48320BBD8D3B570A4838548E110CDB24\",\"result_code\":\"SUCCESS\",\"prepay_id\":\"wx2017121517341617c3b9d1d40171709351\",\"trade_type\":\"APP\",\"code\":\"200\",\"package\":\"Sign=WXPay\",\"timestamp\":\"1513330456\"}"
+  }
+}
              */
             try{
                 JSONObject resultJson = new JSONObject(resultString);
-                if(resultJson.has("message") && resultJson.getString("message").length()>0){
-                    JsonObject resultMessage = new ParseToGsonUtil(resultJson.getString("message")).getJsonObject();
+                //TODO 老数据格式---- 不建议使用了
+//                if(resultJson.has("message") && resultJson.getString("message").length()>0){
+//                    JsonObject resultMessage = new ParseToGsonUtil(resultJson.getString("message")).getJsonObject();
+//
+//                    //TODO
+//                    orderDetail.addProperty("id",resultJson.getString("message"));
+//                    orderDetail.addProperty("orderid",resultMessage.get("orderid").getAsString());
+//                    orderDetail.addProperty("createtime",new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+//
+//                    if(selectedPayType==PAY_CHANNEL.ALI){
+//                        //进行支付宝支付
+//                        goAliPay(resultMessage.get("orderid").getAsString(),resultMessage.get("paidinfo").getAsJsonObject());
+//                    }else if(selectedPayType==PAY_CHANNEL.WECHAT){
+//                        //进行微信支付
+//                        goWechatPay(resultMessage.get("orderid").getAsString(),resultMessage.get("paidinfo").getAsJsonObject());
+//                    }else{
+//                        //TODO 作为默认选择（支付宝）
+//                        goAliPay(resultMessage.get("orderid").getAsString(),resultMessage.get("paidinfo").getAsJsonObject());
+//                    }
+//                }else{
+//                    CommonDialogHint.getInstance().showHint(this,getString(R.string.hint_order_invalid));
+//                }
+                //TODO 修改后的
+                if(resultJson.has("object") && resultJson.getString("object").length()>0){
+                    JsonObject resultMessage = new ParseToGsonUtil(resultJson.getString("object")).getJsonObject();
 
                     //TODO
-                    orderDetail.addProperty("id",resultJson.getString("message"));
+                    orderDetail.addProperty("id",resultJson.getString("object"));
                     orderDetail.addProperty("orderid",resultMessage.get("orderid").getAsString());
                     orderDetail.addProperty("createtime",new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
 
                     if(selectedPayType==PAY_CHANNEL.ALI){
                         //进行支付宝支付
-                        goAliPay(resultMessage.get("orderid").getAsString(),resultMessage.get("paidinfo").getAsJsonObject());
+                        goAliPay(resultMessage.get("orderid").getAsString(),new ParseToGsonUtil(resultMessage.get("paidinfo").getAsString()).getJsonObject());
                     }else if(selectedPayType==PAY_CHANNEL.WECHAT){
                         //进行微信支付
-                        goWechatPay(resultMessage.get("orderid").getAsString(),resultMessage.get("paidinfo").getAsJsonObject());
+                        goWechatPay(resultMessage.get("orderid").getAsString(),new ParseToGsonUtil(resultMessage.get("paidinfo").getAsString()).getJsonObject());
                     }else{
                         //TODO 作为默认选择（支付宝）
-                        goAliPay(resultMessage.get("orderid").getAsString(),resultMessage.get("paidinfo").getAsJsonObject());
+                        goAliPay(resultMessage.get("orderid").getAsString(),new ParseToGsonUtil(resultMessage.get("paidinfo").getAsString()).getJsonObject());
                     }
                 }else{
                     CommonDialogHint.getInstance().showHint(this,getString(R.string.hint_order_invalid));
@@ -606,13 +774,13 @@ public class HouseKeeperOrderActivity extends BaseActivity {
 
     public void vertifyAliPayment(String orderId){
         aliOrderId = orderId;
-        presenter.verifyAliPaymentResult(this);
+        presenter.verifyAliPaymentEncryptResult(this);
     }
 
     public void vertifyWechatPayment(String orderId){
         if(BaseApplication.getInstances().hasWxPayLastInfo() &&//TODO 校验当次支付是否完成----存在则表明进行过
                 BaseApplication.getInstances().isCurrentOrder(IPresenterBusinessCode.HOUSE_KEEPER_ORDER)){//TODO
-            presenter.verifyWechatPaymentResult(this);
+            presenter.verifyWechatPaymentEncryptResult(this);
         }else{
             //TODO 清除最近的支付信息
             currentPayResult = PAY_RESULT.FAILURE;
@@ -680,6 +848,7 @@ public class HouseKeeperOrderActivity extends BaseActivity {
         menuText.setText(getString(R.string.hint_house_keeper_order_user_agreement));
 
         presenter = new HouseKeeperOrderPresenter();
+        payEncryptPresenter = new PayEncryptPresenter();
     }
 
     /**
@@ -754,6 +923,8 @@ public class HouseKeeperOrderActivity extends BaseActivity {
         orderDetail.addProperty("experience",entity.getExperience());
         orderDetail.addProperty("fromRegion",entity.getFromRegion());
         orderDetail.addProperty("evaluation",(String)null);
+
+        payEncryptPresenter.getPublicKey(this);
     }
 
     //***********************************************************************

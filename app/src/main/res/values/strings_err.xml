@@ -6,6 +6,8 @@
 
     <string name="error_common_error_activity_parameters">无效的传递参数!</string>
 
+    <string name="error_common_pay_public_key">获取公钥失败!</string>
+
     <!--      流程   登录   错误提示       -->
     <string name="error_login_hint">登录失败</string>
     <string name="error_hint">登录失败</string>

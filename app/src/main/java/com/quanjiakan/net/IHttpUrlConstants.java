@@ -14,7 +14,7 @@ public interface IHttpUrlConstants {
     String BASEURL_DEVICE = "http://device.quanjiakan.com";//TODO Work
     String BASEURL_PAY = "http://pay.quanjiakan.com:7080";
     String BASEURL_STATIC = "http://static.quanjiakan.com";//TODO Work
-
+    String BASEURL_PAY_NO_PORT = "http://pay.quanjiakan.com";
     //**********************************************************
     /**
      * 请求方式
@@ -35,11 +35,14 @@ public interface IHttpUrlConstants {
     /**
      * 平安通：pingan
      * 警务联动：jinwu
+     *
+     *
      */
     String PROJECT_PINGAN = "pingan";
     String PROJECT_DEVICES = "devices";
     String PROJECT_PAY = "familycore-pay";
     String PROJECT_FAMLIY_CARE = "familycare";
+    String PROJECT_PAYMENT = "payment";
     //***************************************************
     /**
      * 1.Web,

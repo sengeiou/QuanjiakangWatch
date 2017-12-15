@@ -69,6 +69,16 @@ public interface IParamsName {
     String PARAMS_HOUSE_KEEPER_DETAIL_ALIAS = "housekeeperDetailAlias";
 
 
+
+    String PARAMS_HOUSE_KEEPER_ENCRYPT_CIPHERTEXT = "ciphertext";
+    String PARAMS_HOUSE_KEEPER_ENCRYPT_NOTE = "note";
+    String PARAMS_HOUSE_KEEPER_ENCRYPT_BEGINDATE = "begindate";
+    String PARAMS_HOUSE_KEEPER_ENCRYPT_ENDDATE = "enddate";
+    String PARAMS_HOUSE_KEEPER_ENCRYPT_COMPANYID = "companyId";
+    String PARAMS_HOUSE_KEEPER_ENCRYPT_ADDRESS = "address";
+    String PARAMS_HOUSE_KEEPER_ENCRYPT_ORDER_USERNAME = "orderUserName";
+    String PARAMS_HOUSE_KEEPER_ENCRYPT_ORDERID = "orderid";
+
     String PARAMS_PAY_RESULT_TYPE = "pay_type";
     String PARAMS_PAY_RESULT_CODE = "pay_result_code";
     String PARAMS_PAY_MONEY = "pay_sum_money";

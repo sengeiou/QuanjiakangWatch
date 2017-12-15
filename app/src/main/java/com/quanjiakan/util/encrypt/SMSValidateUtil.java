@@ -38,6 +38,23 @@ public class SMSValidateUtil {
 		return strEncodedData;
 	}
 
+	public static String getCiphertextHouseKeeperOrder(int housekeeperId,String mobile,int orderUserId, int paymentChannel,String publicKey) throws Exception {
+		JSONObject json = new JSONObject();
+		json.put("housekeeperId", housekeeperId);
+		json.put("mobile", mobile);
+		json.put("orderUserId", orderUserId);
+		json.put("paymentChannel", paymentChannel);
+
+		String inputStr = json.toString();
+		byte[] data = inputStr.getBytes();
+		byte[] encodedData = RSACoder.encryptByPublicKey(data, publicKey);
+		String strEncodedData =
+				Base64.encodeToString(encodedData, Base64.DEFAULT);
+//				Base64.encodeBase64String(encodedData);
+		strEncodedData = RSAHttp.httpTransferCharacter(strEncodedData);
+		return strEncodedData;
+	}
+
 	public static String getSign(String mobile, int validateType){
 		StringBuilder sb = new StringBuilder();
 		sb.append("mobile=").append(mobile);
