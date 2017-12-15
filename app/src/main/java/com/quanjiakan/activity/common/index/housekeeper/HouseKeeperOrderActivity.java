@@ -17,19 +17,23 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.constants.ICommonActivityRequestCode;
 import com.quanjiakan.constants.ICommonActivityResultCode;
 import com.quanjiakan.activity.common.pay.PaymentResultActivity;
+import com.quanjiakan.constants.ICommonData;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.net.IHttpUrlConstants;
+import com.quanjiakan.net.format.CommonResultEntity;
 import com.quanjiakan.net.retrofit.result_entity.GetHouseKeeperListEntity;
 import com.quanjiakan.net_presenter.HouseKeeperOrderPresenter;
 import com.quanjiakan.net_presenter.IPresenterBusinessCode;
 import com.quanjiakan.util.common.LogUtil;
 import com.quanjiakan.util.common.ParseToGsonUtil;
+import com.quanjiakan.util.common.SerializeToObjectUtil;
 import com.quanjiakan.util.common.StringCheckUtil;
 import com.quanjiakan.util.common.UnitExchangeUtil;
 import com.quanjiakan.util.dialog.CommonDialogHint;
@@ -202,9 +206,8 @@ public class HouseKeeperOrderActivity extends BaseActivity {
         MobclickAgent.onResume(this);
         MobclickAgent.onPageStart(this.getClass().getSimpleName());
 
-        if(!BaseApplication.getInstances().isWXPayResultNull()){
+        if(BaseApplication.getInstances().hasWxPayLastInfo()){
             vertifyWechatPayment(wechatOrderId);
-            BaseApplication.getInstances().initAndResetPayResult();
         }
     }
 
@@ -289,6 +292,13 @@ public class HouseKeeperOrderActivity extends BaseActivity {
                 HashMap<String, String> params = new HashMap<>();
                 String jsonString = "{\"userId\":"+ BaseApplication.getInstances().getLoginInfo().getUserId()+
                         ",\"orderid\":"+"\""+wechatOrderId+"\""+"}";
+
+                //TODO 若上次微信支付成功后，但校验未成功，则再次点击确定是，直接校验订单，不再进行支付
+                if(BaseApplication.getInstances().hasWxPayLastInfo() &&//TODO 校验当次支付是否完成----存在则表明进行过
+                        BaseApplication.getInstances().isCurrentOrder(IPresenterBusinessCode.HOUSE_KEEPER_ORDER)){
+                    jsonString = "{\"userId\":"+ BaseApplication.getInstances().getLoginInfo().getUserId()+
+                            ",\"orderid\":"+"\""+BaseApplication.getInstances().getWxPayLastInfoOrderId()+"\""+"}";
+                }
                 params.put(IParamsName.PARAMS_COMMON_USERID, BaseApplication.getInstances().getLoginInfo().getUserId());
                 params.put(IParamsName.PARAMS_COMMON_TOKEN, BaseApplication.getInstances().getLoginInfo().getToken());
                 params.put(IParamsName.PARAMS_COMMON_DATA, jsonString);
@@ -345,14 +355,12 @@ public class HouseKeeperOrderActivity extends BaseActivity {
             case IPresenterBusinessCode.ALI_PAY:
                 break;
             case IPresenterBusinessCode.ALI_PAY_VERIFY_RESULT:
-                currentPayResult = PAY_RESULT.SUCCESS;
-                goToPaymentResult(aliOrderId);
+                setAliResult(result);
                 break;
             case IPresenterBusinessCode.WECHAT_PAY:
                 break;
             case IPresenterBusinessCode.WECHAT_PAY_VERIFY_RESULT:
-                currentPayResult = PAY_RESULT.SUCCESS;
-                goToPaymentResult(wechatOrderId);
+                setWechatResult(result);
                 break;
             default:
                 break;
@@ -515,8 +523,14 @@ public class HouseKeeperOrderActivity extends BaseActivity {
             return;
         }
         //获取订单数据
-        presenter.doGetHouseKeeperOrder(this);
 
+        //TODO 当存在之前支付过的订单
+        if(BaseApplication.getInstances().hasWxPayLastInfo() &&//TODO 校验当次支付是否完成----存在则表明进行过
+                BaseApplication.getInstances().isCurrentOrder(IPresenterBusinessCode.HOUSE_KEEPER_ORDER)){
+            vertifyWechatPayment(BaseApplication.getInstances().getWxPayLastInfoOrderId());
+        }else{
+            presenter.doGetHouseKeeperOrder(this);
+        }
     }
 
     public void setServerOrder(Object result){
@@ -585,6 +599,8 @@ public class HouseKeeperOrderActivity extends BaseActivity {
 
     public void goWechatPay(final String orderId, JsonObject payInfo){
         wechatOrderId = orderId;
+        //TODO 拿到订单后，保存该次订单信息----去支付
+        BaseApplication.getInstances().saveWxPayLastInfo(IPresenterBusinessCode.HOUSE_KEEPER_ORDER,orderId);
         new WeixinPayHandler(this).pay(payInfo);
     }
 
@@ -594,12 +610,43 @@ public class HouseKeeperOrderActivity extends BaseActivity {
     }
 
     public void vertifyWechatPayment(String orderId){
-        if(!BaseApplication.getInstances().isWXPayResultNull() &&
-                BaseApplication.getInstances().isWXPaySuccess()){//调起支付过，并且支付成功了,校验订单
+        if(BaseApplication.getInstances().hasWxPayLastInfo() &&//TODO 校验当次支付是否完成----存在则表明进行过
+                BaseApplication.getInstances().isCurrentOrder(IPresenterBusinessCode.HOUSE_KEEPER_ORDER)){//TODO
             presenter.verifyWechatPaymentResult(this);
         }else{
+            //TODO 清除最近的支付信息
             currentPayResult = PAY_RESULT.FAILURE;
             goToPaymentResult(orderId);
+        }
+    }
+
+    public void setAliResult(Object result){
+        if(result!=null && result instanceof String){
+            CommonResultEntity entity = (CommonResultEntity) SerializeToObjectUtil.getInstances().
+                    jsonToObject(result.toString(),new TypeToken<CommonResultEntity>(){}.getType());
+            if(entity!=null && ICommonData.HTTP_OK.equals(entity.getCode())){
+                currentPayResult = PAY_RESULT.SUCCESS;
+                goToPaymentResult(aliOrderId);
+            }else{
+                CommonDialogHint.getInstance().showHint(this,getString(R.string.hint_house_keeper_check_order));
+            }
+        }else{
+            CommonDialogHint.getInstance().showHint(this,getString(R.string.hint_house_keeper_check_order));
+        }
+    }
+
+    public void setWechatResult(Object result){
+        if(result!=null && result instanceof String){
+            CommonResultEntity entity = (CommonResultEntity) SerializeToObjectUtil.getInstances().
+                    jsonToObject(result.toString(),new TypeToken<CommonResultEntity>(){}.getType());
+            if(entity!=null && ICommonData.HTTP_OK.equals(entity.getCode())){
+                currentPayResult = PAY_RESULT.SUCCESS;
+                goToPaymentResult(wechatOrderId);
+            }else{
+                CommonDialogHint.getInstance().showHint(this,getString(R.string.hint_house_keeper_check_order));
+            }
+        }else{
+            CommonDialogHint.getInstance().showHint(this,getString(R.string.hint_house_keeper_check_order));
         }
     }
 
@@ -609,6 +656,7 @@ public class HouseKeeperOrderActivity extends BaseActivity {
         }else{
             orderDetail.addProperty("status","1");
         }
+        BaseApplication.getInstances().clearWxPayLastInfo();
 
         Intent intent = new Intent(this,PaymentResultActivity.class);
         intent.putExtra(IParamsName.PARAMS_COMMON_DATA,orderDetail.toString());

@@ -308,31 +308,99 @@ public class BaseApplication extends MultiDexApplication {
      * 微信支付----支付状态
      */
 
-    public boolean isWXPayResultNull(){
-        return (payResult==null);
-    }
+    /**
+     * *********************************************************************************************
+     *
+     * 微信支付----最近支付的信息
+     *
+     */
 
-    public boolean isWXPaySuccess(){
-        return payResult == WXPayResult.SUCCESS;
-    }
 
-    public void initAndResetPayResult(){
-        payResult = null;
-    }
-
-    public void setWxPayResultSuccess(){
-        payResult = WXPayResult.SUCCESS;
-    }
-
-    public void setWxPayResultFailure(){
-        payResult = WXPayResult.FAILURE;
-    }
-
-    public void setWxPayResultCancel(){
-        payResult = WXPayResult.USER_CANCEL;
+    //TODO 保存最近一次微信支付订单与所进行的业务类型信息-------在调起支付时调用
+    public void saveWxPayLastInfo(int businessTypeCode,String orderId){
+        SharePreferencesSetting.getInstance().setWxPayLastPayInfo(businessTypeCode,orderId);
     }
 
     /**
+     * @return true 表示拥有最近的支付信息
+     */
+    public boolean hasWxPayLastInfo(){
+        return !"".equals(SharePreferencesSetting.getInstance().getWxPayLastPayInfo());
+    }
+
+    /**
+     * 最近支付信息中的业务码
+     * @return
+     */
+    public int getWxPayLastInfoBusinessTypeCode(){
+        if(hasWxPayLastInfo()){
+            return SharePreferencesSetting.getInstance().getWxPayLastPayInfoBusinessCodeIntValue();
+        }else{
+            return -1;
+        }
+    }
+
+    /**
+     * 最近支付信息中的订单ID
+     * @return
+     */
+    public String getWxPayLastInfoOrderId(){
+        if(hasWxPayLastInfo()){
+            return SharePreferencesSetting.getInstance().getWxPayLastPayInfoOrderId();
+        }else{
+            return null;
+        }
+    }
+
+    /**
+     * 置空最近的一次支付信息(同时也清空订单信息)
+     */
+    public void clearWxPayLastInfo(){
+
+        SharePreferencesSetting.getInstance().clearWxPayOrder(getWxPayLastInfoBusinessTypeCode());
+
+        SharePreferencesSetting.getInstance().setWxPayLastPayInfoNull();
+    }
+
+
+    /**
+     *
+     * ******************************************************************
+     * 保存订单结果
+     *
+     * @param businessTypeCode
+     * @param orderId
+     * @param result
+     */
+    public void saveWxPayResult(int businessTypeCode,String orderId,WXPayResult result){
+        SharePreferencesSetting.getInstance().setWxPayOrder(businessTypeCode,orderId,result);
+    }
+
+    public boolean isWxPaySuccess(int businessTypeCode){
+        return SharePreferencesSetting.getInstance().isWxPaySuccess(businessTypeCode);
+    }
+
+    public boolean isCurrentOrder(int businessTypeCode){
+        if(SharePreferencesSetting.getInstance().hasWxPayOrder(businessTypeCode)){
+            return SharePreferencesSetting.getInstance().getWxPayOrderId(businessTypeCode).
+                    equals(getWxPayLastInfoOrderId());
+        }else{
+            return  false;
+        }
+    }
+
+    /**
+     *
+     * 使用流程说明
+     *
+     * 获取订单后，保存业务码 和 订单号  saveWxPayLastInfo()
+     *
+     * 支付结果处，通过 getWxPayLastInfoBusinessTypeCode() 和  getWxPayLastInfoOrderId() 和 saveWxPayResult()
+     * 保存这次的支付结果
+     *
+     * 最后在校验订单前，判读订单是否一致，
+     * 成功，则校验定单，在拿到结果后，清除该次的支付信息
+     *
      * *********************************************************************************************
      *
      */

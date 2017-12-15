@@ -171,8 +171,38 @@
 
     <string name="setting_house_keeper_order_list_title">家政护理订单</string>
 
+    <string name="setting_user_health_document_title">档案</string>
+    <string name="setting_user_health_document_menu_add">添加</string>
+    <string name="setting_user_health_document_publish_time_prefix">发布时间: </string>
+
+    <string name="setting_user_health_document_word_limit">输入字数超出100限制!</string>
+    <string name="setting_user_health_document_word_limit_hint">只限输入100字</string>
+
+    <string name="setting_user_health_document_success">添加成功</string>
+    <string name="setting_user_health_document_fail">添加失败,请稍后重试!</string>
+
+    <string name="setting_user_health_document_image_hint">请添加档案图片!</string>
+    <string name="setting_user_health_document_word_hint">请添加描述!</string>
 
 
+    <string name="setting_about_us_title">关于我们</string>
+    <string name="setting_about_us_wechat">微信公众号</string>
+    <string name="setting_about_us_phone">客服电话</string>
+    <string name="setting_about_us_email">公司邮箱</string>
+    <string name="setting_about_us_web">公司网站</string>
+
+    <string name="setting_about_us_company">巨硅科技</string>
+    <string name="setting_about_us_unicom">中国联通</string>
+    <string name="setting_about_us_coop">联合研发</string>
+
+
+
+    <string name="setting_about_us_wechat_value">GZFamilycare</string>
+    <string name="setting_about_us_phone_value">020-83390333</string>
+    <string name="setting_about_us_phone_value2">020-22928888</string>
+    <string name="setting_about_us_email_value">familycare@hi-board.com</string>
+    <string name="setting_about_us_web_value">www.quanjiakan.com</string>
+    <string name="setting_about_us_web_value_to_activity">http://www.quanjiakan.com</string>
 
 </resources>
 

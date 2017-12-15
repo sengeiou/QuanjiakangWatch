@@ -43,6 +43,10 @@
     <string name="error_bind_step_two_head_icon_upload_fail">上传头像失败!</string>
 
 
+    <string name="error_common_invalid_picture">无效的网络图片!</string>
+
+
+
 
 </resources>
 

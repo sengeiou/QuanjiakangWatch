@@ -387,6 +387,7 @@ public class HealthInquiryFurtherAskActivity extends BaseActivity {
             case IPresenterBusinessCode.HEALTH_INQUIRY_DOCTOR_INFO:
                 break;
             case IPresenterBusinessCode.HEALTH_INQUIRY_PROBLEM_ANSWER_LIST:
+                list.onRefreshComplete();
                 break;
             case IPresenterBusinessCode.HEALTH_INQUIRY_DOCTOR_EVALUATE:
                 break;

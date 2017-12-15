@@ -59,6 +59,14 @@ public interface IPresenterBusinessCode {
     int FEEDBACK = 30311;
     int HOUSE_KEEPER_ORDER_LIST = 30312;
 
+    int HEALTH_DOCUMENT_USER = 30313;
+    int HEALTH_DOCUMENT_USER_ADD = 30314;
+
+    int ABOUT_US_INFO_PHONE = 30315;
+    int ABOUT_US_INFO_WEB = 30316;
+    int ABOUT_US_INFO_EMAIL = 30317;
+    int ABOUT_US_INFO_WECHAT = 30318;
+
     //*******************************************************************************
     int ALI_PAY = 31100;
     int ALI_PAY_VERIFY_RESULT = 31101;

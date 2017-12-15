@@ -41,6 +41,10 @@
     <dimen name="size_40">40dp</dimen>
     <dimen name="size_38">38dp</dimen>
     <dimen name="size_35">35dp</dimen>
+    <dimen name="size_34">34dp</dimen>
+    <dimen name="size_33">33dp</dimen>
+    <dimen name="size_32">32dp</dimen>
+    <dimen name="size_31">31dp</dimen>
     <dimen name="size_30">30dp</dimen>
     <dimen name="size_29">29dp</dimen>
     <dimen name="size_28">28dp</dimen>
@@ -182,6 +186,7 @@
     <dimen name="height_265">265dp</dimen>
     <dimen name="height_270">270dp</dimen>
     <dimen name="height_280">280dp</dimen>
+    <dimen name="height_282">282dp</dimen>
     <dimen name="height_290">290dp</dimen>
     <dimen name="height_295">295dp</dimen>
     <dimen name="height_300">300dp</dimen>

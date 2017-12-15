@@ -103,4 +103,8 @@ public interface IParamsName {
     String PARAMS_FEEDBACK_EMAIL = "mail";
     String PARAMS_FEEDBACK_CONTENT = "content";
 
+
+    String PARAMS_USER_HEALTH_DOCUMENT_NAME = "medicalName";
+    String PARAMS_USER_HEALTH_DOCUMENT_IMAGE = "medicalRecord";
+
 }

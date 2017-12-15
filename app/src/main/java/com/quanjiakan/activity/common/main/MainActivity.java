@@ -35,6 +35,7 @@ import com.quanjiakan.device.entity.CommonNattyData;
 import com.quanjiakan.net.retrofit.result_entity.GetUpdateEntity;
 import com.quanjiakan.net_presenter.IPresenterBusinessCode;
 import com.quanjiakan.net_presenter.UpdatePresenter;
+import com.quanjiakan.util.callphone.CallPhoneUtil;
 import com.quanjiakan.util.common.SerializeToObjectUtil;
 import com.quanjiakan.util.common.VersionInfoUtil;
 import com.quanjiakan.util.dialog.CommonDialogHint;
@@ -78,6 +79,8 @@ public class MainActivity extends BaseActivity {
     //TODO 侧滑菜单
     @BindView(R.id.hint)
     TextView hint;
+    @BindView(R.id.hint2)
+    TextView hint2;
     @BindView(R.id.inquiry)
     LinearLayout inquiry;
     @BindView(R.id.housekeeper)
@@ -578,6 +581,12 @@ public class MainActivity extends BaseActivity {
         //TODO 检查更新
         presenter = new UpdatePresenter();
         checkUpdate();
+        setServicePhone();
+    }
+
+    public void setServicePhone(){
+        hint.setText(R.string.about_communicate);
+        hint2.setText(R.string.about_communicate2);
     }
 
     public void initSlideMenu() {
@@ -750,7 +759,7 @@ public class MainActivity extends BaseActivity {
      * *****************************************************************************************************************************
      */
     @OnClick({R.id.main_tab_item_main, R.id.main_tab_item_msg, R.id.main_tab_item_setting,
-            R.id.hint, R.id.inquiry, R.id.housekeeper,
+            R.id.hint,R.id.hint2, R.id.inquiry, R.id.housekeeper,
             R.id.old_care, R.id.child_missing, R.id.go_home,
             R.id.shop,R.id.tv_title,
             R.id.menu_text,R.id.ibtn_back})
@@ -795,6 +804,12 @@ public class MainActivity extends BaseActivity {
             //当处理完侧滑菜单点击事件后，先关闭菜单，然后执行
             case R.id.hint: {
                 openSlideMenu();//TODO 直接关闭
+                CallPhoneUtil.callPhoneNumber(this,getString(R.string.about_communicate));
+                break;
+            }
+            case R.id.hint2: {
+                openSlideMenu();//TODO 直接关闭
+                CallPhoneUtil.callPhoneNumber(this,getString(R.string.about_communicate2));
                 break;
             }
             case R.id.inquiry: {

@@ -7,6 +7,7 @@ import android.widget.TextView;
 import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
+import com.quanjiakan.activity.base.WXPayResult;
 import com.quanjiakan.util.common.LogUtil;
 import com.quanjiakan.util.pay.WeixinPayHandler;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
@@ -53,13 +54,21 @@ public class WXPayEntryActivity extends BaseActivity implements IWXAPIEventHandl
 	public void onResp(BaseResp resp) {
 		LogUtil.e( "onPayFinish, errCode = " + resp.errCode+"errorString:"+resp.errStr);
 		if (resp.errCode == BaseResp.ErrCode.ERR_OK) {
-			BaseApplication.getInstances().setWxPayResultSuccess();
+			BaseApplication.getInstances().saveWxPayResult(BaseApplication.getInstances().getWxPayLastInfoBusinessTypeCode(),
+					BaseApplication.getInstances().getWxPayLastInfoOrderId(),
+					WXPayResult.SUCCESS);
 		}else if (resp.errCode == BaseResp.ErrCode.ERR_COMM) {
-			BaseApplication.getInstances().setWxPayResultFailure();
+			BaseApplication.getInstances().saveWxPayResult(BaseApplication.getInstances().getWxPayLastInfoBusinessTypeCode(),
+					BaseApplication.getInstances().getWxPayLastInfoOrderId(),
+					WXPayResult.FAILURE);
 		}else if(resp.errCode == BaseResp.ErrCode.ERR_USER_CANCEL){
-			BaseApplication.getInstances().setWxPayResultCancel();
+			BaseApplication.getInstances().saveWxPayResult(BaseApplication.getInstances().getWxPayLastInfoBusinessTypeCode(),
+					BaseApplication.getInstances().getWxPayLastInfoOrderId(),
+					WXPayResult.USER_CANCEL);
 		}else{
-			BaseApplication.getInstances().setWxPayResultFailure();
+			BaseApplication.getInstances().saveWxPayResult(BaseApplication.getInstances().getWxPayLastInfoBusinessTypeCode(),
+					BaseApplication.getInstances().getWxPayLastInfoOrderId(),
+					WXPayResult.FAILURE);
 		}
 		//TODO 收到回调后关闭页面
 		finish();
