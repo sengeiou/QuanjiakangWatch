@@ -509,7 +509,7 @@ public class SignupActivity extends BaseActivity {
             }
             case R.id.btn_yanzhengma: {
                 if (((TextView) view).getText().toString().equals(getString(R.string.hint_signup_check_code))) {//TODO 未在验证码缓冲事件内
-                    if (!EditTextFilter.isPhoneLegal(etUsername.getText().toString())) {
+                    if (!StringCheckUtil.isPhoneNumber(etUsername.getText().toString())) {
                         CommonDialogHint.getInstance().showHint(SignupActivity.this,getString(R.string.error_findpassword_error_phone));
                         return;
                     }

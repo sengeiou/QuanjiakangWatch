@@ -400,7 +400,8 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
         if(watchInfoEntityList.get(Integer.parseInt(marker.getTitle()))!=null &&
                 watchInfoEntityList.get(Integer.parseInt(marker.getTitle())).getPhone()!=null &&
                 StringCheckUtil.isPhoneNumber(watchInfoEntityList.get(Integer.parseInt(marker.getTitle())).getPhone())){
-            phone.setText("电话:" + watchInfoEntityList.get(Integer.parseInt(marker.getTitle())).getPhone());
+            phone.setText(BaseApplication.getInstances().getString(R.string.hint_common_phone_prefix) +
+                    watchInfoEntityList.get(Integer.parseInt(marker.getTitle())).getPhone());
             phone_line.setVisibility(View.VISIBLE);
         }else{
             phone_line.setVisibility(View.GONE);
@@ -544,7 +545,8 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
                 @Override
                 public void onClick(View view) {
                     if (selfLatitude != -1000 && selfLongitude != -1000) {
-                        NaviMapUtil.GotoGaoDeNaviMap(getActivity(), "全家康用户端", selfLatitude + "", selfLongitude + "", selfAdress, latLng.latitude + "", latLng.longitude + "",
+                        NaviMapUtil.GotoGaoDeNaviMap(getActivity(), BaseApplication.getInstances().
+                                getString(R.string.hint_common_app_name), selfLatitude + "", selfLongitude + "", selfAdress, latLng.latitude + "", latLng.longitude + "",
                                 (info_location.getTag() != null ? info_location.getTag().toString() : ""), "1", "0", "2");
                     } else {
                         locateSelf(LOCATION_TYPE_GET_POSITION);

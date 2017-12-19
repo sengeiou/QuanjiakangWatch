@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
+    <string name="hint_common_app_name">全家康用户端</string>
+
 
     <string name="hint_common_hint_title">提示</string>
     <string name="hint_common_hint_no_data">暂无数据</string>
@@ -26,6 +28,9 @@
 
 
     <string name="hint_findpassword_reset_success">密码重置成功!</string>
+
+
+    <string name="hint_common_phone_prefix">电话:</string>
 
     <string name="hint_guide_item_amap">高德导航</string>
     <string name="hint_guide_item_baidu_map">百度导航</string>

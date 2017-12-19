@@ -45,10 +45,10 @@ public class StringCheckUtil {
      */
     public static final boolean isPhoneNumber(String phoneNumber){
         try{
-            if(isEmpty(phoneNumber)){
+            if(isEmpty(phoneNumber) && phoneNumber.length()>3){//TODO 考虑到4位短号
                 return false;
             }
-            Pattern pattern = Pattern.compile(mobileRegex);
+            Pattern pattern = Pattern.compile(numberRegex);//TODO 考虑到港澳台的号码，不进行国内的规则校验，只验证是否为纯数字
             Matcher matcher = pattern.matcher(phoneNumber);
             return matcher.matches();
         }catch (Exception e){

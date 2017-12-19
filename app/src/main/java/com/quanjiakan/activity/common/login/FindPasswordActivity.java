@@ -161,7 +161,7 @@ public class FindPasswordActivity extends BaseActivity implements OnClickListene
 			return false;
 		}
 
-		if(!EditTextFilter.isPhoneLegal(etUsername.getText().toString().trim())) {
+		if(!StringCheckUtil.isPhoneNumber(etUsername.getText().toString().trim())) {
 			CommonDialogHint.getInstance().showHint(FindPasswordActivity.this,getResources().getString(R.string.error_findpassword_error_phone));
 			return false;
 		}
