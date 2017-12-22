@@ -1,0 +1,8 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/selecter_201708_solid_f6f6f6_b3" android:state_focused="false" android:state_pressed="false" android:state_selected="false"/>
+    <item android:drawable="@drawable/selecter_201708_solid_e9e9e9_b3" android:state_focused="true"/>
+    <item android:drawable="@drawable/selecter_201708_solid_e9e9e9_b3" android:state_selected="true"/>
+    <item android:drawable="@drawable/selecter_201708_solid_e9e9e9_b3" android:state_pressed="true"/>
+
+</selector>

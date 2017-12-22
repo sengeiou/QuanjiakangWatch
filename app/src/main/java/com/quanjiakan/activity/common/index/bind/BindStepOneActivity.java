@@ -184,7 +184,7 @@ public class BindStepOneActivity extends BaseActivity {
                             isGoWebActivation = true;
                         }else{//TODO 老人手表  非儿童的设备都在老人激活页进行激活
                             Intent intent = new Intent(BindStepOneActivity.this, CommonWebForBindOldActivity.class);
-                            intent.putExtra(IParamsName.PARAMS_COMMON_WEB_URL,"http://static.quanjiakan.com/qjk/pages/qjk/device/activation_login.jsp");
+                            intent.putExtra(IParamsName.PARAMS_COMMON_WEB_URL,"http://static.quanjiakan.com/qjk/pages/qjk/device/activation_login.jsp?IMEI=" + bindDevice2dcodeValue.getText().toString().trim());
                             intent.putExtra(IParamsName.PARAMS_COMMON_WEB_TITLE,getString(R.string.web_bind_child_title));
                             startActivityForResult(intent, ICommonActivityResultCode.RELOAD_DATA);
                             isGoWebActivation = true;

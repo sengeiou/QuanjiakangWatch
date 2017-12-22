@@ -204,5 +204,13 @@
 
     <string name="hint_house_keeper_check_order">校验订单失败，请稍后重试!</string>
 
+
+    <string name="hint_device_connect_status">手表未联网</string>
+    <string name="hint_device_watch_battery">手表电量</string>
+    <string name="hint_device_fall_battery">跌倒器电量</string>
+    <string name="hint_device_fall_status">手表与跌倒器状态</string>
+
+    <string name="hint_device_health_check">查看</string>
+
 </resources>
 

@@ -357,4 +357,10 @@
 
     <color name="main_tab_item_default_color">#77000000</color>
 
+
+    <!--  含透明度的黑色 最后两位为透明度比例  -->
+    <color name="font_color_000000_alpha_00">#00000000</color>
+    <color name="font_color_000000_alpha_20">#33000000</color>
+    <color name="font_color_000000_alpha_50">#80000000</color>
+
 </resources>

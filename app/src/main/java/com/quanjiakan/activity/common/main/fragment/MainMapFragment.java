@@ -42,17 +42,17 @@ import com.amap.api.services.geocoder.GeocodeSearch;
 import com.amap.api.services.geocoder.RegeocodeAddress;
 import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
+import com.google.gson.reflect.TypeToken;
 import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.activity.base.BaseFragment;
+import com.quanjiakan.activity.common.index.bind.BindStepOneActivity;
+import com.quanjiakan.activity.common.index.devices.WatchEntryActivity_old;
+import com.quanjiakan.adapter.DeviceContainerAdapter;
 import com.quanjiakan.constants.ICommonActivityRequestCode;
 import com.quanjiakan.constants.ICommonActivityResultCode;
 import com.quanjiakan.constants.ICommonData;
 import com.quanjiakan.constants.ICommonSharePreferencesKey;
-import com.quanjiakan.activity.common.index.bind.BindStepOneActivity;
-import com.quanjiakan.activity.common.index.devices.WatchEntryActivity_old;
-import com.quanjiakan.activity.common.main.MainActivity;
-import com.quanjiakan.adapter.DeviceContainerAdapter;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.db.entity.BindWatchInfoEntity;
 import com.quanjiakan.db.manager.DaoManager;
@@ -60,12 +60,15 @@ import com.quanjiakan.device.entity.CommonNattyData;
 import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.IResponseResultCode;
 import com.quanjiakan.net.retrofit.result_entity.GetWatchListEntity;
+import com.quanjiakan.net.retrofit.result_entity.GetWatchListStatusEntity;
 import com.quanjiakan.net_presenter.BindDeviceListPresenter;
 import com.quanjiakan.net_presenter.IPresenterBusinessCode;
+import com.quanjiakan.util.callphone.CallPhoneUtil;
+import com.quanjiakan.util.common.SerializeToObjectUtil;
 import com.quanjiakan.util.common.StringCheckUtil;
 import com.quanjiakan.util.common.UnitExchangeUtil;
-import com.quanjiakan.util.dialog.CommonDialogHint;
 import com.quanjiakan.util.dialog.CommonDialog;
+import com.quanjiakan.util.dialog.CommonDialogHint;
 import com.quanjiakan.util.map.MapUtil;
 import com.quanjiakan.util.map.NaviMapUtil;
 import com.umeng.analytics.MobclickAgent;
@@ -139,6 +142,10 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
     //******************
     private Dialog noBindDialog;
 
+    //******************
+    private Timer freshOnlineStatusTimer;
+    private TimerTask freshTask;
+
     /**
      * ************************************************************************************************************************
      * 生命周期方法
@@ -162,6 +169,7 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
     public void onStart() {
         super.onStart();
         register();
+        startFreshOnlineStatusTimer();//TODO 避免切换页面时让然出现在调用的情况
     }
 
     @Override
@@ -169,6 +177,7 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
         super.onResume();
         MobclickAgent.onPageStart(this.getClass().getSimpleName());
         mapView.onResume();
+
     }
 
     @Override
@@ -176,12 +185,14 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
         super.onPause();
         MobclickAgent.onPageEnd(this.getClass().getSimpleName());
         mapView.onPause();
+
     }
 
     @Override
     public void onStop() {
         super.onStop();
         unregister();
+        stopFreshOnlineStatus();
     }
 
     @Override
@@ -354,12 +365,12 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
         //TODO 临时对位置进行查询
         getAddressByLatlng(marker.getPosition());
 
-        if(watchInfoEntityList.get(Integer.parseInt(marker.getTitle()))!=null &&
-                watchInfoEntityList.get(Integer.parseInt(marker.getTitle())).getPhone()!=null &&
-                StringCheckUtil.isPhoneNumber(watchInfoEntityList.get(Integer.parseInt(marker.getTitle())).getPhone())){
-            phone.setText("电话:" + watchInfoEntityList.get(Integer.parseInt(marker.getTitle())).getPhone());
+        if (watchInfoEntityList.get(Integer.parseInt(marker.getTitle())) != null &&
+                watchInfoEntityList.get(Integer.parseInt(marker.getTitle())).getPhone() != null &&
+                StringCheckUtil.isPhoneNumber(watchInfoEntityList.get(Integer.parseInt(marker.getTitle())).getPhone())) {
+            phone.setText(getString(R.string.hint_common_phone_prefix) + watchInfoEntityList.get(Integer.parseInt(marker.getTitle())).getPhone());
             phone_line.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             phone_line.setVisibility(View.GONE);
         }
 
@@ -368,8 +379,11 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
             public void onClick(View v) {
                 if (watchInfoEntityList.get(Integer.parseInt(marker.getTitle())).getPhone() != null &&
                         watchInfoEntityList.get(Integer.parseInt(marker.getTitle())).getPhone().length() > 0) {
-                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phone.getText().toString().substring(phone.getText().toString().indexOf(":") + 1)));
-                    startActivity(intent);
+                    //TODO 直接调用
+//                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phone.getText().toString().substring(phone.getText().toString().indexOf(":") + 1)));
+//                    startActivity(intent);
+                    //TODO 使用统一的方法调用---内涵权限检查
+                    CallPhoneUtil.callPhoneNumber(MainMapFragment.this,phone.getText().toString().substring(phone.getText().toString().indexOf(":") + 1));
                 } else {
                     showSetNumDialog();
                 }
@@ -397,13 +411,13 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
         guide_line = (LinearLayout) view.findViewById(R.id.guide_line);
         //TODO 临时对位置进行查询
         getAddressByLatlng(marker.getPosition());
-        if(watchInfoEntityList.get(Integer.parseInt(marker.getTitle()))!=null &&
-                watchInfoEntityList.get(Integer.parseInt(marker.getTitle())).getPhone()!=null &&
-                StringCheckUtil.isPhoneNumber(watchInfoEntityList.get(Integer.parseInt(marker.getTitle())).getPhone())){
+        if (watchInfoEntityList.get(Integer.parseInt(marker.getTitle())) != null &&
+                watchInfoEntityList.get(Integer.parseInt(marker.getTitle())).getPhone() != null &&
+                StringCheckUtil.isPhoneNumber(watchInfoEntityList.get(Integer.parseInt(marker.getTitle())).getPhone())) {
             phone.setText(BaseApplication.getInstances().getString(R.string.hint_common_phone_prefix) +
                     watchInfoEntityList.get(Integer.parseInt(marker.getTitle())).getPhone());
             phone_line.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             phone_line.setVisibility(View.GONE);
         }
         call_phone.setOnClickListener(new View.OnClickListener() {
@@ -465,6 +479,7 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
             }
         });
     }
+
     public static final int FRESH_MARK_LIST = 16;
     public static final int INFOR_ADDRESS = 101;
     private Handler msgHandler = new Handler() {
@@ -546,7 +561,7 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
                 public void onClick(View view) {
                     if (selfLatitude != -1000 && selfLongitude != -1000) {
                         NaviMapUtil.GotoGaoDeNaviMap(getActivity(), BaseApplication.getInstances().
-                                getString(R.string.hint_common_app_name), selfLatitude + "", selfLongitude + "", selfAdress, latLng.latitude + "", latLng.longitude + "",
+                                        getString(R.string.hint_common_app_name), selfLatitude + "", selfLongitude + "", selfAdress, latLng.latitude + "", latLng.longitude + "",
                                 (info_location.getTag() != null ? info_location.getTag().toString() : ""), "1", "0", "2");
                     } else {
                         locateSelf(LOCATION_TYPE_GET_POSITION);
@@ -631,12 +646,12 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
     public boolean onMarkerClick(Marker marker) {
         //TODO 跳转至手表首页---根据对应的Marker
         int markIndex = Integer.parseInt(marker.getTitle());
-        if(ICommonData.DEVICE_TYPE_OLD.equals(watchInfoEntityList.get(markIndex).getType())){
+        if (ICommonData.DEVICE_TYPE_OLD.equals(watchInfoEntityList.get(markIndex).getType())) {
             Intent intent = new Intent(getActivity(), WatchEntryActivity_old.class);
-            startActivityForResult(intent,ICommonActivityRequestCode.MAP_TO_DEVICE_OLD);
-        }else if(ICommonData.DEVICE_TYPE_CHILD.equals(watchInfoEntityList.get(markIndex).getType())){
+            startActivityForResult(intent, ICommonActivityRequestCode.MAP_TO_DEVICE_OLD);
+        } else if (ICommonData.DEVICE_TYPE_CHILD.equals(watchInfoEntityList.get(markIndex).getType())) {
             Intent intent = new Intent(getActivity(), WatchEntryActivity_old.class);
-            startActivityForResult(intent,ICommonActivityRequestCode.MAP_TO_DEVICE_CHILD);
+            startActivityForResult(intent, ICommonActivityRequestCode.MAP_TO_DEVICE_CHILD);
         }
         return true;
     }
@@ -663,7 +678,7 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode){
+        switch (requestCode) {
             case ICommonActivityRequestCode.MAP_TO_DEVICE_CHILD: {
 
                 break;
@@ -673,7 +688,7 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
                 break;
             }
             case ICommonActivityRequestCode.RELOAD_DATA: {
-                if(resultCode== ICommonActivityResultCode.RELOAD_DATA){
+                if (resultCode == ICommonActivityResultCode.RELOAD_DATA) {
                     presenter.getBindDeviceList(this);
                 }
                 break;
@@ -689,10 +704,33 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
      * 网络
      */
     public void getBindWatchListFromNet() {
-        if(presenter==null){
+        if (presenter == null) {
             presenter = new BindDeviceListPresenter();
         }
         presenter.getBindDeviceList(this);
+    }
+
+
+    public void startFreshOnlineStatusTimer() {
+        //TODO 先控制
+        stopFreshOnlineStatus();
+        freshOnlineStatusTimer = new Timer();
+        freshTask = new TimerTask() {
+            @Override
+            public void run() {
+                if (watchInfoEntityList != null && watchInfoEntityList.size() > 0) {
+                    presenter.getDeviceListStatus(MainMapFragment.this);
+                }
+            }
+        };
+        freshOnlineStatusTimer.schedule(freshTask,30000,30000);
+    }
+
+    public void stopFreshOnlineStatus() {
+        if (freshOnlineStatusTimer != null) {
+            freshOnlineStatusTimer.cancel();
+            freshOnlineStatusTimer = null;
+        }
     }
 
     /**
@@ -709,6 +747,13 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
                 params.put(IParamsName.PARAMS_COMMON_TOKEN, BaseApplication.getInstances().getLoginInfo().getToken());
                 return params;
             }
+            case IPresenterBusinessCode.DEVICE_WATCH_LIST_STATUS: {
+                HashMap<String, String> params = new HashMap<>();
+                params.put(IParamsName.PARAMS_DEVICE_MEMBER_ID, BaseApplication.getInstances().getLoginInfo().getUserId());
+                params.put(IParamsName.PARAMS_COMMON_PLATFORM, IHttpUrlConstants.PLATFORM_ANDROID);
+                params.put(IParamsName.PARAMS_COMMON_TOKEN, BaseApplication.getInstances().getLoginInfo().getToken());
+                return params;
+            }
         }
         return null;
     }
@@ -717,6 +762,10 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
     public void showMyDialog(int type) {
         switch (type) {
             case IPresenterBusinessCode.DEVICE_WATCH_LIST: {
+                break;
+            }
+            case IPresenterBusinessCode.DEVICE_WATCH_LIST_STATUS: {
+                //TODO 不做处理
                 break;
             }
         }
@@ -729,17 +778,20 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
                 break;
             }
         }
+        dismissDialog();
     }
 
     @Override
     public void onSuccess(int type, int httpResponseCode, Object result) {
         switch (type) {
             case IPresenterBusinessCode.DEVICE_WATCH_LIST: {
-                if (result != null && result instanceof GetWatchListEntity) {
-                    GetWatchListEntity entity = (GetWatchListEntity) result;
+                if (result != null && result instanceof String) {
+                    GetWatchListEntity entity = (GetWatchListEntity) SerializeToObjectUtil.getInstances().
+                            jsonToObject(result.toString(), new TypeToken<GetWatchListEntity>() {
+                            }.getType());
                     if (IResponseResultCode.RESPONSE_SUCCESS.equals(entity.getCode())) {
                         saveWatchListDataAndShowList(entity);
-                    }else if(IResponseResultCode.RESPONSE_EMPTY_DATA.equals(entity.getCode())){
+                    } else if (IResponseResultCode.RESPONSE_EMPTY_DATA.equals(entity.getCode())) {
                         locateSelf(LOCATION_TYPE_SHOW_AND_MOVE_POSITION);
                         //TODO 提示需要进行绑定的对话框
                         isShowNoBindDialog(true);
@@ -759,6 +811,11 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
                 }
                 break;
             }
+            case IPresenterBusinessCode.DEVICE_WATCH_LIST_STATUS: {
+                //TODO 不进行处理
+                refreshWatchListOnlineStatus(result);
+                return;
+            }
         }
     }
 
@@ -770,6 +827,10 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
                     CommonDialogHint.getInstance().showHint(getActivity(), errorMsg.toString());
                 }
                 break;
+            }
+            case IPresenterBusinessCode.DEVICE_WATCH_LIST_STATUS: {
+                //TODO 不进行处理
+                return;
             }
             default: {
                 if (errorMsg != null) {
@@ -785,8 +846,8 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
     /**
      * ************************************************************************************************************************
      */
-    public void isShowNoBindDialog(boolean isShow){
-        if(isShow && !ICommonSharePreferencesKey.KEY_SHOW_NO_BIND_NOT_SHOW.equals(BaseApplication.getInstances().getKeyValue(ICommonSharePreferencesKey.KEY_SHOW_NO_BIND))){
+    public void isShowNoBindDialog(boolean isShow) {
+        if (isShow && !ICommonSharePreferencesKey.KEY_SHOW_NO_BIND_NOT_SHOW.equals(BaseApplication.getInstances().getKeyValue(ICommonSharePreferencesKey.KEY_SHOW_NO_BIND))) {
             noBindDialog = new Dialog(getActivity(), R.style.dialog);
             View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_main_map_entry_tips, null);
             RelativeLayout exit = (RelativeLayout) view.findViewById(R.id.exit);
@@ -824,23 +885,44 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
             lp.gravity = Gravity.CENTER;
             noBindDialog.setContentView(view, lp);
             noBindDialog.setCanceledOnTouchOutside(false);
-            if (noBindDialog!=null&&!noBindDialog.isShowing()) {
+            if (noBindDialog != null && !noBindDialog.isShowing()) {
                 noBindDialog.show();
             }
-        }else{
-            if(noBindDialog!=null){
+        } else {
+            if (noBindDialog != null) {
                 noBindDialog.dismiss();
             }
         }
     }
 
-    public void dimissNoBindDialog(){
-        if(noBindDialog!=null && noBindDialog.isShowing()){
+    public void dimissNoBindDialog() {
+        if (noBindDialog != null && noBindDialog.isShowing()) {
             noBindDialog.dismiss();
         }
     }
 
+    public void refreshWatchListOnlineStatus(Object result) {
+        if (result != null && result instanceof String) {
+            GetWatchListStatusEntity entity = (GetWatchListStatusEntity) SerializeToObjectUtil.getInstances().
+                    jsonToObject(result.toString(),new TypeToken<GetWatchListStatusEntity>(){}.getType());
+            if(entity!=null && entity.getList()!=null && entity.getList().size()>0){
+                List<GetWatchListStatusEntity.ListBean> tempList = entity.getList();
+                for (int i = watchInfoEntityList.size()-1;i>-1;i--){
+                    for(int j = tempList.size()-1;j>-1;j--){
+                        if(watchInfoEntityList.get(i).getImei().equals(tempList.get(j).getImei())){
+                            watchInfoEntityList.get(i).setOnline(tempList.get(j).getOnline());
+                            tempList.remove(j);//TODO 减少不必要的循环检查数据
+                            break;
+                        }
+                    }
+                }
 
+                //TODO 循环完成后，刷新ListView的数据
+                bindWatchListAdapter.setDevices(watchInfoEntityList);
+                bindWatchListAdapter.notifyDataSetChanged();
+            }
+        }
+    }
 
     //TODO 将数据持久化到本地数据库中，并展示数据到ListView上
     public void saveWatchListDataAndShowList(GetWatchListEntity entity) {
@@ -860,7 +942,7 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
                 /*
                 先删除原有的部分
                  */
-                if(!watchInfoEntityList.isEmpty()){
+                if (!watchInfoEntityList.isEmpty()) {
                     DaoManager.getInstances(getActivity()).getDaoSession().
                             getBindWatchInfoEntityDao().deleteInTx(watchInfoEntityList);
                 }
@@ -872,9 +954,9 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
 
 
                 //TODO 清除原有数据引用
-                if(watchInfoEntityList.size()>0){
+                if (watchInfoEntityList.size() > 0) {
                     watchInfoEntityList.clear();
-                }else{
+                } else {
                     watchInfoEntityList = new ArrayList<>();
                 }
                 //TODO 存入最新的数据
@@ -885,13 +967,13 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
                 loadDataIntoListView();
                 resetMarkerData(true);
                 clearMapMarker();
-                showMarkerOnMap(markerList,currentClickPosition);
+                showMarkerOnMap(markerList, currentClickPosition);
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
-        }else{
+        } else {
             //TODO 展示提示人进行绑定的Dialog
             locateSelf(LOCATION_TYPE_SHOW_AND_MOVE_POSITION);
         }
@@ -899,12 +981,13 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
 
     /**
      * TODO <B>获取当前用户绑定的手表列表</B>   (从本地数据库中获取)
+     *
      * @return
      */
-    public List<BindWatchInfoEntity> getMyBindWatchListFromDB(){
+    public List<BindWatchInfoEntity> getMyBindWatchListFromDB() {
         List<BindWatchInfoEntity> tempList = DaoManager.getInstances(getActivity()).getDaoSession().getBindWatchInfoEntityDao().loadAll();
-        for(int i = tempList.size()-1;i>-1;i--){
-            if(!BaseApplication.getInstances().getLoginInfo().getUserId().equals(tempList.get(i).getBindUserID())){
+        for (int i = tempList.size() - 1; i > -1; i--) {
+            if (!BaseApplication.getInstances().getLoginInfo().getUserId().equals(tempList.get(i).getBindUserID())) {
                 tempList.remove(i);
             }
         }
@@ -917,15 +1000,15 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
      * @param list
      * @return
      */
-    public List<BindWatchInfoEntity> refreshNetData(List<BindWatchInfoEntity> list){
+    public List<BindWatchInfoEntity> refreshNetData(List<BindWatchInfoEntity> list) {
         List<BindWatchInfoEntity> tempList = new ArrayList<>();
         tempList.addAll(watchInfoEntityList);
-        for(BindWatchInfoEntity netData:list){
+        for (BindWatchInfoEntity netData : list) {
             int size = tempList.size();
-            for(int i=size-1;i>-1;i--){
+            for (int i = size - 1; i > -1; i--) {
                 BindWatchInfoEntity localData = tempList.get(i);
                 //TODO 同一个设备，则更新网络数据
-                if(localData.getImei().equals(netData.getImei())){
+                if (localData.getImei().equals(netData.getImei())) {
                     //TODO 主要更新数据为---报警时间与语音未读数
                     netData.setAlarmTime(localData.getAlarmTime());
                     netData.setUnreadMessageNumber(localData.getUnreadMessageNumber());
@@ -961,14 +1044,14 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
     /**
      * 将watchInfoEntityList中的数据在ListView中展示出来
      */
-    public void loadDataIntoListView(){
+    public void loadDataIntoListView() {
 //        watchInfoEntityList
-        if(bindWatchListAdapter==null){
-            bindWatchListAdapter = new DeviceContainerAdapter(getActivity(),watchInfoEntityList);
+        if (bindWatchListAdapter == null) {
+            bindWatchListAdapter = new DeviceContainerAdapter(getActivity(), watchInfoEntityList);
             deviceContainer.setAdapter(bindWatchListAdapter);
             bindWatchListAdapter.setSelectedPosition(currentClickPosition);
             deviceContainer.setOnItemClickListener(itemClickListener);
-        }else{
+        } else {
             bindWatchListAdapter.setDevices(watchInfoEntityList);
             bindWatchListAdapter.setSelectedPosition(currentClickPosition);
             bindWatchListAdapter.notifyDataSetChanged();
@@ -976,15 +1059,15 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
     }
 
     //TODO 展示特定IMEI号的点---报警点---(由MainActivity收到SOS等报警广播后调用展示数据)
-    public void showAlarmWatchPoint(String imei,double lat,double lng){
+    public void showAlarmWatchPoint(String imei, double lat, double lng) {
         //TODO
-        if(imei!=null && imei.length()!= ICommonData.VALID_IMEI_LENGTH && lat>0 && lng>0){//TODO 控制参数的有效性
+        if (imei != null && imei.length() != ICommonData.VALID_IMEI_LENGTH && lat > 0 && lng > 0) {//TODO 控制参数的有效性
             int size = watchInfoEntityList.size();
-            for(int i=0;i<size;i++){
-                if(imei.equals(watchInfoEntityList.get(i).getImei())){//TODO 找到对应的设备
+            for (int i = 0; i < size; i++) {
+                if (imei.equals(watchInfoEntityList.get(i).getImei())) {//TODO 找到对应的设备
                     //TODO 更新设备定位与报警时间信息
-                    watchInfoEntityList.get(i).setLocation(lng+","+lat);
-                    watchInfoEntityList.get(i).setAlarmTime(System.currentTimeMillis()+"");
+                    watchInfoEntityList.get(i).setLocation(lng + "," + lat);
+                    watchInfoEntityList.get(i).setAlarmTime(System.currentTimeMillis() + "");
                     //TODO 更新当前点为报警点
                     currentClickPosition = i;
                     //TODO 更新持久化数据信息
@@ -997,15 +1080,16 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
             //TODO 刷新地图的各个Marker
             resetMarkerData(true);
             clearMapMarker();
-            showAlarmMarkerOnMap(markerList,currentClickPosition);
+            showAlarmMarkerOnMap(markerList, currentClickPosition);
         }
     }
 
     //TODO 开始警报计时，若存在其他响应时，则先取消当前的定时器
     private Timer sosTimer;
     private TimerTask timerTask;
+
     //TODO
-    public void startAlarmTimer(){
+    public void startAlarmTimer() {
         if (sosTimer != null) {
             sosTimer.cancel();
             sosTimer = null;
@@ -1018,7 +1102,7 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
                     @Override
                     public void run() {
                         clearMapMarker();
-                        showMarkerOnMap(markerList,currentClickPosition);
+                        showMarkerOnMap(markerList, currentClickPosition);
                     }
                 });
                 sosTimer.cancel();
@@ -1028,19 +1112,19 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
         sosTimer.schedule(timerTask, 15000);//TODO 展示15秒的的
     }
 
-    public void resetMarkerData(boolean isClearOriginalData){
+    public void resetMarkerData(boolean isClearOriginalData) {
         //TODO 若需要，则清除地图原有的数据
-        if(isClearOriginalData){
+        if (isClearOriginalData) {
             clearMapMarker();
         }
 
-        if(watchInfoEntityList!=null && watchInfoEntityList.size()>0){
+        if (watchInfoEntityList != null && watchInfoEntityList.size() > 0) {
             //TODO 根据 实际绑定的用户地址，对应出Marker的位置
 
             //TODO 清理原来的数据地址
-            if(markerList==null){
+            if (markerList == null) {
                 markerList = new ArrayList<>();
-            }else{
+            } else {
                 markerList.clear();
             }
             //TODO
@@ -1060,11 +1144,11 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
                     } else {
                         markerList.add(null);
                     }
-                }else{
+                } else {
                     markerList.add(null);
                 }
             }
-        }else{
+        } else {
             locateSelf(LOCATION_TYPE_SHOW_AND_MOVE_POSITION);//TODO 若没有绑定数据，则展示自己的定位位置
         }
     }
@@ -1075,20 +1159,20 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
      * @param list
      * @param infoWindowPosition
      */
-    public void showMarkerOnMap(List<LatLng> list, int infoWindowPosition){
+    public void showMarkerOnMap(List<LatLng> list, int infoWindowPosition) {
         if (list != null && list.size() > 0) {
             initMarkerImageContainerList();
             if (clickedMarker != null && clickedMarker.isInfoWindowShown()) {
                 clickedMarker.hideInfoWindow();
             }
             addMarker(infoWindowPosition);
-        }else{//TODO 若没有绑定则展示自己的位置
+        } else {//TODO 若没有绑定则展示自己的位置
             return;
         }
     }
 
-    public void addMarker(int infoWindowPosition){
-        if(aMap!=null){
+    public void addMarker(int infoWindowPosition) {
+        if (aMap != null) {
             int size = markerList.size();
             for (int i = 0; i < size; i++) {
                 final LatLng temp = markerList.get(i);
@@ -1116,7 +1200,7 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
                                     .icons(iconOldList)
                                     .draggable(false));
                         }
-                        if(clickedMarker!=null){
+                        if (clickedMarker != null) {
                             clickedMarker.showInfoWindow();
                         }
                     } else {
@@ -1153,10 +1237,11 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
 
     /**
      * 刷新前需要删除已经存在数据
+     *
      * @param list
      * @param infoWindowPosition
      */
-    public void showAlarmMarkerOnMap(List<LatLng> list, int infoWindowPosition){
+    public void showAlarmMarkerOnMap(List<LatLng> list, int infoWindowPosition) {
         if (list != null && list.size() > 0) {
             initMarkerAlarmImageContainerList();
             //TODO 当前展示的InfoWindow如果展示的话
@@ -1164,12 +1249,13 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
                 clickedMarker.hideInfoWindow();
             }
             addAlarmMarker(infoWindowPosition);
-        }else{//TODO 若没有绑定则展示自己的位置
+        } else {//TODO 若没有绑定则展示自己的位置
             return;
         }
     }
-    public void addAlarmMarker(int infoWindowPosition){
-        if(aMap!=null){
+
+    public void addAlarmMarker(int infoWindowPosition) {
+        if (aMap != null) {
             int size = markerList.size();
             for (int i = 0; i < size; i++) {
                 final LatLng temp = markerList.get(i);
@@ -1197,7 +1283,7 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
                                     .icons(iconOldList)
                                     .draggable(false));
                         }
-                        if(clickedMarker!=null){
+                        if (clickedMarker != null) {
                             clickedMarker.showInfoWindow();
                         }
                     } else {
@@ -1238,8 +1324,9 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
     private Marker clickedMarker;
     private ArrayList<BitmapDescriptor> iconChildList = new ArrayList<>();
     private ArrayList<BitmapDescriptor> iconOldList = new ArrayList<>();
+
     //TODO 初始化Marker图标容器(普通)
-    public void initMarkerImageContainerList(){
+    public void initMarkerImageContainerList() {
         if (iconChildList == null || iconChildList.size() < 1) {
             iconChildList = new ArrayList<>();
         } else {
@@ -1286,7 +1373,7 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
     }
 
     //TODO 初始化Marker图标容器(报警)
-    public void initMarkerAlarmImageContainerList(){
+    public void initMarkerAlarmImageContainerList() {
         if (iconChildList == null || iconChildList.size() < 1) {
             iconChildList = new ArrayList<>();
         } else {
@@ -1332,7 +1419,7 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
         iconOldList.add(BitmapDescriptorFactory.fromResource(R.drawable.alarm_old_point_16));
     }
 
-    public void clearMapMarker(){
+    public void clearMapMarker() {
         if (aMap != null) {
             aMap.clear();
         }
@@ -1341,8 +1428,8 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
     private AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-            currentClickPosition = (int)l;
-            if(watchInfoEntityList.size()>currentClickPosition){//TODO 确保点击的部分有效
+            currentClickPosition = (int) l;
+            if (watchInfoEntityList.size() > currentClickPosition) {//TODO 确保点击的部分有效
                 //TODO
                 if (30000 > (System.currentTimeMillis() - Long.parseLong(watchInfoEntityList.get(currentClickPosition).getAlarmTime()))) {
                     clearMapMarker();
@@ -1356,9 +1443,9 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
                 bindWatchListAdapter.notifyDataSetChanged();
 
                 //TODO 重新展示Marker并
-                if(markerList.get(currentClickPosition)!=null){
+                if (markerList.get(currentClickPosition) != null) {
                     moveCamera(markerList.get(currentClickPosition));
-                }else{
+                } else {
                     locateSelf(LOCATION_TYPE_SHOW_AND_MOVE_POSITION);
                 }
             }

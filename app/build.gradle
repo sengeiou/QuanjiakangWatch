@@ -118,6 +118,8 @@ dependencies {
     //************************* 加密用的Apache包
     compile files('libs/commons-lang3-3.1.jar')
     compile files('libs/commons-codec-1.8.jar')
+    //************************* AndPermission包-请求权限  https://github.com/yanzhenjie/AndPermission
+    compile 'com.yanzhenjie:permission:1.1.2'
 
     compile project(path: ':pulltorefresh')
 }

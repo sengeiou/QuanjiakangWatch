@@ -69,6 +69,11 @@ public interface IPresenterBusinessCode {
 
     int PAY_GET_PRIVATE_KEY = 30319;
     int HOUSE_KEEPER_ORDER_ENCRYPT = 30320;
+    int DEVICE_WATCH_LIST_STATUS = 30321;
+
+
+
+
     //*******************************************************************************
     int ALI_PAY = 31100;
     int ALI_PAY_VERIFY_RESULT = 31101;

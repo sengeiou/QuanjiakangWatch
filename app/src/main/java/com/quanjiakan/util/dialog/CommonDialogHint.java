@@ -315,4 +315,8 @@ public class CommonDialogHint {
         dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
+
+    public void showDisConnectDeviceServerDialog(Context context){
+        showHint(context,context.getString(R.string.hint_loss_device_server_connection));
+    }
 }

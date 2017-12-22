@@ -248,3 +248,11 @@ public static java.lang.String TABLENAME;
 -keep class com.soundcloud.** {*;}
 -dontwarn com.soundcloud.**
 
+# -- AndPerssion
+-keepclassmembers class ** {
+    @com.yanzhenjie.permission.PermissionYes <methods>;
+}
+-keepclassmembers class ** {
+    @com.yanzhenjie.permission.PermissionNo <methods>;
+}
+

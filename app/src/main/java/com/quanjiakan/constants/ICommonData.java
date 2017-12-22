@@ -62,8 +62,24 @@ public interface ICommonData {
     int MAIN_TAB_ITEM_MSG = 2;
     int MAIN_TAB_ITEM_SETTING = 3;
 
+
+    int WATCH_OLD_FRAGMENT_WATCH = 0;
+    int WATCH_OLD_FRAGMENT_STICK = 1;
+    int WATCH_OLD_FRAGMENT_MATTRESS = 2;
+    String WATCH_OLD_FRAGMENT_WATCH_TAG = "watch_tag";
+    String WATCH_OLD_FRAGMENT_STICK_TAG = "stick_tag";
+    String WATCH_OLD_FRAGMENT_MATTRESS_TAG = "mattress_tag";
+
     int VALID_IMEI_LENGTH = 15;
 
+    int STATUS_WEAR = 1;
+    int STATUS_UNWEAR = 2;
+    int BATTERY1 = 1;
+    int BATTERY2 = 2;
+    int BATTERY3 = 3;
+    int BATTERY4 = 4;
+    int BATTERY5 = 5;
+    int BATTERY6 = 6;
 
 
 }

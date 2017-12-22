@@ -14,6 +14,8 @@ import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.constants.ICommonSharePreferencesKey;
 import com.quanjiakan.activity.common.login.SigninActivity_mvp;
 import com.quanjiakan.activity.common.main.MainActivity;
+import com.quanjiakan.util.common.LogUtil;
+import com.quanjiakan.util.common.NavigatorBarUtil;
 import com.umeng.analytics.MobclickAgent;
 
 import butterknife.BindView;
@@ -41,6 +43,7 @@ public class WelcomeActivity extends BaseActivity {
         setContentView(R.layout.layout_loading);
         ButterKnife.bind(this);
         initPackageInfo();
+
     }
 
     public void initPackageInfo(){

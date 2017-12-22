@@ -1,5 +1,6 @@
 package com.quanjiakan.net.retrofit.service.get.string;
 
+import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.retrofit.result_entity.GetWatchListEntity;
 
@@ -18,7 +19,7 @@ import retrofit2.http.Query;
 public interface RxGetWatchListStringService {
 
     @GET("/"+IHttpUrlConstants.PROJECT_DEVICES+"/"+ IHttpUrlConstants.REQUEST_GET+"?handler=watch&action=watchlist")
-    rx.Observable<String> doGetWatchList(@Query("memberId") String memberId,
-                                                     @Query("platform") String platform,
-                                                     @Query("token") String token);
+    rx.Observable<String> doGetWatchList(@Query(IParamsName.PARAMS_DEVICE_MEMBER_ID) String memberId,
+                                                     @Query(IParamsName.PARAMS_COMMON_PLATFORM) String platform,
+                                                     @Query(IParamsName.PARAMS_COMMON_TOKEN) String token);
 }
