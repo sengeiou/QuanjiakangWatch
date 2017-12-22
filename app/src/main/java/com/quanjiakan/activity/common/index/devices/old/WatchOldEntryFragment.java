@@ -102,10 +102,6 @@ public class WatchOldEntryFragment extends BaseFragment {
     LinearLayout contactLine;
     @BindView(R.id.function_items)
     LinearLayout functionItems;
-    @BindView(R.id.plan_line2)
-    LinearLayout planLine2;
-    @BindView(R.id.fance_line2)
-    LinearLayout fanceLine2;
     @BindView(R.id.contact_line2)
     LinearLayout contactLine2;
     @BindView(R.id.fare_line2)
@@ -124,10 +120,58 @@ public class WatchOldEntryFragment extends BaseFragment {
     MaterialBadgeTextView notice;
     @BindView(R.id.fresh)
     SwipeRefreshLayout fresh;
+    //*********************************
     @BindView(R.id.disconnectedImage)
     ImageView disconnectedImage;
     @BindView(R.id.disconnectedHint)
     TextView disconnectedHint;
+    //*********************************
+    @BindView(R.id.wear_state_line_img)
+    ImageView wearStateLineImg;
+    @BindView(R.id.wear_state_line_name)
+    TextView wearStateLineName;
+    @BindView(R.id.plan_line_img)
+    ImageView planLineImg;
+    @BindView(R.id.plan_line_name)
+    TextView planLineName;
+    @BindView(R.id.fance_line_img)
+    ImageView fanceLineImg;
+    @BindView(R.id.fance_line_name)
+    TextView fanceLineName;
+    @BindView(R.id.contact_line_img)
+    ImageView contactLineImg;
+    @BindView(R.id.contact_line_name)
+    TextView contactLineName;
+    @BindView(R.id.watch_fare_img)
+    ImageView watchFareImg;
+    @BindView(R.id.watch_fare_name)
+    TextView watchFareName;
+    @BindView(R.id.watch_fare)
+    LinearLayout watchFare;
+    @BindView(R.id.watch_manager_img)
+    ImageView watchManagerImg;
+    @BindView(R.id.watch_manager_name)
+    TextView watchManagerName;
+    @BindView(R.id.watch_manager)
+    LinearLayout watchManager;
+    @BindView(R.id.contact_line2_img)
+    ImageView contactLine2Img;
+    @BindView(R.id.contact_line2_name)
+    TextView contactLine2Name;
+    @BindView(R.id.fare_line2_img)
+    ImageView fareLine2Img;
+    @BindView(R.id.fare_line2_name)
+    TextView fareLine2Name;
+    @BindView(R.id.manage_line2_img)
+    ImageView manageLine2Img;
+    @BindView(R.id.manage_line2_name)
+    TextView manageLine2Name;
+    @BindView(R.id.locationName)
+    TextView locationName;
+    @BindView(R.id.callName)
+    TextView callName;
+    @BindView(R.id.chatName)
+    TextView chatName;
     //***************************************************
 
     /**
@@ -256,10 +300,13 @@ public class WatchOldEntryFragment extends BaseFragment {
         initHeadImageAndBattery();
         //TODO 设置健康档案，健康动态页
         initHealth();
+        //TODO 其他功能选项
+        initOtherItem();
 
 
         getConfig();
     }
+
     //***********************************************************************
     public void initDisconnectView() {
         disconnectedImage.setImageResource(R.drawable.old_ico_not_connected);
@@ -273,9 +320,10 @@ public class WatchOldEntryFragment extends BaseFragment {
             disconnected.setVisibility(View.VISIBLE);
         }
     }
+
     //***********************************************************************
     // 初始化头像与电池
-    public void initHeadImageAndBattery(){
+    public void initHeadImageAndBattery() {
         status.setVisibility(View.VISIBLE);
 
         statusLine4.setImageResource(R.drawable.old_bg_portrait);
@@ -295,10 +343,10 @@ public class WatchOldEntryFragment extends BaseFragment {
         userHeaderImg.setImageResource(R.drawable.old_pic_portrait);
     }
 
-    public void setWatchAndFallConnectionStatus(boolean isConnected){
-        if (isConnected){
+    public void setWatchAndFallConnectionStatus(boolean isConnected) {
+        if (isConnected) {
             disconnectImg.setImageResource(R.drawable.old_ico_connect_down);
-        }else{
+        } else {
             disconnectImg.setImageResource(R.drawable.old_ico_no_connect_down);
         }
     }
@@ -369,13 +417,16 @@ public class WatchOldEntryFragment extends BaseFragment {
         }
     }
 
-    public void initHealth(){
+    public void initHealth() {
         //TODO 其实这里健康动态，健康档案都应该 直接使用
-
 
 
         stepValue.setText(R.string.hint_device_health_check);
         healthValue.setText(R.string.hint_device_health_check);
+    }
+
+    public void initOtherItem() {
+        functionItems.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -450,8 +501,8 @@ public class WatchOldEntryFragment extends BaseFragment {
         }
     }
 
-    @OnClick({R.id.location, R.id.call, R.id.chat,R.id.health_dynamic_line,
-    R.id.health_line})
+    @OnClick({R.id.location, R.id.call, R.id.chat, R.id.health_dynamic_line,
+            R.id.health_line})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.location: {
