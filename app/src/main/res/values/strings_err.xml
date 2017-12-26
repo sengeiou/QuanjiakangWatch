@@ -47,6 +47,11 @@
 
     <string name="error_common_invalid_picture">无效的网络图片!</string>
 
+    <string name="error_common_no_phone">暂未获取到设备电话!</string>
+
+
+    <string name="error_common_error_code">错误码：</string>
+
 
 
 

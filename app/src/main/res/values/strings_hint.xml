@@ -212,5 +212,21 @@
 
     <string name="hint_device_health_check">查看</string>
 
+    <string name="hint_device_wear_check">佩戴检测</string>
+    <string name="hint_device_plan">作息计划</string>
+    <string name="hint_device_fance">电子围栏</string>
+    <string name="hint_device_contacts">手表通讯录</string>
+    <string name="hint_device_fare">手表话费</string>
+    <string name="hint_device_manage">手表管理</string>
+
+    <string name="hint_device_not_online_dialog_title">温馨提示</string>
+    <string name="hint_device_not_online_dialog_reason">手表未联网原因:</string>
+    <string name="hint_device_not_online_dialog_reason1">1、手表处关机状态</string>
+    <string name="hint_device_not_online_dialog_reason2">2、手表欠费停机</string>
+    <string name="hint_device_not_online_dialog_reason3">3、手表当前网络信号不好，无信号</string>
+    <string name="hint_device_not_online_dialog_reason4">如果以上情况都不是,您可以尝试重启手表或复位</string>
+    <string name="hint_device_not_online_dialog_btn">知道了</string>
+
+
 </resources>
 

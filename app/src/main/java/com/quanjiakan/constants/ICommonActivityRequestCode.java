@@ -21,6 +21,8 @@ public interface ICommonActivityRequestCode {
     int REQUEST_TO_MODIFY_PASSWORD = 1011;
     int REQUEST_TO_FEEDBACK = 1012;
 
+    int RELOAD_LOCATION = 1013;
+
 
     int REQUEST_CODE_CAPTURE_CAMEIA = 2001;
     int REQUEST_SCAN = 2002;

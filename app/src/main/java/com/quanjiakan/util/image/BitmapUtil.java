@@ -13,7 +13,7 @@ public class BitmapUtil {
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(filePath, options);
-        options.inSampleSize = ImageUtils.calculateInSampleSize(options, 160, 160);
+        options.inSampleSize = ImageUtils.calculateInSampleSize(options, 480, 480);
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeFile(filePath, options);
     }

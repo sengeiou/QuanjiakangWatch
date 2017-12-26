@@ -5,9 +5,7 @@ package com.quanjiakan.util.common;
 
 import android.content.Context;
 
-import com.amap.api.services.core.AMapException;
-
-public class ToastUtil {
+public class AMapErrorUtil {
 
 	public static void showerror(Context context, int rCode){
 	    try {
@@ -114,11 +112,11 @@ public class ToastUtil {
 //	        case 4001:
 //	        	throw new AMapException(AMapException.AMAP_SHARE_FAILURE);
 //	        default:
-//	        	Toast.makeText(context,"错误码："+rCode , Toast.LENGTH_LONG).show();
+//				CommonDialogHint.getInstance().showHint(context,context.getString(R.string.error_common_error_code)+rCode);
 //				break;
 //	        }
         } catch (Exception e) {
-//            Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+//			LogUtil.e(e.getMessage());
         }
 	}
 }

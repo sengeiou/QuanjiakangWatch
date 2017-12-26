@@ -319,4 +319,69 @@ public class CommonDialogHint {
     public void showDisConnectDeviceServerDialog(Context context){
         showHint(context,context.getString(R.string.hint_loss_device_server_connection));
     }
+
+    public void showNotOnlineHintDialog(Context context){
+        if(dialog!=null && dialog.isShowing()){
+            /**
+             * 已经存在的Dialog若不进行处理，则不处理后续的显示Dialog请求？
+             */
+            return;
+        }
+        dialog = new Dialog(context,R.style.AlbumDialogStyle);
+        View root = LayoutInflater.from(context).inflate(R.layout.dialog_watch_disconnect_hint,null);
+        /**
+         * 设置标题
+         */
+        TextView title = (TextView) root.findViewById(R.id.tv_title);
+        title.setText(R.string.hint_device_not_online_dialog_title);
+        /**
+         * 原因概述
+         */
+        TextView reason = (TextView) root.findViewById(R.id.reason);
+        reason.setText(R.string.hint_device_not_online_dialog_reason);
+        /**
+         * 原因1
+         */
+        TextView reason1 = (TextView) root.findViewById(R.id.reason1);
+        reason1.setText(R.string.hint_device_not_online_dialog_reason1);
+        /**
+         * 原因2
+         */
+        TextView reason2 = (TextView) root.findViewById(R.id.reason2);
+        reason2.setText(R.string.hint_device_not_online_dialog_reason2);
+        /**
+         * 原因3
+         */
+        TextView reason3 = (TextView) root.findViewById(R.id.reason3);
+        reason3.setText(R.string.hint_device_not_online_dialog_reason3);
+        /**
+         * 原因总结
+         */
+        TextView reason4 = (TextView) root.findViewById(R.id.reason4);
+        reason4.setText(R.string.hint_device_not_online_dialog_reason4);
+
+        /**
+         *  设置点击
+         */
+        TextView btn = (TextView) root.findViewById(R.id.btn_cancel);
+        btn.setText(R.string.hint_device_not_online_dialog_btn);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(dialog!=null && dialog.isShowing()){
+                    dialog.dismiss();
+                }
+            }
+        });
+        /**
+         * 设置Dialog的相关属性
+         */
+        WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();
+        lp.width = UnitExchangeUtil.dip2px(context, 300);
+        lp.height = lp.WRAP_CONTENT;
+        lp.gravity = Gravity.CENTER;
+        dialog.setContentView(root, lp);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+    }
 }

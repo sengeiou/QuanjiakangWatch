@@ -14,6 +14,10 @@ import com.quanjiakan.activity.common.index.devices.old.WatchOldEntryFragment;
 import com.quanjiakan.activity.common.main.fragment.MainMapFragment;
 import com.quanjiakan.activity.common.main.fragment.SettingFragment;
 import com.quanjiakan.constants.ICommonData;
+import com.quanjiakan.constants.IParamsName;
+import com.quanjiakan.db.entity.BindWatchInfoEntity;
+import com.quanjiakan.db.manager.DaoManager;
+import com.quanjiakan.util.dialog.CommonDialogHint;
 import com.umeng.analytics.MobclickAgent;
 
 import butterknife.BindView;
@@ -39,6 +43,7 @@ public class WatchEntryActivity_old extends BaseActivity {
 
     //**********************************************************
 
+
     private FragmentTransaction transaction;
     private FragmentManager fragmentManager;
 
@@ -46,11 +51,30 @@ public class WatchEntryActivity_old extends BaseActivity {
 
     private WatchOldEntryFragment watchOldEntryFragment;
 
+    private long idInDatabase;
+    private String IMEI;
+
+    private BindWatchInfoEntity entity;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_fragment_watch_old);
         ButterKnife.bind(this);
+
+        idInDatabase = getIntent().getLongExtra(IParamsName.PARAMS_COMMON_ID_IN_DB,-1);
+        IMEI = getIntent().getStringExtra(IParamsName.PARAMS_DEVICE_ID);
+        if(idInDatabase==-1 || IMEI==null){
+            CommonDialogHint.getInstance().showHint(this, getString(R.string.error_common_error_activity_parameters), new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+            return;
+        }
+
+        getDataInDataBase();
 
         initTitleBar();
 
@@ -69,6 +93,11 @@ public class WatchEntryActivity_old extends BaseActivity {
         super.onPause();
         MobclickAgent.onPause(this);
         MobclickAgent.onPageEnd(this.getClass().getSimpleName());
+    }
+
+    public void getDataInDataBase(){
+        //TODO 获取对应的实体
+        entity = DaoManager.getInstances(this).getDaoSession().getBindWatchInfoEntityDao().load(idInDatabase);
     }
 
 
@@ -102,6 +131,9 @@ public class WatchEntryActivity_old extends BaseActivity {
                 }
                 //TODO
                 currentFragment = ICommonData.WATCH_OLD_FRAGMENT_WATCH;
+
+                watchOldEntryFragment.setEntity(entity);
+
                 transaction.commit();
                 break;
             }

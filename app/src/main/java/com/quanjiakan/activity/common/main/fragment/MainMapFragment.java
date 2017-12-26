@@ -202,10 +202,19 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
         unbinder.unbind();
     }
 
+    //TODO 方便在MainActivity中比较收到的广播（SOS，跌倒，超出范围等）
+    public List<BindWatchInfoEntity> getWatchInfoEntityList() {
+        return watchInfoEntityList;
+    }
+
     /**
      * *****************************************************************************************************************************
      * EventBus 广播事件
      */
+
+
+
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCommonNattyData(CommonNattyData result) {
         //TODO 控制无效的广播
@@ -648,9 +657,14 @@ public class MainMapFragment extends BaseFragment implements AMap.OnMarkerClickL
         int markIndex = Integer.parseInt(marker.getTitle());
         if (ICommonData.DEVICE_TYPE_OLD.equals(watchInfoEntityList.get(markIndex).getType())) {
             Intent intent = new Intent(getActivity(), WatchEntryActivity_old.class);
+            intent.putExtra(IParamsName.PARAMS_DEVICE_ID,watchInfoEntityList.get(markIndex).getImei());
+            intent.putExtra(IParamsName.PARAMS_COMMON_ID_IN_DB,watchInfoEntityList.get(markIndex).getId());
             startActivityForResult(intent, ICommonActivityRequestCode.MAP_TO_DEVICE_OLD);
+
         } else if (ICommonData.DEVICE_TYPE_CHILD.equals(watchInfoEntityList.get(markIndex).getType())) {
             Intent intent = new Intent(getActivity(), WatchEntryActivity_old.class);
+            intent.putExtra(IParamsName.PARAMS_DEVICE_ID,watchInfoEntityList.get(markIndex).getImei());
+            intent.putExtra(IParamsName.PARAMS_COMMON_ID_IN_DB,watchInfoEntityList.get(markIndex).getId());
             startActivityForResult(intent, ICommonActivityRequestCode.MAP_TO_DEVICE_CHILD);
         }
         return true;

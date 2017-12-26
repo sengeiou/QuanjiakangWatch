@@ -36,4 +36,6 @@ public interface ICommonActivityResultCode {
     int REQUEST_TO_IMPROVE_USER_INFO = 1010;
     int REQUEST_TO_MODIFY_PASSWORD = 1011;
     int REQUEST_TO_FEEDBACK = 1012;
+
+    int RELOAD_LOCATION = 1013;
 }

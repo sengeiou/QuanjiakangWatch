@@ -204,5 +204,15 @@
     <string name="setting_about_us_web_value">www.quanjiakan.com</string>
     <string name="setting_about_us_web_value_to_activity">http://www.quanjiakan.com</string>
 
+
+
+
+    <string name="device_fresh_location_title">地图</string>
+    <string name="device_fresh_location_show_address">最后定位地址:</string>
+
+
+    <string name="device_health_dynamics_title">健康动态</string>
+
+
 </resources>
 

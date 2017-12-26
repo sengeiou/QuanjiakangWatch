@@ -36,6 +36,7 @@ public interface IParamsName {
     String PARAMS_COMMON_USERID = "user_id";
     String PARAMS_COMMON_DATA = "data";
     String PARAMS_COMMON_ENTITY = "entity";
+    String PARAMS_COMMON_ID_IN_DB = "id_in_database";
 
     String PARAMS_COMMON_WEB_URL = "url_string";
     String PARAMS_COMMON_WEB_TITLE = "url_title";
