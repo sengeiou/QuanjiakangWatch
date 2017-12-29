@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.pingantong.main.R;
 import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.activity.base.BaseFragment;
+import com.quanjiakan.activity.common.index.devices.old.health.HealthDynamicsActivity;
 import com.quanjiakan.activity.common.index.devices.old.location.FreshLocationActivity;
 import com.quanjiakan.constants.ICommonActivityRequestCode;
 import com.quanjiakan.constants.ICommonActivityResultCode;
@@ -316,7 +317,7 @@ public class WatchOldEntryFragment extends BaseFragment {
         stateText.setText(R.string.hint_device_fall_status);
         setWatchAndFallConnectionStatus(false);
 
-        if(entity!=null && entity.getHeadImage()!=null && entity.getHeadImage().toLowerCase().startsWith("http")){
+        if(entity!=null && entity.getHeadImage()!=null && entity.getHeadImage().toLowerCase().startsWith(ICommonData.HTTP_PREFIX)){
             //TODO 需要使用圆形的裁剪
             Picasso.with(getActivity()).load(entity.getHeadImage()).
                     transform(new CircleTransformation()).into(userHeaderImg);
@@ -552,6 +553,9 @@ public class WatchOldEntryFragment extends BaseFragment {
             }
 //*******************************************************************************************
             case R.id.health_dynamic_line: {//TODO 健康动态
+                Intent intent = new Intent(getActivity(),HealthDynamicsActivity.class);
+                intent.putExtra(IParamsName.PARAMS_DEVICE_ID,entity.getImei());
+                startActivity(intent);
                 break;
             }
             case R.id.health_line: {//TODO 健康档案

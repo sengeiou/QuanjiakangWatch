@@ -1,6 +1,7 @@
 package lecho.lib.hellocharts.gesture;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -48,6 +49,15 @@ public class ChartTouchHandler {
      */
     protected ContainerScrollType containerScrollType;
 
+    private int clickStatus = 0;
+    protected boolean isClickPersist = false;
+
+    public void setClickPersist(boolean clickPersist) {
+        isClickPersist = clickPersist;
+        clickStatus = 0;//TODO 设置初始值
+        Log.e("LOGUTIL","ChartTouchHandler setClickPersist:"+clickPersist);
+    }
+
     public ChartTouchHandler(Context context, Chart chart) {
         this.chart = chart;
         this.computator = chart.getChartComputator();
@@ -83,6 +93,7 @@ public class ChartTouchHandler {
      * invalidated.
      */
     public boolean handleTouchEvent(MotionEvent event) {
+        //TODO 处理图表的触摸事件
         boolean needInvalidate = false;
 
         // TODO: detectors always return true, use class member needInvalidate instead local variable as workaround.
@@ -150,38 +161,78 @@ public class ChartTouchHandler {
         boolean needInvalidate = false;
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+
                 boolean wasTouched = renderer.isTouched();
                 boolean isTouched = checkTouch(event.getX(), event.getY());
                 if (wasTouched != isTouched) {
                     needInvalidate = true;
-
+                    if (isClickPersist) {
+                        clickStatus++;//TODO 变更点击状态计数
+                    }
+                    Log.e("LOGUTIL","ACTION_DOWN  clickStatus:"+clickStatus);
                     if (isValueSelectionEnabled) {
                         selectionModeOldValue.clear();
                         if (wasTouched && !renderer.isTouched()) {
                             chart.callTouchListener();
                         }
                     }
+                }else{
+                    if (isClickPersist) {
+                        clickStatus++;//TODO 变更点击状态计数
+                    }
+                    Log.e("LOGUTIL","ACTION_DOWN 点击同一个后 clickStatus:"+clickStatus);
                 }
                 break;
             case MotionEvent.ACTION_UP:
                 if (renderer.isTouched()) {
-                    if (checkTouch(event.getX(), event.getY())) {
-                        if (isValueSelectionEnabled) {
-                            // For selection mode call listener only if selected value changed,
-                            // that means that should be
-                            // first(selection) click on given value.
-                            if (!selectionModeOldValue.equals(selectedValue)) {
-                                selectionModeOldValue.set(selectedValue);
+                    if (isClickPersist) {
+                        if (clickStatus % 2 == 0) {
+                            Log.e("LOGUTIL","ACTION_UP  before clickStatus:"+clickStatus);
+                            clickStatus = 0;
+                            Log.e("LOGUTIL","ACTION_UP  after clickStatus:"+clickStatus);
+                            if (checkTouch(event.getX(), event.getY())) {
+                                if (isValueSelectionEnabled) {
+                                    // For selection mode call listener only if selected value changed,
+                                    // that means that should be
+                                    // first(selection) click on given value.
+                                    if (!selectionModeOldValue.equals(selectedValue)) {
+                                        selectionModeOldValue.set(selectedValue);
+                                        chart.callTouchListener();
+                                    }
+                                } else {
+                                    chart.callTouchListener();
+                                    renderer.clearTouch();
+                                }
+                            } else {
+                                renderer.clearTouch();
+                            }
+                            needInvalidate = true;
+                        } else {
+                            //TODO
+                            Log.e("LOGUTIL","ACTION_UP  clickStatus % 2 == 0:"+clickStatus);
+                            needInvalidate = false;
+                        }
+                    } else {//TODO 不使用点击持久功能
+                        Log.e("LOGUTIL","ACTION_UP  isClickPersist == false");
+                        if (checkTouch(event.getX(), event.getY())) {
+                            if (isValueSelectionEnabled) {
+                                // For selection mode call listener only if selected value changed,
+                                // that means that should be
+                                // first(selection) click on given value.
+                                if (!selectionModeOldValue.equals(selectedValue)) {
+                                    selectionModeOldValue.set(selectedValue);
+                                    chart.callTouchListener();
+                                }
+                            } else {
                                 chart.callTouchListener();
+                                renderer.clearTouch();
                             }
                         } else {
-                            chart.callTouchListener();
                             renderer.clearTouch();
                         }
-                    } else {
-                        renderer.clearTouch();
+                        needInvalidate = true;
                     }
-                    needInvalidate = true;
+
                 }
                 break;
             case MotionEvent.ACTION_MOVE:

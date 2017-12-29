@@ -51,6 +51,7 @@ public interface IParamsName {
     String PARAMS_COMMON_PASSWORD = "password";
 
     String PARAMS_COMMON_IMEI = "imei";
+    String PARAMS_COMMON_IMEI_BIG = "IMEI";
     String PARAMS_COMMON_BIND_STATE = "state";
 
     String PARAMS_COMMON_VALIDATE_TYPE = "validateType";
@@ -117,5 +118,8 @@ public interface IParamsName {
 
     String PARAMS_USER_HEALTH_DOCUMENT_NAME = "medicalName";
     String PARAMS_USER_HEALTH_DOCUMENT_IMAGE = "medicalRecord";
+
+
+    String PARAMS_HEALTH_REPORT_HISTORY_TIME = "histime";
 
 }

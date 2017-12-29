@@ -9,6 +9,9 @@ import android.graphics.Paint.FontMetricsInt;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import lecho.lib.hellocharts.computator.ChartComputator;
 import lecho.lib.hellocharts.model.ChartData;
 import lecho.lib.hellocharts.model.SelectedValue;
@@ -52,6 +55,9 @@ public abstract class AbstractChartRenderer implements ChartRenderer {
     protected boolean isValueLabelBackgroundEnabled;
     protected boolean isValueLabelBackgroundAuto;
 
+    protected boolean isShowMultiLineValue = false;//TODO 是否展示多行--让子类能够继承该数值
+    protected boolean isClickPersist = false;//TODO 是否展示多行--让子类能够继承该数值
+
     public AbstractChartRenderer(Context context, Chart chart) {
         this.density = context.getResources().getDisplayMetrics().density;
         this.scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;
@@ -69,6 +75,14 @@ public abstract class AbstractChartRenderer implements ChartRenderer {
 
         labelBackgroundPaint.setAntiAlias(true);
         labelBackgroundPaint.setStyle(Paint.Style.FILL);
+    }
+
+    public void setShowMultiLineValue(boolean showMultiLineValue) {
+        isShowMultiLineValue = showMultiLineValue;
+    }
+
+    public void setClickPersist(boolean clickPersist) {
+        isClickPersist = clickPersist;
     }
 
     @Override
@@ -126,7 +140,12 @@ public abstract class AbstractChartRenderer implements ChartRenderer {
 
     @Override
     public boolean isTouched() {
-        return selectedValue.isSet();
+        if(isShowMultiLineValue){
+            return selectedValue.isSet();
+        }else{
+            return selectedValue.isSet();
+        }
+
     }
 
     @Override
@@ -177,4 +196,5 @@ public abstract class AbstractChartRenderer implements ChartRenderer {
     public SelectedValue getSelectedValue() {
         return selectedValue;
     }
+
 }

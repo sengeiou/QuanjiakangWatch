@@ -260,7 +260,8 @@ public class HouseKeeperDetailInfoActivity extends BaseActivity {
             //TODO 使用访问得到的数据进行展示
             // 头像
             Picasso.with(this).load(entity.getImage()).
-                    error(R.drawable.ic_patient).fit().
+                    fit().
+                    placeholder(R.drawable.image_placeholder).
                     transform(new RoundTransform()).into(image);
             //名称
             tvName.setText(entity.getName());

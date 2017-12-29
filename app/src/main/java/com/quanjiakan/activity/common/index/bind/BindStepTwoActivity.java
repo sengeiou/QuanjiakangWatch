@@ -25,6 +25,7 @@ import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.constants.ICommonActivityRequestCode;
 import com.quanjiakan.activity.common.web.CommonWebForBindChildActivity;
 import com.quanjiakan.activity.common.web.CommonWebForBindOldActivity;
+import com.quanjiakan.constants.ICommonData;
 import com.quanjiakan.constants.IParamsIntValue;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.device.entity.CommonNattyData;
@@ -838,7 +839,7 @@ public class BindStepTwoActivity extends BaseActivity {
             CommonDialogHint.getInstance().showHint(this,getString(R.string.error_bind_step_two_no_head_icon));
             return false;
         }
-        if (!image.getTag().toString().toLowerCase().startsWith("http")) {
+        if (!image.getTag().toString().toLowerCase().startsWith(ICommonData.HTTP_PREFIX)) {
             CommonDialogHint.getInstance().showHint(this,getString(R.string.error_bind_step_two_head_icon_upload_fail));
             return false;
         }

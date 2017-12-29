@@ -11,6 +11,9 @@ import android.graphics.Path;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
 import android.graphics.Shader;
+import android.util.Log;
+
+import java.util.List;
 
 import lecho.lib.hellocharts.model.Line;
 import lecho.lib.hellocharts.model.LineChartData;
@@ -151,23 +154,44 @@ public class LineChartRenderer extends AbstractChartRenderer {
 
     @Override
     public boolean checkTouch(float touchX, float touchY) {
-        selectedValue.clear();
-        final LineChartData data = dataProvider.getLineChartData();
-        int lineIndex = 0;
-        for (Line line : data.getLines()) {
-            if (checkIfShouldDrawPoints(line)) {
-                int pointRadius = ChartUtils.dp2px(density, line.getPointRadius());
-                int valueIndex = 0;
-                for (PointValue pointValue : line.getValues()) {
-                    final float rawValueX = computator.computeRawX(pointValue.getX());
-                    final float rawValueY = computator.computeRawY(pointValue.getY());
-                    if (isInArea(rawValueX, rawValueY, touchX, touchY, pointRadius + touchToleranceMargin)) {
-                        selectedValue.set(lineIndex, valueIndex, SelectedValueType.LINE);
+        if (isShowMultiLineValue) {//TODO 展示多行
+            selectedValue.clear();
+            final LineChartData data = dataProvider.getLineChartData();
+            int lineIndex = 0;
+            for (Line line : data.getLines()) {
+                if (checkIfShouldDrawPoints(line)) {
+                    int pointRadius = ChartUtils.dp2px(density, line.getPointRadius());
+                    int valueIndex = 0;
+                    for (PointValue pointValue : line.getValues()) {
+                        final float rawValueX = computator.computeRawX(pointValue.getX());
+                        final float rawValueY = computator.computeRawY(pointValue.getY());
+                        if (isInLine(rawValueX, rawValueY, touchX, touchY, pointRadius + touchToleranceMargin)) {
+                            selectedValue.set(lineIndex, valueIndex, SelectedValueType.LINE);
+                        }
+                        ++valueIndex;
                     }
-                    ++valueIndex;
                 }
+                ++lineIndex;
             }
-            ++lineIndex;
+        } else {//TODO 展示单行
+            selectedValue.clear();
+            final LineChartData data = dataProvider.getLineChartData();
+            int lineIndex = 0;
+            for (Line line : data.getLines()) {
+                if (checkIfShouldDrawPoints(line)) {
+                    int pointRadius = ChartUtils.dp2px(density, line.getPointRadius());
+                    int valueIndex = 0;
+                    for (PointValue pointValue : line.getValues()) {
+                        final float rawValueX = computator.computeRawX(pointValue.getX());
+                        final float rawValueY = computator.computeRawY(pointValue.getY());
+                        if (isInArea(rawValueX, rawValueY, touchX, touchY, pointRadius + touchToleranceMargin)) {
+                            selectedValue.set(lineIndex, valueIndex, SelectedValueType.LINE);
+                        }
+                        ++valueIndex;
+                    }
+                }
+                ++lineIndex;
+            }
         }
         return isTouched();
     }
@@ -413,24 +437,48 @@ public class LineChartRenderer extends AbstractChartRenderer {
     }
 
     private void highlightPoints(Canvas canvas) {
-        int lineIndex = selectedValue.getFirstIndex();
-        Line line = dataProvider.getLineChartData().getLines().get(lineIndex);
-        drawPoints(canvas, line, lineIndex, MODE_HIGHLIGHT);
+        if (isShowMultiLineValue) {
+            //TODO 将每一竖线的点全部高亮
+            int valueIndex = selectedValue.getSecondIndex();
+            List<Line> lines = dataProvider.getLineChartData().getLines();
+            for (int i = 0; i < lines.size(); i++) {
+                Line line = lines.get(i);
+                drawPoints(canvas, line, i, MODE_HIGHLIGHT);
+            }
+
+        } else {
+            int lineIndex = selectedValue.getFirstIndex();
+            Line line = dataProvider.getLineChartData().getLines().get(lineIndex);
+            drawPoints(canvas, line, lineIndex, MODE_HIGHLIGHT);
+        }
     }
 
     private void highlightPoint(Canvas canvas, Line line, PointValue pointValue, float rawX, float rawY, int lineIndex,
                                 int valueIndex) {
-        if (selectedValue.getFirstIndex() == lineIndex && selectedValue.getSecondIndex() == valueIndex) {
-            int pointRadius = ChartUtils.dp2px(density, line.getPointRadius());
-            pointPaint.setColor(line.getDarkenColor());
-            drawPoint(canvas, line, pointValue, rawX, rawY, pointRadius + touchToleranceMargin);
-            if (line.hasLabels() || line.hasLabelsOnlyForSelected()) {
-                drawLabel(canvas, line, pointValue, rawX, rawY, pointRadius + labelOffset);
+        if (isShowMultiLineValue) {//多行
+            if (selectedValue.getSecondIndex() == valueIndex) {//TODO 检查是否横坐标相同（在吸附范围内）,检查是否是对应的那条线，不需要检查是否是那条线，在满足
+                int pointRadius = ChartUtils.dp2px(density, line.getPointRadius());
+                pointPaint.setColor(line.getDarkenColor());
+                drawPoint(canvas, line, pointValue, rawX, rawY, pointRadius + touchToleranceMargin);
+                if (line.hasLabels() || line.hasLabelsOnlyForSelected()) {
+                    drawLabel(canvas, line, pointValue, rawX, rawY, pointRadius + labelOffset,lineIndex);
+                }
+            }
+        } else {//TODO 单行
+            if (selectedValue.getFirstIndex() == lineIndex && selectedValue.getSecondIndex() == valueIndex) {
+                int pointRadius = ChartUtils.dp2px(density, line.getPointRadius());
+                pointPaint.setColor(line.getDarkenColor());
+                drawPoint(canvas, line, pointValue, rawX, rawY, pointRadius + touchToleranceMargin);
+                if (line.hasLabels() || line.hasLabelsOnlyForSelected()) {
+                    drawLabel(canvas, line, pointValue, rawX, rawY, pointRadius + labelOffset);
+                }
             }
         }
     }
 
+    //TODO 画出点的值
     private void drawLabel(Canvas canvas, Line line, PointValue pointValue, float rawX, float rawY, float offset) {
+        Log.e("LOGUTIL","ACTION_UP  before drawLabel(无lineIndex):");
         final Rect contentRect = computator.getContentRectMinusAllMargins();
         final int numChars = line.getFormatter().formatChartValue(labelBuffer, pointValue);
         if (numChars == 0) {
@@ -471,7 +519,60 @@ public class LineChartRenderer extends AbstractChartRenderer {
             right = rawX;
         }
 
-        labelBackgroundRect.set(left, top, right, bottom);
+//        Log.e("LOGUTIL", "left:" + left + "\nright:" + right + "\ntop:" + top + "\nbottom:" + bottom);
+        labelBackgroundRect.set(left, /*top*/ labelHeight, right, 2 * labelHeight + labelMargin * 2);//TODO 使用固定位置的（高度）
+//        labelBackgroundRect.set(left, top, right, bottom);//TODO 使用相对的点的位置
+        drawLabelTextAndBackground(canvas, labelBuffer, labelBuffer.length - numChars, numChars,
+                line.getDarkenColor());
+    }
+
+    //TODO 画出点的值
+    private void drawLabel(Canvas canvas, Line line, PointValue pointValue, float rawX, float rawY, float offset,int lineIndex) {
+        Log.e("LOGUTIL","ACTION_UP  before drawLabel(有----------lineIndex):");
+        final Rect contentRect = computator.getContentRectMinusAllMargins();
+        final int numChars = line.getFormatter().formatChartValue(labelBuffer, pointValue);
+        if (numChars == 0) {
+            // No need to draw empty label
+            return;
+        }
+
+        final float labelWidth = labelPaint.measureText(labelBuffer, labelBuffer.length - numChars, numChars);
+        final int labelHeight = Math.abs(fontMetrics.ascent);
+        float left = rawX - labelWidth / 2 - labelMargin;
+        float right = rawX + labelWidth / 2 + labelMargin;
+
+        float top;
+        float bottom;
+
+        if (pointValue.getY() >= baseValue) {
+            top = rawY - offset - labelHeight - labelMargin * 2;
+            bottom = rawY - offset;
+        } else {
+            top = rawY + offset;
+            bottom = rawY + offset + labelHeight + labelMargin * 2;
+        }
+
+        if (top < contentRect.top) {
+            top = rawY + offset;
+            bottom = rawY + offset + labelHeight + labelMargin * 2;
+        }
+        if (bottom > contentRect.bottom) {
+            top = rawY - offset - labelHeight - labelMargin * 2;
+            bottom = rawY - offset;
+        }
+        if (left < contentRect.left) {
+            left = rawX;
+            right = rawX + labelWidth + labelMargin * 2;
+        }
+        if (right > contentRect.right) {
+            left = rawX - labelWidth - labelMargin * 2;
+            right = rawX;
+        }
+        /**
+         * TODO 使得文字上下排列
+         */
+        labelBackgroundRect.set(left, /*top*/ labelHeight+(lineIndex*labelHeight), right, 2 * labelHeight + labelMargin * 2+(lineIndex*labelHeight));//TODO 使用固定位置的（高度）
+//        labelBackgroundRect.set(left, top, right, bottom);//TODO 使用相对的点的位置
         drawLabelTextAndBackground(canvas, labelBuffer, labelBuffer.length - numChars, numChars,
                 line.getDarkenColor());
     }
@@ -509,6 +610,12 @@ public class LineChartRenderer extends AbstractChartRenderer {
         float diffX = touchX - x;
         float diffY = touchY - y;
         return Math.pow(diffX, 2) + Math.pow(diffY, 2) <= 2 * Math.pow(radius, 2);
+    }
+
+    //TODO 竖线（相同X轴的值）
+    private boolean isInLine(float x, float y, float touchX, float touchY, float radius) {
+        float diffX = touchX - x;
+        return Math.pow(diffX, 2) <= 2 * Math.pow(radius, 2);
     }
 
 }

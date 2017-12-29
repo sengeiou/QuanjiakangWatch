@@ -26,6 +26,13 @@ public interface ICommonData {
     String COMMON_READ_VOICE_RECORD_SUFFIX = "_read,";
 
 
+    String DEVICE_HEALTH_DYNAMICS_REPORT_TAG = "device_health_report_tag";
+    String DEVICE_HEALTH_DYNAMICS_STEP_TAG = "device_health_step_tag";
+    String DEVICE_HEALTH_DYNAMICS_HEARTRATE_TAG = "device_health_heartrate_tag";
+    String DEVICE_HEALTH_DYNAMICS_BLOOD_PRESSURE_TAG = "device_health_bloodpresure_tag";
+
+
+
     String MAIN_TAB_ITEM_MAIN_TAG = "main_tag";
     String MAIN_TAB_ITEM_MSG_TAG = "msg_tag";
     String MAIN_TAB_ITEM_SETTING_TAG = "setting_tag";
@@ -63,6 +70,12 @@ public interface ICommonData {
     int MAIN_TAB_ITEM_MAIN = 1;
     int MAIN_TAB_ITEM_MSG = 2;
     int MAIN_TAB_ITEM_SETTING = 3;
+
+    int DEVICE_HEALTH_DYNAMICS_NONE = -1;
+    int DEVICE_HEALTH_DYNAMICS_REPORT = 0;
+    int DEVICE_HEALTH_DYNAMICS_STEP = 1;
+    int DEVICE_HEALTH_DYNAMICS_HEARTRATE = 2;
+    int DEVICE_HEALTH_DYNAMICS_BLOOD_PRESSURE = 3;
 
 
     int WATCH_OLD_FRAGMENT_WATCH = 0;

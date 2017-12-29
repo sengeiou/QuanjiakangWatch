@@ -50,6 +50,13 @@
 
     <string name="hint_house_keeper_item_language_default">粤语</string>
     <string name="hint_house_keeper_item_price_unit">元/月</string>
+    <string name="hint_house_keeper_item_age_unit">岁</string>
+    <string name="hint_house_keeper_item_height_unit">CM</string>
+
+    <string name="hint_house_keeper_item_company">广州市巨硅信息科技有限公司</string>
+    <string name="hint_house_keeper_item_exp">广州市巨硅信息科技有限公司</string>
+    <string name="hint_house_keeper_item_experience_prefix"> 从业</string>
+
 
     <string name="hint_house_keeper_detail_level1">初级保姆</string>
     <string name="hint_house_keeper_detail_level2">中级保姆</string>

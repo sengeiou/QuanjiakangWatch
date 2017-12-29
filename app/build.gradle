@@ -26,8 +26,6 @@ android {
         applicationId "com.pingantong.main"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 9
-        versionName "v1.0.1.9"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         multiDexEnabled true
@@ -62,18 +60,16 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-//    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-//        exclude group: 'com.android.support', module: 'support-annotations'
-//    })
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    //    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    //        exclude group: 'com.android.support', module: 'support-annotations'
+    //    })
     compile 'com.android.support:appcompat-v7:25.3.1'
-
     //************************* Test
     //    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-//        exclude group: 'com.android.support', module: 'support-annotations'
-//    })
+    //        exclude group: 'com.android.support', module: 'support-annotations'
+    //    })
     testCompile 'junit:junit:4.12'
-
     //************************* Rx depandence
     compile 'io.reactivex:rxjava:1.1.0'
     compile 'io.reactivex:rxandroid:1.1.0'
@@ -95,7 +91,6 @@ dependencies {
     // greendao3.0 配置可以参考 http://blog.csdn.net/njweiyukun/article/details/51893092
     compile 'org.greenrobot:greendao:3.0.1'
     compile 'org.greenrobot:greendao-generator:3.0.0'
-
     //************************* eventbus
     compile 'org.greenrobot:eventbus:3.0.0'
     //************************* butterknife
@@ -104,7 +99,8 @@ dependencies {
     //************************* AMap
     compile 'com.amap.api:location:latest.integration'
     compile 'com.amap.api:search:latest.integration'
-    compile 'com.amap.api:navi-3dmap:latest.integration'//TODO 导航里存在3Dmap，若再次引入map将出现重复引用异常
+    compile 'com.amap.api:navi-3dmap:latest.integration'
+    //TODO 导航里存在3Dmap，若再次引入map将出现重复引用异常
     //************************* Picasso 图片加载
     compile 'com.squareup.picasso:picasso:2.5.2'
     //************************* 图片放大
@@ -120,6 +116,8 @@ dependencies {
     compile files('libs/commons-codec-1.8.jar')
     //************************* AndPermission包-请求权限  https://github.com/yanzhenjie/AndPermission
     compile 'com.yanzhenjie:permission:1.1.2'
-
+    //************Module 项目 下拉刷新
     compile project(path: ':pulltorefresh')
+    //************Module 项目 图表
+    compile project(':hellocharts-library')
 }

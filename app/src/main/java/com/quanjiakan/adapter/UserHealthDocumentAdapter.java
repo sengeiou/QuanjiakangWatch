@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.pingantong.main.R;
 import com.quanjiakan.activity.common.image.ImageViewerActivity;
 import com.quanjiakan.adapter.holder.UserHealthDocumentHolder;
+import com.quanjiakan.constants.ICommonData;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.net.retrofit.result_entity.subentity.UserHealthDocumentEntity;
 import com.quanjiakan.util.dialog.CommonDialogHint;
@@ -79,7 +80,7 @@ public class UserHealthDocumentAdapter extends BaseAdapter {
         }else{
             holder.div.setVisibility(View.VISIBLE);
         }
-        if(entity!=null &&entity.getMedicalRecord()!=null && entity.getMedicalRecord().toLowerCase().startsWith("http")){
+        if(entity!=null &&entity.getMedicalRecord()!=null && entity.getMedicalRecord().toLowerCase().startsWith(ICommonData.HTTP_PREFIX)){
             Picasso.with(context).load(entity.getMedicalRecord()).into(holder.image);
             holder.image.setBackgroundResource(R.drawable.transparent_background);//transparent_background  case_pic_border
         }else{
@@ -89,7 +90,7 @@ public class UserHealthDocumentAdapter extends BaseAdapter {
         holder.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(entity!=null &&entity.getMedicalRecord()!=null && entity.getMedicalRecord().toLowerCase().startsWith("http")) {
+                if(entity!=null &&entity.getMedicalRecord()!=null && entity.getMedicalRecord().toLowerCase().startsWith(ICommonData.HTTP_PREFIX)) {
                     Intent intent = new Intent(context, ImageViewerActivity.class);
                     intent.putExtra(IParamsName.PARAMS_URL, entity.getMedicalRecord());
                     context.startActivity(intent);

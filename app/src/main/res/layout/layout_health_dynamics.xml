@@ -9,9 +9,84 @@
         android:id="@+id/title_bar"
         layout="@layout/titlebar_common"
         />
+
+    <LinearLayout
+        android:id="@+id/tabline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title_bar"
+        android:gravity="center"
+        android:layout_marginTop="12dp">
+
+        <RadioGroup
+            android:id="@+id/rg_health"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center">
+
+            <RadioButton
+                android:id="@+id/rbt_report"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:button="@null"
+                android:text="检测报告"
+                android:textSize="@dimen/size_16"
+                android:paddingTop="@dimen/size_5"
+                android:paddingBottom="@dimen/size_5"
+                android:textColor="@color/health_radio_color"
+                android:background="@drawable/health_dynamics_tab_report"
+                android:layout_weight="1"/>
+
+            <RadioButton
+                android:id="@+id/rbt_step"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:button="@null"
+                android:text="计步"
+                android:textSize="@dimen/size_16"
+                android:paddingTop="@dimen/size_5"
+                android:paddingBottom="@dimen/size_5"
+                android:textColor="@color/health_radio_color"
+                android:background="@drawable/health_dynamics_tab_steps"
+                android:layout_weight="1"/>
+
+            <RadioButton
+                android:id="@+id/rbt_heartrate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:button="@null"
+                android:text="心率"
+                android:textSize="@dimen/size_16"
+                android:paddingTop="@dimen/size_5"
+                android:paddingBottom="@dimen/size_5"
+                android:textColor="@color/health_radio_color"
+                android:background="@drawable/health_dynamics_tab_heartrate"
+                android:layout_weight="1"/>
+
+            <RadioButton
+                android:id="@+id/rbt_blood"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:button="@null"
+                android:text="血压"
+                android:textSize="@dimen/size_16"
+                android:paddingTop="@dimen/size_5"
+                android:paddingBottom="@dimen/size_5"
+                android:textColor="@color/health_radio_color"
+                android:background="@drawable/health_dynamics_tab_bloodpressure"
+                android:layout_weight="1"/>
+
+        </RadioGroup>
+    </LinearLayout>
+
     <FrameLayout
         android:id="@+id/viewContainer"
-        android:layout_below="@id/title_bar"
+        android:layout_below="@id/tabline"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

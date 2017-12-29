@@ -39,6 +39,7 @@ import com.quanjiakan.util.common.SerializeToObjectUtil;
 import com.quanjiakan.util.common.StringCheckUtil;
 import com.quanjiakan.util.common.UnitExchangeUtil;
 import com.quanjiakan.util.dialog.CommonDialogHint;
+import com.quanjiakan.util.dialog.HouseKeeperTimeSelectDialog;
 import com.quanjiakan.util.encrypt.SMSValidateUtil;
 import com.quanjiakan.util.pay.AlipayHandler;
 import com.quanjiakan.util.pay.WeixinPayHandler;
@@ -591,10 +592,9 @@ public class HouseKeeperOrderActivity extends BaseActivity {
     }
 
     public void showTimeSelectorDialog(final TimeType type){
-        ChangeBirthDialog day_dialog = new ChangeBirthDialog(this);
+        HouseKeeperTimeSelectDialog day_dialog = new HouseKeeperTimeSelectDialog(this);
         day_dialog.show();
-        day_dialog.setBirthdayListener(new ChangeBirthDialog.OnBirthListener() {
-
+        day_dialog.setBirthdayListener(new HouseKeeperTimeSelectDialog.OnBirthListener() {
             @Override
             public void onClick(String year, String month, String day) {
                 // TODO Auto-generated method stub
@@ -857,7 +857,8 @@ public class HouseKeeperOrderActivity extends BaseActivity {
     public void setInfo() {
         //TODO 头像
         Picasso.with(this).load(entity.getImage()).
-                error(R.drawable.ic_patient).fit().
+                fit().
+                placeholder(R.drawable.image_placeholder).
                 transform(new RoundTransform()).into(image);
         //名称
         tvName.setText(entity.getName());

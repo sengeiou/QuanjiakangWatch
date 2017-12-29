@@ -1188,12 +1188,12 @@ public class HealthInquiryFurtherAskActivity extends BaseActivity {
             return;
         }
 
-        if (voicePath != null && !voicePath.toLowerCase().startsWith("http")) {
+        if (voicePath != null && !voicePath.toLowerCase().startsWith(ICommonData.HTTP_PREFIX)) {
             CommonDialogHint.getInstance().showHint(this, getString(R.string.hint_health_inquiry_append_voice_upload_fail));
             return;
         }
 
-        if (imagePath != null && !imagePath.toLowerCase().startsWith("http")) {
+        if (imagePath != null && !imagePath.toLowerCase().startsWith(ICommonData.HTTP_PREFIX)) {
             CommonDialogHint.getInstance().showHint(this, getString(R.string.hint_health_inquiry_append_image_upload_fail));
             return;
         }

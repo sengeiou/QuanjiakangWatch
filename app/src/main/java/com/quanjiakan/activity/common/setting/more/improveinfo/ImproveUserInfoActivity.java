@@ -15,6 +15,7 @@ import com.quanjiakan.activity.base.BaseActivity;
 import com.quanjiakan.activity.base.BaseApplication;
 import com.quanjiakan.constants.ICommonActivityRequestCode;
 import com.quanjiakan.constants.ICommonActivityResultCode;
+import com.quanjiakan.constants.ICommonData;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.upload.UploadUtil;
@@ -127,7 +128,7 @@ public class ImproveUserInfoActivity extends BaseActivity {
         }
 
         if(BaseApplication.getInstances().getLoginInfo().getTempHeadIcon()!=null &&
-                BaseApplication.getInstances().getLoginInfo().getTempHeadIcon().toLowerCase().startsWith("http")){
+                BaseApplication.getInstances().getLoginInfo().getTempHeadIcon().toLowerCase().startsWith(ICommonData.HTTP_PREFIX)){
             Picasso.with(this).load(BaseApplication.getInstances().getLoginInfo().getTempHeadIcon()).
                     transform(new CircleTransformation()).into(headImage);
         }else{
@@ -355,7 +356,7 @@ public class ImproveUserInfoActivity extends BaseActivity {
                     if (json.has("code") && "200".equals(json.getString("code"))) {
 
                         BaseApplication.getInstances().getLoginInfo().setNickName(tvNickName.getText().toString());
-                        if(headImage.getTag()!=null && headImage.getTag().toString().toLowerCase().startsWith("http")){
+                        if(headImage.getTag()!=null && headImage.getTag().toString().toLowerCase().startsWith(ICommonData.HTTP_PREFIX)){
                             BaseApplication.getInstances().getLoginInfo().setTempHeadIcon(headImage.getTag().toString());
                         }
 

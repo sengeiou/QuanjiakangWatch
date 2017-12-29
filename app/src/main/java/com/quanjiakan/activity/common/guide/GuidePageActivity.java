@@ -120,7 +120,6 @@ public class GuidePageActivity extends BaseActivity {
     public void initView() {
         initPackageInfo();
 
-        rgp = (RadioGroup) findViewById(R.id.rgp);
         rgp.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
             @Override

@@ -131,7 +131,7 @@ public class DeviceContainerAdapter extends BaseAdapter {
         }
 
         //TODO 显示头像---统一的
-        if (devices != null && devices.get(position).getHeadImage() != null && devices.get(position).getHeadImage().toLowerCase().startsWith("http")) {
+        if (devices != null && devices.get(position).getHeadImage() != null && devices.get(position).getHeadImage().toLowerCase().startsWith(ICommonData.HTTP_PREFIX)) {
             Picasso.with(mContext).load(devices.get(position).getHeadImage()).placeholder(R.drawable.ic_launcher).into(holder.deviceImage);
         } else {
             if (ICommonData.DEVICE_TYPE_CHILD.equals(devices.get(position).getType())) {//TODO 儿童

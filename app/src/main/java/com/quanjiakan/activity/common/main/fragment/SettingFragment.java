@@ -20,6 +20,7 @@ import com.quanjiakan.activity.common.setting.housekeeper.HouseKeeperOrderListAc
 import com.quanjiakan.activity.common.setting.more.SettingMoreActivity;
 import com.quanjiakan.constants.ICommonActivityRequestCode;
 import com.quanjiakan.constants.ICommonActivityResultCode;
+import com.quanjiakan.constants.ICommonData;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.net.IHttpUrlConstants;
 import com.quanjiakan.net.retrofit.result_entity.GetUserInfoEntity;
@@ -236,12 +237,12 @@ public class SettingFragment extends BaseFragment {
                         }
                     }
 
-                    if(entity.getObject().getPicture()!=null && entity.getObject().getPicture().toLowerCase().startsWith("http")){
+                    if(entity.getObject().getPicture()!=null && entity.getObject().getPicture().toLowerCase().startsWith(ICommonData.HTTP_PREFIX)){
                         Picasso.with(getActivity()).load(entity.getObject().getPicture()).transform(new CircleTransformation()).into(userHeaderImg);
                         BaseApplication.getInstances().getLoginInfo().setTempHeadIcon(entity.getObject().getPicture());
                     }else{
                         if(BaseApplication.getInstances().getLoginInfo().getTempHeadIcon()!=null &&
-                                BaseApplication.getInstances().getLoginInfo().getTempHeadIcon().toLowerCase().startsWith("http")){
+                                BaseApplication.getInstances().getLoginInfo().getTempHeadIcon().toLowerCase().startsWith(ICommonData.HTTP_PREFIX)){
                             Picasso.with(getActivity()).load(BaseApplication.getInstances().getLoginInfo().getTempHeadIcon()).
                                     transform(new CircleTransformation()).into(userHeaderImg);
                         }else{
@@ -279,7 +280,7 @@ public class SettingFragment extends BaseFragment {
         }
 
         if(BaseApplication.getInstances().getLoginInfo().getTempHeadIcon()!=null &&
-                BaseApplication.getInstances().getLoginInfo().getTempHeadIcon().toLowerCase().startsWith("http")){
+                BaseApplication.getInstances().getLoginInfo().getTempHeadIcon().toLowerCase().startsWith(ICommonData.HTTP_PREFIX)){
             Picasso.with(getActivity()).load(BaseApplication.getInstances().getLoginInfo().getTempHeadIcon()).
                     transform(new CircleTransformation()).into(userHeaderImg);
         }else{

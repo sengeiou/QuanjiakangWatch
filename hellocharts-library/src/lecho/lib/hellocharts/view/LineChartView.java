@@ -35,13 +35,26 @@ public class LineChartView extends AbstractChartView implements LineChartDataPro
 
     public LineChartView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        setChartRenderer(new LineChartRenderer(context, this, this));
+        setChartRenderer(new LineChartRenderer(context, this, this));//TODO 构建画线的工具
         setLineChartData(LineChartData.generateDummyData());
     }
 
     @Override
     public LineChartData getLineChartData() {
         return data;
+    }
+
+    //TODO 增加是否显示多行数据
+    public void setShowMultiLineValue(boolean showMultiLineValue) {
+        isShowMultiLineValue = showMultiLineValue;
+        ((LineChartRenderer)chartRenderer).setShowMultiLineValue(isShowMultiLineValue);//TODO 将设置传递给绘制工具
+    }
+
+    public void setClickPersist(boolean clickPersist) {
+        super.setClickPersist(clickPersist);
+        isClickPersist = clickPersist;
+
+        ((LineChartRenderer)chartRenderer).setClickPersist(isClickPersist);//TODO 将设置传递给绘制工具
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.os.Build;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -24,6 +25,7 @@ import lecho.lib.hellocharts.model.SelectedValue;
 import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.renderer.AxesRenderer;
 import lecho.lib.hellocharts.renderer.ChartRenderer;
+import lecho.lib.hellocharts.renderer.LineChartRenderer;
 import lecho.lib.hellocharts.util.ChartUtils;
 
 /**
@@ -42,12 +44,21 @@ public abstract class AbstractChartView extends View implements Chart {
     protected boolean isContainerScrollEnabled = false;
     protected ContainerScrollType containerScrollType;
 
+    protected boolean isShowMultiLineValue = false;
+
+    protected boolean isClickPersist = false;
+
     public AbstractChartView(Context context) {
         this(context, null, 0);
     }
 
     public AbstractChartView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
+    }
+
+    public void setClickPersist(boolean clickPersist) {
+        touchHandler.setClickPersist(isClickPersist);//TODO 将设置传递给绘制工具
+        Log.e("LOGUTIL","AbstractChartView setClickPersist:"+clickPersist);
     }
 
     public AbstractChartView(Context context, AttributeSet attrs, int defStyleAttr) {

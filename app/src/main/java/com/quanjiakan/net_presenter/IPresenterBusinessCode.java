@@ -71,7 +71,9 @@ public interface IPresenterBusinessCode {
     int HOUSE_KEEPER_ORDER_ENCRYPT = 30320;
     int DEVICE_WATCH_LIST_STATUS = 30321;
 
-
+    int DEVICE_WATCH_INFO = 30322;
+    int DEVICE_WATCH_HEALTH_REPORT_CHART = 30323;
+    int DEVICE_WATCH_HEALTH_REPORT_CURRENT_DATA = 30324;
 
 
     //*******************************************************************************

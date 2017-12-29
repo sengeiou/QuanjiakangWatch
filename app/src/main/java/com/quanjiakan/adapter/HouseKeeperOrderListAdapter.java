@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.google.gson.JsonObject;
 import com.pingantong.main.R;
 import com.quanjiakan.activity.common.image.ImageViewerActivity;
+import com.quanjiakan.constants.ICommonData;
 import com.quanjiakan.constants.IParamsName;
 import com.quanjiakan.entity.HouseKeeperOrderDetailEntity;
 import com.quanjiakan.util.dialog.CommonDialogHint;
@@ -90,7 +91,7 @@ public class HouseKeeperOrderListAdapter extends BaseAdapter {
             holder.image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(object.getImage()!=null && object.getImage().toLowerCase().startsWith("http")){
+                    if(object.getImage()!=null && object.getImage().toLowerCase().startsWith(ICommonData.HTTP_PREFIX)){
                         Intent intent = new Intent(context, ImageViewerActivity.class);
                         intent.putExtra(IParamsName.PARAMS_URL,object.getImage());
                         context.startActivity(intent);

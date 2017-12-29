@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <!-- 整体容器 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        >
+
+        <!-- 查询控件 -->
+        <RelativeLayout
+            android:id="@+id/rlSearchLine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="12dp">
+
+            <TextView
+                android:id="@+id/tvSearchTimer"
+                android:layout_width="120dp"
+                android:layout_height="24dp"
+                android:background="@drawable/shape_date_bg"
+                android:drawableRight="@drawable/presentation_ico_query"
+                android:gravity="center"
+                android:paddingRight="6dp"
+                android:text="2017-8-15"
+                android:textColor="@color/font_color_333333"
+                android:textSize="15dp" />
+
+            <TextView
+                android:id="@+id/tvStartSearch"
+                android:layout_width="44dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/tvSearchTimer"
+                android:background="@drawable/shape_healthcheck_bg"
+                android:gravity="center"
+                android:text="查询"
+                android:textColor="@color/white"
+                android:textSize="15dp" />
+        </RelativeLayout>
+
+        <!-- 当天数据显示 -->
+        <LinearLayout
+            android:id="@+id/ll_data_today"
+            android:layout_width="match_parent"
+            android:layout_height="104dp"
+            android:layout_below="@+id/rlSearchLine"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/shape_health_bg">
+
+            <LinearLayout
+                android:id="@+id/health_step_today"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                >
+
+                <ImageView
+                    android:id="@+id/health_step_today_img"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:src="@drawable/presentation_ico_steps" />
+
+                <TextView
+                    android:id="@+id/health_step_today_hint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:text="今日步数"
+                    android:textColor="@color/font_color_666666"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/health_step_today_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="5dp"
+                    android:textColor="@color/color_f46a16"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/health_distance_today"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                >
+
+                <ImageView
+                    android:id="@+id/health_distance_today_img"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:src="@drawable/presentation_ico_mileage" />
+
+                <TextView
+                    android:id="@+id/health_distance_today_hint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:text="里程数"
+                    android:textColor="@color/font_color_666666"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/health_distance_today_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="5dp"
+                    android:textColor="@color/color_f46a16"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/health_calorie_today"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                >
+
+                <ImageView
+                    android:id="@+id/health_calorie_today_img"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:src="@drawable/presentation_ico_calorie" />
+
+                <TextView
+                    android:id="@+id/health_calorie_today_hint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:text="卡路里消耗"
+                    android:textColor="@color/font_color_666666"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/health_calorie_today_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="5dp"
+                    android:textColor="@color/color_f46a16"
+                    android:textSize="15sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 30分钟内的心率数据 -->
+        <RelativeLayout
+            android:id="@+id/rlHeartChart"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/size_220"
+            android:layout_below="@+id/ll_data_today"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/shape_health_bg">
+
+            <TextView
+                android:id="@+id/tvHeartName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="@dimen/size_5"
+                android:text="心率(最近30分钟)"
+                android:textColor="@color/font_color_333333"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tvHeartHint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/tvHeartName"
+                android:layout_marginRight="@dimen/size_10"
+                android:layout_marginTop="@dimen/size_2"
+                android:text="@string/text_tips_health_chart"
+                android:textColor="@color/font_color_999999"
+                android:textSize="@dimen/size_12" />
+
+
+            <lecho.lib.hellocharts.view.LineChartView
+                android:id="@+id/line_chart_heart"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/tvHeartHint"
+                android:layout_marginBottom="14dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="@dimen/size_5" />
+
+            <TextView
+                android:id="@+id/tvNodataHeartRate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:layout_marginTop="140dp"
+                android:text="抱歉,暂时未检测到数据,请检查设备是否在线."
+                android:textColor="@color/font_color_999999"
+                android:textSize="16sp" />
+        </RelativeLayout>
+
+        <!-- 30分钟内的血压数据 -->
+        <RelativeLayout
+            android:id="@+id/rlBloodPressure"
+            android:layout_width="match_parent"
+            android:layout_height="215dp"
+            android:layout_below="@id/rlHeartChart"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/shape_health_bg"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvBloodPressureName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="血压(最近30分钟)"
+                android:textColor="@color/font_color_333333"
+                android:textSize="13sp" />
+
+            <!-- 图形线条提示 -->
+            <LinearLayout
+                android:id="@+id/llBloodPressure"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/tvBloodPressureName"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="1dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvSystolic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/view_1"
+                    android:text="收缩压:"
+                    android:textColor="@color/font_color_333333"
+                    android:textSize="11sp" />
+
+                <View
+                    android:id="@+id/viewSystolic"
+                    android:layout_width="20dp"
+                    android:layout_height="1dp"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="6dp"
+                    android:layout_toRightOf="@+id/tv_1"
+                    android:background="@color/color_f46a16" />
+
+                <TextView
+                    android:id="@+id/tvDiastolic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:text="舒张压:"
+                    android:textColor="@color/font_color_333333"
+                    android:textSize="12sp" />
+
+                <View
+                    android:id="@+id/viewDiastolic"
+                    android:layout_width="20dp"
+                    android:layout_height="1dp"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_toRightOf="@+id/tv_2"
+                    android:background="@color/color_00b2b2" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/llBloodPressureHint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/llBloodPressure"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="@dimen/size_2"
+                android:text="@string/text_tips_health_chart"
+                android:textColor="@color/font_color_999999"
+                android:textSize="@dimen/size_12" />
+
+
+            <lecho.lib.hellocharts.view.LineChartView
+                android:id="@+id/line_chart_blood"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/llBloodPressureHint"
+                android:layout_marginBottom="@dimen/size_10"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="@dimen/size_5" />
+
+            <TextView
+                android:id="@+id/tvNodataBloodPressure"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:layout_marginTop="140dp"
+                android:text="抱歉,暂时未检测到数据,请检查设备是否在线."
+                android:textColor="@color/font_color_999999"
+                android:textSize="16sp"
+                />
+        </RelativeLayout>
+    </LinearLayout>
+</ScrollView>

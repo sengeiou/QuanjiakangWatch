@@ -213,6 +213,40 @@
 
     <string name="device_health_dynamics_title">健康动态</string>
 
+    <string name="device_health_dynamics_title_tab_report">检测报告</string>
+    <string name="device_health_dynamics_title_tab_step">计步</string>
+    <string name="device_health_dynamics_title_tab_heartrate">心率</string>
+    <string name="device_health_dynamics_title_tab_bloodpressure">血压</string>
+
+
+    <string name="text_tips_health_chart">值为0时，请检查设备是否佩戴正常</string>
+    <string name="device_health_dynamics_report_search_btn">查询</string>
+
+
+    <string name="device_health_dynamics_report_today_data_step">今日步数</string>
+    <string name="device_health_dynamics_report_today_data_step_unit">步</string>
+    <string name="device_health_dynamics_report_today_data_step_init">0步</string>
+
+    <string name="device_health_dynamics_report_today_data_distance">里程数</string>
+    <string name="device_health_dynamics_report_today_data_distance_unit">米</string>
+    <string name="device_health_dynamics_report_today_data_distance_unit_kilo">公里</string>
+    <string name="device_health_dynamics_report_today_data_distance_init">0米</string>
+
+    <string name="device_health_dynamics_report_today_data_calorie">卡路里消耗</string>
+    <string name="device_health_dynamics_report_today_data_calorie_unit">卡</string>
+    <string name="device_health_dynamics_report_today_data_calorie_init">0卡</string>
+
+    <string name="device_health_dynamics_report_today_data_device_no_online">抱歉,暂时未检测到数据,请检查设备是否在线.</string>
+
+    <string name="device_health_dynamics_report_today_data_heartrate_chart_name">心率(最近30分钟)</string>
+    <string name="device_health_dynamics_report_today_data_heartrate_chart_hint">值为0时，请检查设备是否佩戴正常</string>
+
+    <string name="device_health_dynamics_report_today_data_bloodpressure_chart_name">血压(最近30分钟)</string>
+    <string name="device_health_dynamics_report_today_data_bloodpressure_chart_hint">值为0时，请检查设备是否佩戴正常</string>
+    <string name="device_health_dynamics_report_today_data_bloodpressure_chart_systolic">收缩压:</string>
+    <string name="device_health_dynamics_report_today_data_bloodpressure_chart_diastolic">舒张压:</string>
+
+    <string name="device_health_dynamics_report_today_data_chart_hint">请确认选择了对应日期</string>
 
 </resources>
 
