@@ -76,6 +76,10 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
     private int monthLimit = CURRENT_LIMIT;
     private int dayLimit = CURRENT_LIMIT;
 
+    private int secondYearLimit = CURRENT_LIMIT;
+    private int secondMonthLimit = CURRENT_LIMIT;
+    private int secondDayLimit = CURRENT_LIMIT;
+
     private DIALOG_TYPE currentType = DIALOG_TYPE.NORMAL;
 
     public HouseKeeperTimeSelectDialog(Context context) {
@@ -108,6 +112,7 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
         } else {
             dayLimit = CURRENT_LIMIT;
         }
+        sortTimeLimit();
     }
 
     @Override
@@ -300,18 +305,18 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
                 break;
             }
             case BEFORE: {
-                if(yearLimit == CURRENT_LIMIT){//TODO 限制为当前所在的年份
+                if (yearLimit == CURRENT_LIMIT) {//TODO 限制为当前所在的年份
                     //TODO 限制月份的范围
-                    if(monthLimit==CURRENT_LIMIT){
+                    if (monthLimit == CURRENT_LIMIT) {
                         arry_months.clear();
                         arry_months.add(currentMonth + "");//TODO 月份限制为当前月份
-                    }else{//TODO 月份范围大于0
+                    } else {//TODO 月份范围大于0
                         arry_months.clear();
                         for (int i = 1; i <= currentMonth; i++) {
                             arry_months.add(i + "");
                         }
                     }
-                }else{//
+                } else {//
                     arry_months.clear();
                     for (int i = 1; i <= DEFAULT_LIMIT_LENGTH_MONTH; i++) {
                         arry_months.add(i + "");
@@ -320,12 +325,12 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
                 break;
             }
             case AFTER: {
-                if(yearLimit == CURRENT_LIMIT){//TODO 限制为当前所在的年份
+                if (yearLimit == CURRENT_LIMIT) {//TODO 限制为当前所在的年份
                     arry_months.clear();
                     for (int i = currentMonth; i <= DEFAULT_LIMIT_LENGTH_MONTH; i++) {
                         arry_months.add(i + "");
                     }
-                }else{//
+                } else {//
                     arry_months.clear();
                     for (int i = 1; i <= DEFAULT_LIMIT_LENGTH_MONTH; i++) {
                         arry_months.add(i + "");
@@ -571,5 +576,119 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
 //		if (year == getCurrentYear() && month == getCurrentMonth()) {
 //			this.day = getCurrentDay();
 //		}
+    }
+
+    public int getCurrentMonthMaxDay() {
+        boolean leayyear = false;
+        if (getCurrentYear() % 4 == 0 && getCurrentYear() % 100 != 0) {
+            leayyear = true;
+        } else {
+            leayyear = false;
+        }
+        switch (getCurrentMonth()) {
+            case 1:
+            case 3:
+            case 5:
+            case 7:
+            case 8:
+            case 10:
+            case 12:
+                return 31;
+            case 2:
+                if (leayyear) {
+                    return 29;
+                } else {
+                    return 28;
+                }
+            case 4:
+            case 6:
+            case 9:
+            case 11:
+                return 30;
+            default:
+                return 30;
+        }
+    }
+
+    public int getSpecificYearMonthMaxDay(int year,int month) {
+        boolean leayyear = false;
+        if (year % 4 == 0 && year % 100 != 0) {
+            leayyear = true;
+        } else {
+            leayyear = false;
+        }
+        switch (month) {
+            case 1:
+            case 3:
+            case 5:
+            case 7:
+            case 8:
+            case 10:
+            case 12:
+                return 31;
+            case 2:
+                if (leayyear) {
+                    return 29;
+                } else {
+                    return 28;
+                }
+            case 4:
+            case 6:
+            case 9:
+            case 11:
+                return 30;
+            default:
+                return 30;
+        }
+    }
+
+    private void sortTimeLimit() {
+        //TODO 需要重置，并规范年月日的限制范围--向前，或向后，不同的范围
+        //TODO 按照当前的时间，分别计算出当前 日，月，年的偏移值
+        //TODO 向前偏移
+        int tempDay = dayLimit;
+        int tempMonth = monthLimit;
+        int tempYear = yearLimit;
+        dayLimit = (getCurrentDay() >= tempDay ? tempDay : getCurrentDay());
+        //TODO 计算需要向前推几个月
+        if (tempDay > getCurrentDay()) {//TODO
+            int addMonth = 0;
+            int countMonth = getCurrentMonth();
+            int countYear = getCurrentYear();
+            while (true){
+                if(tempDay>getSpecificYearMonthMaxDay(countYear,countMonth)){
+                    tempDay = tempDay - getSpecificYearMonthMaxDay(countYear,countMonth);//TODO 得到日期的差值
+                    addMonth++;//TODO 增加一个月
+
+                    countMonth--;
+                    if(countMonth<1){//TODO
+                        countYear--;
+                        countMonth=12;
+                    }else{//TODO 不再进行额外操作
+
+                    }
+                }
+            }
+
+        }
+
+        //TODO 向后偏移
+
+
+        switch (currentType) {
+            case NORMAL: {
+                //TODO 默认不会对前后进行限制
+                break;
+            }
+            case BEFORE: {
+                break;
+            }
+            case AFTER: {
+                break;
+            }
+            case NOLIMIT: {
+                break;
+            }
+        }
     }
 }
