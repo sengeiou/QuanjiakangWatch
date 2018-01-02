@@ -112,7 +112,6 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
         } else {
             dayLimit = CURRENT_LIMIT;
         }
-        sortTimeLimit();
     }
 
     @Override
@@ -578,6 +577,7 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
 //		}
     }
 
+    //TODO 获取当前月份有多少天
     public int getCurrentMonthMaxDay() {
         boolean leayyear = false;
         if (getCurrentYear() % 4 == 0 && getCurrentYear() % 100 != 0) {
@@ -610,6 +610,7 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
         }
     }
 
+    //TODO 指定年月的月份有多少天
     public int getSpecificYearMonthMaxDay(int year,int month) {
         boolean leayyear = false;
         if (year % 4 == 0 && year % 100 != 0) {
@@ -642,6 +643,10 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
         }
     }
 
+    //TODO 规范间隔时间------实际计算时，通过
+    /**
+     * 当前月的可选天数范围
+     */
     private void sortTimeLimit() {
         //TODO 需要重置，并规范年月日的限制范围--向前，或向后，不同的范围
         //TODO 按照当前的时间，分别计算出当前 日，月，年的偏移值
@@ -652,26 +657,32 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
         dayLimit = (getCurrentDay() >= tempDay ? tempDay : getCurrentDay());
         //TODO 计算需要向前推几个月
         if (tempDay > getCurrentDay()) {//TODO
-            int addMonth = 0;
+            int addMonth = 0;//月份差值
+
             int countMonth = getCurrentMonth();
             int countYear = getCurrentYear();
+
             while (true){
-                if(tempDay>getSpecificYearMonthMaxDay(countYear,countMonth)){
+                if(tempDay>getSpecificYearMonthMaxDay(countYear,countMonth)){//TODO 设置的日期限制大于当前月份的值
                     tempDay = tempDay - getSpecificYearMonthMaxDay(countYear,countMonth);//TODO 得到日期的差值
                     addMonth++;//TODO 增加一个月
 
                     countMonth--;
+
+                    //TODO 同步需要计算的年份的数据
                     if(countMonth<1){//TODO
                         countYear--;
                         countMonth=12;
                     }else{//TODO 不再进行额外操作
 
                     }
+
                 }
             }
 
-        }
+            //TODO 计算完间隔的月份后 计算间隔的年份（若间隔月份超过12月则会存在）
 
+        }
         //TODO 向后偏移
 
 
