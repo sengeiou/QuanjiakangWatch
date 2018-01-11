@@ -51,12 +51,16 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
     private int maxTextSize = 24;
     private int minTextSize = 14;
 
-    private boolean issetdata = false;
+    private boolean isSetData = false;
 
     //TODO 当前选中的时间
     private String selectYear;
     private String selectMonth;
     private String selectDay;
+
+    private int selectYearValue;
+    private int selectMonthValue;
+    private int selectDayValue;
 
     private OnBirthListener onBirthListener;
 
@@ -65,13 +69,18 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
      * 当选择before时，限制
      */
     public enum DIALOG_TYPE {
-        BEFORE, NORMAL, AFTER, NOLIMIT
+        BEFORE,//TODO 往前选择日期，包含当天
+        BEFORE_EXCEPT,//TODO 往前选择日期，不包含当天
+        AFTER,//TODO 往后选择日期，包含当天
+        AFTER_EXCEPT,//TODO 往后选择日期，不包含当天
+        NORMAL,//TODO 前后皆可选择，含当天时间
+        NOLIMIT //TODO 默认值（前后120年）
     }
 
     private static final int CURRENT_LIMIT = 0;//TODO 限制为当前范围(使用默认的限制长度)，即当前，年月日
 
     //TODO 无限制时的默认限制长度
-    private static final int DEFAULT_LIMIT_LENGTH = 120;//TODO 限制默认范围为一百二十---为年龄选择做兼容
+    private static final int DEFAULT_LIMIT_LENGTH_YEAR = 120;//TODO 限制默认范围为一百二十---为年龄选择做兼容
     private static final int DEFAULT_LIMIT_LENGTH_MONTH = 12;//TODO 限制默认范围为一百二十---为年龄选择做兼容
 
     //TODO 年月日的限制时间---初始化范围时使用  往前算的时间范围
@@ -81,7 +90,15 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
     private int firstYearTopLimit = CURRENT_LIMIT;//TODO 限制的年份上限
     private int firstMonthTopLimit = CURRENT_LIMIT;//TODO 限制的月份的上限
 
-    //TODO 往后算的时间范围
+    //TODO 往后算的时间范围----规范后的数据
+    /**
+     * 分别是
+     * 当前月的日期范围（需要根据类型来看：1号到现在；现在到月底）
+     * 最后一月的日期范围（也需要根据类型来看是那种计算方式）
+     * 总共的间隔的月数
+     * 年份的上限或下限
+     * 月份的上限或下限（需要跟年配合使用）
+     */
     private int secondLastMonthDayLimit = CURRENT_LIMIT;
     private int secondMonthLimit = CURRENT_LIMIT;
     private int secondCurrentMonthDayLimit = CURRENT_LIMIT;
@@ -89,13 +106,15 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
     private int secondMonthLowerLimit = CURRENT_LIMIT;//TODO 限制的月份的上限
 
     private final DIALOG_TYPE currentType;
+    /**
+     * 用户设置的时间间隔----初始化完成后，即为用户选择的时间
+     */
     private int yearSelectLength;
     private int monthSelectLength;
     private int daySelectLength;
 
     //TODO 获取当前的年月日
     public void initCurrentTime() {
-
         firstYearTopLimit = CURRENT_LIMIT;
         firstMonthTopLimit = CURRENT_LIMIT;
     }
@@ -104,7 +123,6 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
         super(context, R.style.ShareDialog);
         this.context = context;
         currentType = DIALOG_TYPE.NOLIMIT;
-
         initCurrentTime();
     }
 
@@ -157,17 +175,17 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
         btnCancel.setOnClickListener(this);
 
         //TODO 初始化时间
-        if (!issetdata) {
+        if (!isSetData) {
             initData();
         }
         //TODO 初始化年份时间----设置限制范围
         setYearRange();
         setYearAdapter();
         //TODO 初始化月份时间-----设置限制范围
-        setMonthRange(monthRange);
+        setMonthRange(getCurrentYear());
         setMonthAdapter();
         //TODO 初始化年份时间-----设置限制范围
-        setDayRange(dayRange);
+        setDayRange(getCurrentYear(),getCurrentMonth());
         setDayAdapter();
 
         //TODO 设置月和日的联动
@@ -176,10 +194,12 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
             public void onChanged(WheelView wheel, int oldValue, int newValue) {
                 // TODO Auto-generated method stub
                 String currentText = (String) mYearAdapter.getItemText(wheel.getCurrentItem());
-                selectYear = currentText;
                 setTextviewSize(currentText, mYearAdapter);
                 setYearAdapterIndex(Integer.parseInt(currentText));
-                setMonthRange(monthRange);
+                selectYear = currentText;
+                selectYearValue = Integer.parseInt(currentText);
+                setMonthRange(selectYearValue);//TODO 当前选择的年
+
                 mMonthAdapter = new CalendarTextAdapter(context, arry_months, 0, maxTextSize, minTextSize);
                 wvMonth.setVisibleItems(5);
                 wvMonth.setViewAdapter(mMonthAdapter);
@@ -210,10 +230,11 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
             public void onChanged(WheelView wheel, int oldValue, int newValue) {
                 // TODO Auto-generated method stub
                 String currentText = (String) mMonthAdapter.getItemText(wheel.getCurrentItem());
-                selectMonth = currentText;
                 setTextviewSize(currentText, mMonthAdapter);
                 setMonthAdapterIndex(Integer.parseInt(currentText));
-                setDayRange(dayRange);
+                selectMonth = currentText;
+                selectMonthValue = Integer.parseInt(currentText);
+                setDayRange(selectYearValue,selectMonthValue);
                 mDaydapter = new CalendarTextAdapter(context, arry_days, 0, maxTextSize, minTextSize);
                 wvDay.setVisibleItems(5);
                 wvDay.setViewAdapter(mDaydapter);
@@ -288,49 +309,174 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
 
     //TODO 设置年月日的范围
     public void setYearRange() {
-        switch (currentType) {
-            case NORMAL: {
-                break;
-            }
-            case BEFORE: {
-                break;
-            }
-            case AFTER: {
-                break;
-            }
-            case NOLIMIT: {
-                break;
-            }
-        }
-    }
-
-    public void setMonthRange(int months) {
+        arry_years.clear();
         switch (currentType) {
             case NORMAL: {
                 //TODO 默认不会对
+                for (int i = firstYearTopLimit; i < secondYearLowerLimit; i++) {
+                    arry_years.add(i + "");
+                }
                 break;
             }
             case BEFORE: {
+                for (int i = firstYearTopLimit; i <= getCurrentYear(); i++) {
+                    arry_years.add(i + "");
+                }
+                break;
+            }
+            case BEFORE_EXCEPT: {
+                for (int i = firstYearTopLimit; i <= getCurrentYear(); i++) {
+                    arry_years.add(i + "");
+                }
                 break;
             }
             case AFTER: {
+                for (int i = getCurrentYear(); i <= secondYearLowerLimit; i++) {
+                    arry_years.add(i + "");
+                }
+                break;
+            }
+            case AFTER_EXCEPT: {
+                for (int i = getCurrentYear(); i <= secondYearLowerLimit; i++) {
+                    arry_years.add(i + "");
+                }
                 break;
             }
             case NOLIMIT: {
+                for (int i = getCurrentYear() - DEFAULT_LIMIT_LENGTH_YEAR; i <= getCurrentYear() + DEFAULT_LIMIT_LENGTH_YEAR; i++) {
+                    arry_years.add(i + "");
+                }
                 break;
             }
         }
     }
 
-    public void setDayRange(int days) {
+    //TODO 仅设置当前这一年的范围
+    public void setMonthRange(int year) {
+        arry_months.clear();
         switch (currentType) {
             case NORMAL: {
+                //TODO 默认不会对
+                if (year == firstYearTopLimit && year == secondYearLowerLimit) {
+                    for (int i = firstMonthTopLimit; i <= secondMonthLowerLimit; i++) {
+                        arry_months.add(i + "");
+                    }
+                } else if (year == firstYearTopLimit) {
+                    for (int i = firstMonthTopLimit; i <= 12; i++) {
+                        arry_months.add(i + "");
+                    }
+                } else if (year == secondYearLowerLimit) {
+                    for (int i = 1; i <= secondMonthLowerLimit; i++) {
+                        arry_months.add(i + "");
+                    }
+                } else {
+                    for (int i = 1; i <= 12; i++) {
+                        arry_months.add(i + "");
+                    }
+                }
+                break;
+            }
+            case BEFORE: {
+                if (year == firstYearTopLimit) {
+                    for (int i = firstMonthTopLimit; i <= getCurrentMonth(); i++) {
+                        arry_months.add(i + "");
+                    }
+                } else {
+                    for (int i = 1; i <= getCurrentMonth(); i++) {
+                        arry_months.add(i + "");
+                    }
+                }
+                break;
+            }
+            case BEFORE_EXCEPT: {
+                if (year == firstYearTopLimit) {
+                    for (int i = firstMonthTopLimit; i <= getCurrentMonth(); i++) {
+                        arry_months.add(i + "");
+                    }
+                } else {
+                    for (int i = 1; i <= getCurrentMonth(); i++) {
+                        arry_months.add(i + "");
+                    }
+                }
+                break;
+            }
+            case AFTER: {
+                if (year == secondYearLowerLimit) {
+                    for (int i = getCurrentMonth(); i <= secondMonthLowerLimit; i++) {
+                        arry_months.add(i + "");
+                    }
+                } else {
+                    for (int i = getCurrentMonth(); i <= 12; i++) {
+                        arry_months.add(i + "");
+                    }
+                }
+                break;
+            }
+            case AFTER_EXCEPT: {
+                if (year == secondYearLowerLimit) {
+                    for (int i = getCurrentMonth(); i <= secondMonthLowerLimit; i++) {
+                        arry_months.add(i + "");
+                    }
+                } else {
+                    for (int i = getCurrentMonth(); i <= 12; i++) {
+                        arry_months.add(i + "");
+                    }
+                }
+                break;
+            }
+            case NOLIMIT: {
+                for (int i = 1; i <= 12; i++) {
+                    arry_months.add(i + "");
+                }
+                break;
+            }
+        }
+    }
+
+    //TODO 仅设置当前这一月的范围
+    public void setDayRange(int year,int month) {//指定年月的日期范围
+        arry_days.clear();
+        switch (currentType) {
+            case NORMAL: {
+                //TODO 默认不会对
+                if (year == firstYearTopLimit && month == firstMonthTopLimit &&
+                        year == secondYearLowerLimit && month == firstMonthTopLimit) {
+                    for (int i = firstLastMonthDayLimit; i <= secondLastMonthDayLimit; i++) {
+                        arry_days.add(i + "");
+                    }
+                } else if (year == firstYearTopLimit  && month == firstMonthTopLimit &&
+                        year == getCurrentYear()  && month == getCurrentMonth()) {
+                    for (int i = firstMonthTopLimit; i <= getCurrentDay(); i++) {
+                        arry_days.add(i + "");
+                    }
+                } else if (year == firstYearTopLimit  && month == firstMonthTopLimit) {
+                    for (int i = firstMonthTopLimit; i <= getSpecificYearMonthMaxDay(year,month); i++) {
+                        arry_days.add(i + "");
+                    }
+                } else if(year == secondYearLowerLimit && month == firstMonthTopLimit &&
+                        year == getCurrentYear()  && month == getCurrentMonth()){
+
+                }
+
+
+
+                else {
+                    for (int i = 1; i <= 12; i++) {
+                        arry_days.add(i + "");
+                    }
+                }
                 break;
             }
             case BEFORE: {
                 break;
             }
+            case BEFORE_EXCEPT: {
+                break;
+            }
             case AFTER: {
+                break;
+            }
+            case AFTER_EXCEPT: {
                 break;
             }
             case NOLIMIT: {
@@ -440,21 +586,58 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
      */
     public void initData(int year, int month, int day) {
         //TODO 设置默认选择的时间---当天时间
-        selectYear = year + "";
-        selectMonth = month + "";
-        selectDay = day + "";
-
-        issetdata = true;
-
-        //TODO 这里写法有点问题---不论当前是不是今年，month都设置成了12
-        if (year == getCurrentYear()) {
-            this.monthRange = getCurrentMonth();
-        } else {
-
+        switch (currentType) {
+            case BEFORE_EXCEPT: {
+                if (day == 1) {
+                    month -= 1;
+                    if (month < 1) {
+                        year -= 1;
+                        month = 12;
+                    }
+                    day = getSpecificYearMonthMaxDay(year, month);
+                } else {
+                    day -= day;
+                }
+                selectYear = year + "";
+                selectMonth = month + "";
+                selectDay = day + "";
+                break;
+            }
+            case AFTER_EXCEPT: {
+                if (day == getSpecificYearMonthMaxDay(year, month)) {
+                    month += 1;
+                    if (month > 12) {
+                        month = 1;
+                        year += 1;
+                    }
+                    day = 1;
+                } else {
+                    day += day;
+                }
+                selectYear = year + "";
+                selectMonth = month + "";
+                selectDay = day + "";
+                break;
+            }
+            default: {
+                selectYear = year + "";
+                selectMonth = month + "";
+                selectDay = day + "";
+                break;
+            }
         }
-        this.monthRange = 12;
 
-        getMonthDayRangeDays(year, month);
+
+        isSetData = true;
+
+//        //TODO 这里写法有点问题---不论当前是不是今年，month都设置成了12
+//        if (year == getCurrentYear()) {
+//            this.monthRange = getCurrentMonth();
+//        } else {
+//
+//        }
+//        this.monthRange = 12;
+
     }
 
     /**
@@ -539,39 +722,6 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
         }
     }
 
-    //TODO 获取当前月份有多少天
-    public int getCurrentMonthMaxDay() {
-        boolean leayyear = false;
-        if (getCurrentYear() % 4 == 0 && getCurrentYear() % 100 != 0) {
-            leayyear = true;
-        } else {
-            leayyear = false;
-        }
-        switch (getCurrentMonth()) {
-            case 1:
-            case 3:
-            case 5:
-            case 7:
-            case 8:
-            case 10:
-            case 12:
-                return 31;
-            case 2:
-                if (leayyear) {
-                    return 29;
-                } else {
-                    return 28;
-                }
-            case 4:
-            case 6:
-            case 9:
-            case 11:
-                return 30;
-            default:
-                return 30;
-        }
-    }
-
     //TODO 指定年月的月份有多少天
     public int getSpecificYearMonthMaxDay(int year, int month) {
         boolean leayyear = false;
@@ -619,66 +769,184 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
         int tempMonth = monthSelectLength;
         int tempYear = yearSelectLength;
 
-        //TODO ********************************   向前偏移
+        //********************************   向前偏移  先算从当前日期开始的（含有今天的）
+
+        //*********** 若是不含当前，则将计算数值+1
+        /*
+        firstCurrentMonthDayLimit  计算时，起始日期，当月当日
+
+        firstLastMonthDayLimit  日期的尽头，当不包含当天时
+
+
+         */
+        //不含当前时，则需要-1天
+        firstCurrentMonthDayLimit = getCurrentDay();
+        // 设置上限的初始值---需要通过计算得到实际值
+        firstMonthTopLimit = getCurrentMonth();
+        firstYearTopLimit = getCurrentYear();
+
         //TODO 得到当前月份可选择的日期范围---选择最小值
         /**
          * 当选择的是当前，年，月时，
          * 日期范围 在  1 ~~~~  firstCurrentMonthDayLimit 之间
          */
-        firstCurrentMonthDayLimit = (getCurrentDay() >= tempDay ? tempDay : getCurrentDay());
-
-        //TODO 计算需要向前推几个月（当日期超出一个月的长度后，需要计算）
-
-        if (tempDay > getCurrentDay()) {//TODO
-            firstMonthLimit = 0 + tempMonth;//月份初始差值+设定的差值
-
-            //TODO 上限的年月值，需要计算得到
-            firstYearTopLimit= getCurrentYear();
-
-            firstMonthTopLimit = getCurrentMonth();
-
-            while (true) {
-                if (tempDay > getSpecificYearMonthMaxDay(firstYearTopLimit, firstMonthTopLimit)) {//TODO 设置的日期限制大于当前月份的值
-                    tempDay = tempDay - getSpecificYearMonthMaxDay(firstYearTopLimit, firstMonthTopLimit);//TODO 得到日期的差值
-                    firstMonthLimit++;//TODO 增加一个月
-
-                    firstMonthTopLimit--;
-
-                    //TODO 同步需要计算的年份的数据
-                    if (firstMonthTopLimit < 1) {//TODO
-                        firstYearTopLimit--;
+        if (tempMonth == 0 && tempYear == 0) {
+            if (getCurrentDay() >= tempDay) {
+                //TODO 范围在当月
+                firstLastMonthDayLimit = getCurrentDay() - tempDay + 1;//TODO 范围即从 firstLastMonthDayLimit ~  firstCurrentMonthDayLimit
+                firstMonthLimit = 0;
+            } else {
+                tempDay = tempDay - getCurrentDay();//
+                while (true) {
+                    //超出了当月的，跨度为两个月 --- 先计算 上一个月时哪年哪月
+                    firstMonthLimit++;
+                    firstMonthTopLimit = getCurrentMonth() - 1;
+                    // 计算年份的的上限
+                    if (firstMonthTopLimit <= 0) {
                         firstMonthTopLimit = 12;
-                    } else {//TODO 不再进行额外操作
+                        firstYearTopLimit = firstYearTopLimit - 1;// 变为上一年
+                    } else {
+
+                    }
+                    //若计算后的剩余日期数，少于往前推一个月那个月份的
+                    if (tempDay > getSpecificYearMonthMaxDay(firstYearTopLimit, firstMonthTopLimit)) {
+                        // 减去往前推一个月的那月日期总数
+                        tempDay = tempDay - getSpecificYearMonthMaxDay(firstYearTopLimit, firstMonthTopLimit);
+                    } else {
+                        //TODO 这里的计算方式与时间少于当月的计算方式相同
+                        firstLastMonthDayLimit = getSpecificYearMonthMaxDay(firstYearTopLimit, firstMonthTopLimit) - tempDay + 1;
+                        // 年月不再需要变化---终止计算的循环
+                        break;
+                    }
+                }
+            }
+        } else {//(getCurrentDay() >= tempDay ? tempDay : getCurrentDay())
+            if (getCurrentDay() >= tempDay) {
+                //TODO 范围在当月
+                firstLastMonthDayLimit = getCurrentDay() - tempDay + 1;//TODO 范围即从 firstLastMonthDayLimit ~  firstCurrentMonthDayLimit
+                firstMonthTopLimit = (getCurrentMonth() + tempMonth) % 12;
+                firstYearTopLimit = getCurrentYear() - tempYear - (getCurrentMonth() + tempMonth) / 12;
+                firstMonthLimit = tempYear * 12 + tempMonth;
+            } else {
+                tempDay = tempDay - getCurrentDay();//
+                while (true) {
+                    firstMonthLimit++;
+                    //超出了当月的，跨度为两个月 --- 先计算 上一个月时哪年哪月
+                    firstMonthTopLimit = getCurrentMonth() - 1;
+                    // 计算年份的的上限
+                    if (firstMonthTopLimit <= 0) {
+                        firstMonthTopLimit = 12;
+                        firstYearTopLimit = firstYearTopLimit - 1;// 变为上一年
+                    } else {
+
+                    }
+                    //若计算后的剩余日期数，少于往前推一个月那个月份的
+                    if (tempDay > getSpecificYearMonthMaxDay(firstYearTopLimit, firstMonthTopLimit)) {
+                        // 减去往前推一个月的那月日期总数
+                        tempDay = tempDay - getSpecificYearMonthMaxDay(firstYearTopLimit, firstMonthTopLimit);
+                    } else {
+                        //TODO 这里的计算方式与时间少于当月的计算方式相同
+                        firstLastMonthDayLimit = getSpecificYearMonthMaxDay(firstYearTopLimit, firstMonthTopLimit) - tempDay + 1;
+                        // 年月不再需要变化---终止计算的循环
+                        break;
+                    }
+                }
+                //结束日期计算---开始计算年份月份
+                firstYearTopLimit = firstYearTopLimit - tempYear - (firstMonthTopLimit + tempMonth) / 12;
+                firstMonthTopLimit = (firstMonthTopLimit + tempMonth) % 12;
+
+                firstMonthLimit = firstMonthLimit + tempMonth + tempYear * 12;
+                ;
+            }
+        }
+        //********************************   向后偏移---与向前偏移时相似，不过计算的规则需要变化（含有今天）
+
+        tempDay = daySelectLength;
+        tempMonth = monthSelectLength;
+        tempYear = yearSelectLength;
+        //不含当前时，则需要-1天
+        secondCurrentMonthDayLimit = getCurrentDay();
+        // 设置上限的初始值---需要通过计算得到实际值
+        secondMonthLowerLimit = getCurrentMonth();
+        secondYearLowerLimit = getCurrentYear();
+
+        //TODO 得到当前月份可选择的日期范围---选择最小值
+        /**
+         * 当选择的是当前，年，月时，
+         * 日期范围 在   secondCurrentMonthDayLimit ~~~~~  月底 之间
+         */
+        if (tempMonth == 0 && tempYear == 0) {
+            if (getSpecificYearMonthMaxDay(secondYearLowerLimit, secondMonthLowerLimit) >= (getCurrentDay() + tempDay)) {
+                //TODO 范围在当月
+                secondLastMonthDayLimit = getCurrentDay() + tempDay;//TODO 范围即从 secondCurrentMonthDayLimit ~  secondLastMonthDayLimit
+                secondMonthLimit = 0;
+            } else {
+                tempDay = tempDay - (getSpecificYearMonthMaxDay(secondYearLowerLimit, secondMonthLowerLimit) - getCurrentDay());// 减去当月剩余的天数
+                while (true) {
+                    //超出了当月的，跨度为两个月 --- 先计算 下一个月是哪年哪月
+                    secondMonthLimit++;
+                    secondMonthLowerLimit = getCurrentMonth() + 1;// 月份往后推一个月
+                    // 计算年份的的上限
+                    if (secondMonthLowerLimit > 12) {//当超过当年的月份时，变更为下一年
+                        secondMonthLowerLimit = 1;
+                        secondYearLowerLimit = secondYearLowerLimit + 1;// 变为下一年
+                    } else {
 
                     }
 
+                    //若计算后的剩余日期数，少于往后推一个月那个月份的
+                    if (tempDay > getSpecificYearMonthMaxDay(secondYearLowerLimit, secondMonthLowerLimit)) {
+                        // 减去往前推一个月的那月日期总数
+                        tempDay = tempDay - getSpecificYearMonthMaxDay(secondYearLowerLimit, secondMonthLowerLimit);
+                    } else {
+                        //TODO 这里的计算方式与时间少于当月的计算方式相同
+                        secondLastMonthDayLimit = tempDay;//TODO 就是这一天了
+                        // 年月不再需要变化---终止计算的循环
+                        break;
+                    }
                 }
             }
+        } else {// 单独的月份与年份范围不为0
+            if (getSpecificYearMonthMaxDay(secondYearLowerLimit, secondMonthLowerLimit) >= (getCurrentDay() + tempDay)) {
+                //TODO 范围在当月
+                secondLastMonthDayLimit = getCurrentDay() + tempDay;//TODO 范围即从 secondCurrentMonthDayLimit ~  secondLastMonthDayLimit
+                //TODO 计算最终的年份，月份下线
+                secondMonthLimit = 0 + tempMonth + tempYear * 12;
+                secondMonthLowerLimit = secondMonthLowerLimit + tempMonth;
+                secondYearLowerLimit = secondYearLowerLimit + tempYear + (secondMonthLowerLimit + tempMonth) / 12;
+            } else {
+                /**
+                 从 getCurrentDay()  ~  到月底
+                 */
+                tempDay = tempDay - (getSpecificYearMonthMaxDay(secondYearLowerLimit, secondMonthLowerLimit) - getCurrentDay());//减去--- 当月剩余的时间
+                while (true) {
+                    //超出了当月的，跨度为两个月 --- 先计算 上一个月时哪年哪月
+                    secondMonthLimit++;
 
-            //TODO 计算完间隔的月份后 计算间隔的年份（若间隔月份超过12月则会存在）
+                    secondMonthLowerLimit = getCurrentMonth() + 1;
+                    // 计算年份的的上限
+                    if (secondMonthLowerLimit > 12) {
+                        secondMonthLowerLimit = 1;
+                        secondYearLowerLimit = secondYearLowerLimit + 1;// 变为下一年
+                    } else {
 
-        }
+                    }
 
-        //TODO 通过日期后的计算，需要合并原有的设定的年、月的范围
-        //TODO 当超出限制后，对应的年份也需要再次变更
-        for (int i = 0;i<monthSelectLength;i++){
-            firstMonthTopLimit--;
-            if(firstMonthTopLimit < 1){
-                firstYearTopLimit--;
-                firstMonthTopLimit = 12;
+                    //若计算后的剩余日期数，少于往前推一个月那个月份的
+                    if (tempDay > getSpecificYearMonthMaxDay(secondYearLowerLimit, secondMonthLowerLimit)) {
+                        // 减去往前推一个月的那月日期总数
+                        tempDay = tempDay - getSpecificYearMonthMaxDay(secondYearLowerLimit, secondMonthLowerLimit);
+                    } else {
+                        //TODO 这里的计算方式与时间少于当月的计算方式相同
+                        secondLastMonthDayLimit = tempDay;//TODO 就是这一天了 1~~~~这一天
+                        // 年月不再需要变化---终止计算的循环
+                        break;
+                    }
+                }
             }
         }
 
-        //TODO 计算年份的范围---限制年份最小到达公元0年
-        firstYearTopLimit = firstYearTopLimit - yearSelectLength;
-        if(firstYearTopLimit<0){
-            firstYearTopLimit = 0;
-        }
-
-
-        //TODO ********************************   向后偏移
-
-
+        //TODO 按照包含今天的计算完成后，根据选择的类型，纠正对应的数据
         switch (currentType) {
             case NORMAL: {
                 //TODO 默认不会对前后进行限制
@@ -687,7 +955,60 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
             case BEFORE: {
                 break;
             }
+            case BEFORE_EXCEPT: {//TODO 矫正范围数据
+                if (getCurrentDay() == 1) {//TODO 月初
+                    int tempCountMonth = getCurrentMonth();
+                    int tempCountYear = getCurrentYear();
+                    tempCountMonth -= 1;
+                    if (tempCountMonth < 1) {
+                        tempCountYear -= 1;
+                        tempCountMonth = 12;
+                    }
+                    firstCurrentMonthDayLimit = getSpecificYearMonthMaxDay(tempCountYear, tempCountMonth);
+                } else {
+                    firstCurrentMonthDayLimit -= 1;
+                }
+
+                if (firstLastMonthDayLimit == 1) {
+                    firstMonthTopLimit -= 1;
+                    if (firstMonthTopLimit < 1) {
+                        firstMonthTopLimit = 12;
+                        firstYearTopLimit -= 1;
+                    }
+                    firstLastMonthDayLimit = getSpecificYearMonthMaxDay(firstYearTopLimit, firstMonthTopLimit);
+                } else {
+                    firstLastMonthDayLimit -= 1;
+                }
+
+                break;
+            }
             case AFTER: {
+                break;
+            }
+            case AFTER_EXCEPT: {
+                if (getCurrentDay() == getSpecificYearMonthMaxDay(getCurrentYear(), getCurrentMonth())) {//TODO 月末
+                    int tempCountMonth = getCurrentMonth();
+                    int tempCountYear = getCurrentYear();
+                    tempCountMonth += 1;
+                    if (tempCountMonth > 12) {
+                        tempCountYear += 1;
+                        tempCountMonth = 1;
+                    }
+                    secondCurrentMonthDayLimit = 1;
+                } else {
+                    secondCurrentMonthDayLimit += 1;
+                }
+
+                if (secondLastMonthDayLimit == getSpecificYearMonthMaxDay(secondYearLowerLimit, secondMonthLowerLimit)) {
+                    secondMonthLowerLimit += 1;
+                    if (secondMonthLowerLimit > 12) {
+                        secondMonthLowerLimit = 1;
+                        secondYearLowerLimit += 1;
+                    }
+                    secondLastMonthDayLimit = 1;
+                } else {
+                    secondLastMonthDayLimit += 1;
+                }
                 break;
             }
             case NOLIMIT: {

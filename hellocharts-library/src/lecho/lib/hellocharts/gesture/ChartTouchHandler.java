@@ -1,7 +1,6 @@
 package lecho.lib.hellocharts.gesture;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -55,7 +54,6 @@ public class ChartTouchHandler {
     public void setClickPersist(boolean clickPersist) {
         isClickPersist = clickPersist;
         clickStatus = 0;//TODO 设置初始值
-        Log.e("LOGUTIL","ChartTouchHandler setClickPersist:"+clickPersist);
     }
 
     public ChartTouchHandler(Context context, Chart chart) {
@@ -169,7 +167,6 @@ public class ChartTouchHandler {
                     if (isClickPersist) {
                         clickStatus++;//TODO 变更点击状态计数
                     }
-                    Log.e("LOGUTIL","ACTION_DOWN  clickStatus:"+clickStatus);
                     if (isValueSelectionEnabled) {
                         selectionModeOldValue.clear();
                         if (wasTouched && !renderer.isTouched()) {
@@ -180,16 +177,13 @@ public class ChartTouchHandler {
                     if (isClickPersist) {
                         clickStatus++;//TODO 变更点击状态计数
                     }
-                    Log.e("LOGUTIL","ACTION_DOWN 点击同一个后 clickStatus:"+clickStatus);
                 }
                 break;
             case MotionEvent.ACTION_UP:
                 if (renderer.isTouched()) {
                     if (isClickPersist) {
                         if (clickStatus % 2 == 0) {
-                            Log.e("LOGUTIL","ACTION_UP  before clickStatus:"+clickStatus);
                             clickStatus = 0;
-                            Log.e("LOGUTIL","ACTION_UP  after clickStatus:"+clickStatus);
                             if (checkTouch(event.getX(), event.getY())) {
                                 if (isValueSelectionEnabled) {
                                     // For selection mode call listener only if selected value changed,
@@ -209,11 +203,9 @@ public class ChartTouchHandler {
                             needInvalidate = true;
                         } else {
                             //TODO
-                            Log.e("LOGUTIL","ACTION_UP  clickStatus % 2 == 0:"+clickStatus);
                             needInvalidate = false;
                         }
                     } else {//TODO 不使用点击持久功能
-                        Log.e("LOGUTIL","ACTION_UP  isClickPersist == false");
                         if (checkTouch(event.getX(), event.getY())) {
                             if (isValueSelectionEnabled) {
                                 // For selection mode call listener only if selected value changed,

@@ -11,7 +11,6 @@ import android.graphics.Path;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.Rect;
 import android.graphics.Shader;
-import android.util.Log;
 
 import java.util.List;
 
@@ -478,7 +477,6 @@ public class LineChartRenderer extends AbstractChartRenderer {
 
     //TODO 画出点的值
     private void drawLabel(Canvas canvas, Line line, PointValue pointValue, float rawX, float rawY, float offset) {
-        Log.e("LOGUTIL","ACTION_UP  before drawLabel(无lineIndex):");
         final Rect contentRect = computator.getContentRectMinusAllMargins();
         final int numChars = line.getFormatter().formatChartValue(labelBuffer, pointValue);
         if (numChars == 0) {
@@ -519,7 +517,6 @@ public class LineChartRenderer extends AbstractChartRenderer {
             right = rawX;
         }
 
-//        Log.e("LOGUTIL", "left:" + left + "\nright:" + right + "\ntop:" + top + "\nbottom:" + bottom);
         labelBackgroundRect.set(left, /*top*/ labelHeight, right, 2 * labelHeight + labelMargin * 2);//TODO 使用固定位置的（高度）
 //        labelBackgroundRect.set(left, top, right, bottom);//TODO 使用相对的点的位置
         drawLabelTextAndBackground(canvas, labelBuffer, labelBuffer.length - numChars, numChars,
@@ -528,7 +525,6 @@ public class LineChartRenderer extends AbstractChartRenderer {
 
     //TODO 画出点的值
     private void drawLabel(Canvas canvas, Line line, PointValue pointValue, float rawX, float rawY, float offset,int lineIndex) {
-        Log.e("LOGUTIL","ACTION_UP  before drawLabel(有----------lineIndex):");
         final Rect contentRect = computator.getContentRectMinusAllMargins();
         final int numChars = line.getFormatter().formatChartValue(labelBuffer, pointValue);
         if (numChars == 0) {
