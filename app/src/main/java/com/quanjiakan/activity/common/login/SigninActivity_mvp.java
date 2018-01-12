@@ -29,6 +29,7 @@ import com.quanjiakan.util.common.LogUtil;
 import com.quanjiakan.util.common.MessageDigestUtil;
 import com.quanjiakan.util.common.SerializeToObjectUtil;
 import com.quanjiakan.util.dialog.CommonDialogHint;
+import com.quanjiakan.util.dialog.HouseKeeperTimeSelectDialog;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.HashMap;
@@ -89,7 +90,15 @@ public class SigninActivity_mvp extends BaseActivity {
      */
 
     public void initView() {
-        tvTitle.setText(R.string.login_title);
+//        tvTitle.setText(R.string.login_title);
+        tvTitle.setText("不含往前");
+
+        menuText.setVisibility(View.VISIBLE);
+        menuText.setText("不含往后");
+
+        loginAccount.setText("含往前");
+
+        loginPassword.setText("含往后");
     }
 
     /**
@@ -116,9 +125,34 @@ public class SigninActivity_mvp extends BaseActivity {
      * 点击事件
      */
 
-    @OnClick({R.id.btn_submit, R.id.tv_signup, R.id.tv_findpassword})
+    @OnClick({R.id.btn_submit, R.id.tv_signup, R.id.tv_findpassword, R.id.image
+            , R.id.login_account
+            , R.id.login_password
+            , R.id.tv_title
+            , R.id.menu_text
+    })
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.tv_title: {
+                showTimeSelectorDialog(HouseKeeperTimeSelectDialog.DIALOG_TYPE.BEFORE_EXCEPT_TODAY, 0, 1, 45);
+                break;
+            }
+            case R.id.menu_text: {
+                showTimeSelectorDialog(HouseKeeperTimeSelectDialog.DIALOG_TYPE.AFTER_EXCEPT_TODAY, 0, 1, 45);
+                break;
+            }
+            case R.id.login_account: {
+                showTimeSelectorDialog(HouseKeeperTimeSelectDialog.DIALOG_TYPE.BEFORE, 0, 1, 45);
+                break;
+            }
+            case R.id.login_password: {
+                showTimeSelectorDialog(HouseKeeperTimeSelectDialog.DIALOG_TYPE.AFTER, 0, 1, 45);
+                break;
+            }
+            case R.id.image: {
+                showTimeSelectorDialog();
+                break;
+            }
             case R.id.btn_submit:
                 signinPresenter.doLogin(this);
                 break;
@@ -148,6 +182,43 @@ public class SigninActivity_mvp extends BaseActivity {
      * ********************************************************************************************
      * 跳转
      */
+    private HouseKeeperTimeSelectDialog day_dialog;
+
+    public void showTimeSelectorDialog() {
+        day_dialog = new HouseKeeperTimeSelectDialog(this, HouseKeeperTimeSelectDialog.DIALOG_TYPE.NORMAL, 0, 1, 45);
+        day_dialog.setBirthdayListener(new HouseKeeperTimeSelectDialog.OnBirthListener() {
+            @Override
+            public void onClick(String year, String month, String day) {
+                // TODO Auto-generated method stub
+                if (Integer.parseInt(month) < 10) {
+                    month = "0" + month;
+                }
+                if (Integer.parseInt(day) < 10) {
+                    day = "0" + day;
+                }
+                CommonDialogHint.getInstance().showHint(SigninActivity_mvp.this, "选择了：" + year + "年" + month + "月" + day + "日");
+            }
+        });
+        day_dialog.show();
+    }
+
+    public void showTimeSelectorDialog(HouseKeeperTimeSelectDialog.DIALOG_TYPE type, int year, int month, int day) {
+        day_dialog = new HouseKeeperTimeSelectDialog(this, type, year, month, day);
+        day_dialog.setBirthdayListener(new HouseKeeperTimeSelectDialog.OnBirthListener() {
+            @Override
+            public void onClick(String year, String month, String day) {
+                // TODO Auto-generated method stub
+                if (Integer.parseInt(month) < 10) {
+                    month = "0" + month;
+                }
+                if (Integer.parseInt(day) < 10) {
+                    day = "0" + day;
+                }
+                CommonDialogHint.getInstance().showHint(SigninActivity_mvp.this, "选择了：" + year + "年" + month + "月" + day + "日");
+            }
+        });
+        day_dialog.show();
+    }
 
     public void signup() {
         Intent intent = new Intent(this, SignupActivity.class);
@@ -162,13 +233,12 @@ public class SigninActivity_mvp extends BaseActivity {
     /**
      * ********************************************************************************************
      * 根据业务类型，获取对应的参数，若出现参数填入不规范，将传入null，并应该终止业务的执行
-     *
      */
     public Object getParamter(int type) {
         switch (type) {
             case IPresenterBusinessCode.LOGIN:
                 if (etUsername.getText().toString().trim().equals("") || etPassword.getText().toString().trim().equals("")) {
-                    CommonDialogHint.getInstance().showHint(SigninActivity_mvp.this,getString(R.string.common_hint_login_params_error));
+                    CommonDialogHint.getInstance().showHint(SigninActivity_mvp.this, getString(R.string.common_hint_login_params_error));
                     return null;
                 }
                 HashMap<String, String> params = new HashMap<>();
@@ -183,7 +253,6 @@ public class SigninActivity_mvp extends BaseActivity {
     }
 
     /**
-     *
      * @param type
      */
     public void showMyDialog(int type) {
@@ -218,9 +287,10 @@ public class SigninActivity_mvp extends BaseActivity {
         switch (type) {
             case IPresenterBusinessCode.LOGIN:
                 //TODO 使用String格式的Retrofit
-                if(result!=null && result instanceof String) {//TODO 避免空指针异常与数据类型的异常
+                if (result != null && result instanceof String) {//TODO 避免空指针异常与数据类型的异常
                     PostLoginEntity res = (PostLoginEntity) SerializeToObjectUtil.getInstances().jsonToObject(result.toString(),
-                            new TypeToken<PostLoginEntity>(){}.getType());
+                            new TypeToken<PostLoginEntity>() {
+                            }.getType());
                     //TODO 实际上仍然需要判断数据中是否是返回200 ，得到用户名，Token，ID等数据
                     /**
                      * 用户名，
@@ -229,7 +299,7 @@ public class SigninActivity_mvp extends BaseActivity {
                      * Token，
                      * ID，
                      */
-                    LogUtil.e(""+result.toString());
+                    LogUtil.e("" + result.toString());
                     //TODO 先按照罗工的那个步骤序列化数据
                     /**
                      SharePreferencesSetting.getInstance().setPhone("");
@@ -238,22 +308,22 @@ public class SigninActivity_mvp extends BaseActivity {
                      SharePreferencesSetting.getInstance().setPwSignature("");
                      SharePreferencesSetting.getInstance().setToken("");
                      */
-                    if(IResponseResultCode.RESPONSE_SUCCESS.equals(res.getCode())){
+                    if (IResponseResultCode.RESPONSE_SUCCESS.equals(res.getCode())) {
                         //TODO 保存用户的登录信息
                         saveLoginInfo(res);
 
                         Intent intent = new Intent(SigninActivity_mvp.this, MainActivity.class);
                         startActivity(intent);
                         finish();
-                    }else{
-                        if(res.getMessage()!=null && res.getMessage().length()>0){
-                            CommonDialogHint.getInstance().showHint(SigninActivity_mvp.this,res.getMessage());
-                        }else{
-                            CommonDialogHint.getInstance().showHint(SigninActivity_mvp.this,getString(R.string.error_login_hint));
+                    } else {
+                        if (res.getMessage() != null && res.getMessage().length() > 0) {
+                            CommonDialogHint.getInstance().showHint(SigninActivity_mvp.this, res.getMessage());
+                        } else {
+                            CommonDialogHint.getInstance().showHint(SigninActivity_mvp.this, getString(R.string.error_login_hint));
                         }
                     }
-                }else{
-                    CommonDialogHint.getInstance().showHint(SigninActivity_mvp.this,getString(R.string.error_login_hint));
+                } else {
+                    CommonDialogHint.getInstance().showHint(SigninActivity_mvp.this, getString(R.string.error_login_hint));
                 }
                 break;
         }
@@ -262,34 +332,34 @@ public class SigninActivity_mvp extends BaseActivity {
     public void onError(int type, int httpResponseCode, Object errorMsg) {
         switch (type) {
             case IPresenterBusinessCode.LOGIN:
-                if(errorMsg!=null && errorMsg.toString().length()>0){
-                    CommonDialogHint.getInstance().showHint(this,errorMsg.toString());
-                }else{
-                    CommonDialogHint.getInstance().showHint(this,getString(R.string.error_common_net_request_fail));
+                if (errorMsg != null && errorMsg.toString().length() > 0) {
+                    CommonDialogHint.getInstance().showHint(this, errorMsg.toString());
+                } else {
+                    CommonDialogHint.getInstance().showHint(this, getString(R.string.error_common_net_request_fail));
                 }
                 break;
             default:
-                if(errorMsg!=null && errorMsg.toString().length()>0){
-                    CommonDialogHint.getInstance().showHint(this,errorMsg.toString());
-                }else{
-                    CommonDialogHint.getInstance().showHint(this,getString(R.string.error_common_net_request_fail));
+                if (errorMsg != null && errorMsg.toString().length() > 0) {
+                    CommonDialogHint.getInstance().showHint(this, errorMsg.toString());
+                } else {
+                    CommonDialogHint.getInstance().showHint(this, getString(R.string.error_common_net_request_fail));
                 }
                 break;
         }
     }
 
     /**
-     *************************************************************************************************************************************
+     * ************************************************************************************************************************************
      */
 
     //TODO 保存登录信息，并进行持久化
-    public void saveLoginInfo(PostLoginEntity res){
+    public void saveLoginInfo(PostLoginEntity res) {
         LoginUserInfoEntity entity = new LoginUserInfoEntity();
         entity.setLoginPhone(getUsername());//保存登录使用的电话，在收到发给自己的广播时进行判断使用
         entity.setPasswordDigest(MessageDigestUtil.getSHA1String(getPassword()));//保存密码的签名
         //TODO 服务器返回的数据
-        entity.setNickName((res.getObject().getNickname()==null ? "":res.getObject().getNickname()));
-        entity.setUserId(res.getObject().getId()+"");
+        entity.setNickName((res.getObject().getNickname() == null ? "" : res.getObject().getNickname()));
+        entity.setUserId(res.getObject().getId() + "");
         entity.setToken(res.getObject().getToken());
         //TODO 保存或替换当前用户数据
         DaoManager.getInstances(this).getDaoSession().getLoginUserInfoEntityDao().insertOrReplaceInTx(entity);
