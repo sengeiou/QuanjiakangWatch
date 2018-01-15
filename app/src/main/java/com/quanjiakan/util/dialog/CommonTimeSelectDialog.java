@@ -393,10 +393,10 @@ public class CommonTimeSelectDialog extends Dialog implements android.view.View.
     }
 
     private void setDayAdapter() {
-        mDaydapter = new CalendarTextAdapter(context, arry_days, currentDay - 1, maxTextSize, minTextSize);
+        mDaydapter = new CalendarTextAdapter(context, arry_days, 0, maxTextSize, minTextSize);
         wvDay.setVisibleItems(5);
         wvDay.setViewAdapter(mDaydapter);
-        wvDay.setCurrentItem(currentDay - 1);
+        wvDay.setCurrentItem(0);
     }
 
     //TODO 设置年月日的范围
