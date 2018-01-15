@@ -22,7 +22,7 @@ import java.util.Calendar;
  *
  * @author ywl
  */
-public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.View.OnClickListener {
+public class CommonTimeSelectDialog extends Dialog implements android.view.View.OnClickListener {
 
     private Context context;
     private WheelView wvYear;
@@ -53,17 +53,15 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
     private int maxTextSize = 24;
     private int minTextSize = 14;
 
-    private boolean isSetData = false;
-
     //TODO 当前选中的时间
     private String selectedYearString;
     private String selectedMonthString;
     private String selectedDayString;
 
     //TODO 当前选择的时间 ---- 整形值
-    private int selectedYearIntValue;
-    private int selectedMonthIntValue;
-    private int selectedDayIntValue;
+    private int selectedYearIntValue = getCurrentYear();
+    private int selectedMonthIntValue = getCurrentMonth();
+    private int selectedDayIntValue = getCurrentDay();
 
     private OnBirthListener onBirthListener;
 
@@ -120,7 +118,7 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
 
     // 初始化   最终的年月时间（上下限的值）
 
-    public HouseKeeperTimeSelectDialog(Context context) {
+    public CommonTimeSelectDialog(Context context) {
         super(context, R.style.ShareDialog);
         this.context = context;
         userSelectedTimeType = DIALOG_TYPE.NOLIMIT;
@@ -128,7 +126,7 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
     }
 
     //TODO 当限制为0时，限制当前的选择的范围，如果后面的数据超出了，当前范围，则关联的上一级的范围
-    public HouseKeeperTimeSelectDialog(Context context, DIALOG_TYPE type, int yearLength, int monthLength, int dayLength) {
+    public CommonTimeSelectDialog(Context context, DIALOG_TYPE type, int yearLength, int monthLength, int dayLength) {
         super(context, R.style.ShareDialog);
         this.context = context;
         userSelectedTimeType = type;
@@ -177,8 +175,8 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
     }
 
     //TODO 当限制为0时，限制当前的选择的范围，如果后面的数据超出了，当前范围，则关联的上一级的范围
-    public HouseKeeperTimeSelectDialog(Context context, DIALOG_TYPE type, int yearBefore, int monthBefore, int dayBefore,
-                                       int yearAfter, int monthAfter, int dayAfter) {//TODO 前后自定义范围（提供更加灵活的操作）
+    public CommonTimeSelectDialog(Context context, DIALOG_TYPE type, int yearBefore, int monthBefore, int dayBefore,
+                                  int yearAfter, int monthAfter, int dayAfter) {//TODO 前后自定义范围（提供更加灵活的操作）
         super(context, R.style.ShareDialog);
         this.context = context;
         userSelectedTimeType = type;
@@ -244,9 +242,8 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
         btnCancel.setOnClickListener(this);
 
         //TODO 初始化时间
-        if (!isSetData) {
-            initData();
-        }
+        initData();
+
         //TODO 初始化年份时间----设置限制范围
         setYearRange();
         setYearAdapter();
@@ -256,7 +253,7 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
         //TODO 初始化年份时间-----设置限制范围
         setDayRange(getCurrentYear(), getCurrentMonth());
         setDayAdapter();
-
+//******************************************************************************************************************************
         //TODO 设置月和日的联动
         wvYear.addChangingListener(new OnWheelChangedListener() {
             @Override
@@ -273,6 +270,14 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
                 wvMonth.setVisibleItems(5);
                 wvMonth.setViewAdapter(mMonthAdapter);
                 wvMonth.setCurrentItem(0);
+
+                //TODO 级联变更日期的数据
+                selectedMonthIntValue = Integer.parseInt(arry_months.get(0));//TODO 默认设置到月份范围的第一个
+                setDayRange(selectedYearIntValue, selectedMonthIntValue);
+                mDaydapter = new CalendarTextAdapter(context, arry_days, 0, maxTextSize, minTextSize);
+                wvDay.setVisibleItems(5);
+                wvDay.setViewAdapter(mDaydapter);
+                wvDay.setCurrentItem(0);
             }
         });
 
@@ -291,7 +296,7 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
                 setTextviewSize(currentText, mYearAdapter);
             }
         });
-
+        //******************************************************************************************************************************
         //TODO 设置日的联动
         wvMonth.addChangingListener(new OnWheelChangedListener() {
 
@@ -303,6 +308,7 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
                 setMonthAdapterIndex(Integer.parseInt(currentText));
                 selectedMonthString = currentText;
                 selectedMonthIntValue = Integer.parseInt(currentText);
+
                 setDayRange(selectedYearIntValue, selectedMonthIntValue);
                 mDaydapter = new CalendarTextAdapter(context, arry_days, 0, maxTextSize, minTextSize);
                 wvDay.setVisibleItems(5);
@@ -326,6 +332,7 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
                 setTextviewSize(currentText, mMonthAdapter);
             }
         });
+        //******************************************************************************************************************************
         //TODO 设置日的选择，不需要联动
         wvDay.addChangingListener(new OnWheelChangedListener() {
 
@@ -335,6 +342,7 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
                 String currentText = (String) mDaydapter.getItemText(wheel.getCurrentItem());
                 setTextviewSize(currentText, mDaydapter);
                 selectedDayString = currentText;
+                selectedDayIntValue = Integer.parseInt(currentText);
             }
         });
 
@@ -371,10 +379,10 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
     }
 
     private void setYearAdapter() {
-        mYearAdapter = new CalendarTextAdapter(context, arry_years, setYearAdapterIndex(currentYear), maxTextSize, minTextSize);
+        mYearAdapter = new CalendarTextAdapter(context, arry_years, setYearAdapterIndex(selectedYearIntValue), maxTextSize, minTextSize);
         wvYear.setVisibleItems(5);
         wvYear.setViewAdapter(mYearAdapter);
-        wvYear.setCurrentItem(setYearAdapterIndex(currentYear));
+        wvYear.setCurrentItem(setYearAdapterIndex(selectedYearIntValue));
     }
 
     private void setMonthAdapter() {
@@ -396,13 +404,14 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
         arry_years.clear();
         switch (userSelectedTimeType) {
             case NORMAL: {
-                //TODO 默认不会对
+                //TODO 默认从下限，到上限
                 for (int i = firstFinalYear; i < secondFinalYear; i++) {
                     arry_years.add(i + "");
                 }
                 break;
             }
             case BEFORE: {
+                //
                 for (int i = firstFinalYear; i <= getCurrentYear(); i++) {
                     arry_years.add(i + "");
                 }
@@ -440,7 +449,7 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
         arry_months.clear();
         switch (userSelectedTimeType) {
             case NORMAL: {
-                //TODO 默认不会对
+                //TODO
                 if (year == firstFinalYear && year == secondFinalYear) {
                     for (int i = firstFinalMonth; i <= secondFinalMonth; i++) {
                         arry_months.add(i + "");
@@ -461,48 +470,80 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
                 break;
             }
             case BEFORE: {
-                if (year == firstFinalYear) {
+                if (year == firstFinalYear && year == getCurrentYear()) {
                     for (int i = firstFinalMonth; i <= getCurrentMonth(); i++) {
                         arry_months.add(i + "");
                     }
-                } else {
+                } else if (year == firstFinalYear) {
+                    for (int i = firstFinalMonth; i <= 12; i++) {
+                        arry_months.add(i + "");
+                    }
+                } else if (year == getCurrentYear()) {
                     for (int i = 1; i <= getCurrentMonth(); i++) {
+                        arry_months.add(i + "");
+                    }
+                } else {
+                    for (int i = 1; i <= 12; i++) {
                         arry_months.add(i + "");
                     }
                 }
                 break;
             }
             case BEFORE_EXCEPT_TODAY: {
-                if (year == firstFinalYear) {
+                if (year == firstFinalYear && year == getCurrentYear()) {
                     for (int i = firstFinalMonth; i <= getCurrentMonth(); i++) {
                         arry_months.add(i + "");
                     }
-                } else {
+                } else if (year == firstFinalYear) {
+                    for (int i = firstFinalMonth; i <= 12; i++) {
+                        arry_months.add(i + "");
+                    }
+                } else if (year == getCurrentYear()) {
                     for (int i = 1; i <= getCurrentMonth(); i++) {
+                        arry_months.add(i + "");
+                    }
+                } else {
+                    for (int i = 1; i <= 12; i++) {
                         arry_months.add(i + "");
                     }
                 }
                 break;
             }
             case AFTER: {
-                if (year == secondFinalYear) {
+                if (year == secondFinalYear && year == getCurrentYear()) {
                     for (int i = getCurrentMonth(); i <= secondFinalMonth; i++) {
                         arry_months.add(i + "");
                     }
-                } else {
+                } else if (year == secondFinalYear) {
+                    for (int i = 1; i <= secondFinalYear; i++) {
+                        arry_months.add(i + "");
+                    }
+                } else if (year == getCurrentYear()) {
                     for (int i = getCurrentMonth(); i <= 12; i++) {
+                        arry_months.add(i + "");
+                    }
+                } else {
+                    for (int i = 1; i <= 12; i++) {
                         arry_months.add(i + "");
                     }
                 }
                 break;
             }
             case AFTER_EXCEPT_TODAY: {
-                if (year == secondFinalYear) {
+                if (year == secondFinalYear && year == getCurrentYear()) {
                     for (int i = getCurrentMonth(); i <= secondFinalMonth; i++) {
                         arry_months.add(i + "");
                     }
-                } else {
+                } else if (year == secondFinalYear) {
+                    for (int i = 1; i <= secondFinalYear; i++) {
+                        arry_months.add(i + "");
+                    }
+                } else if (year == getCurrentYear()) {
                     for (int i = getCurrentMonth(); i <= 12; i++) {
+                        arry_months.add(i + "");
+                    }
+                } else {
+                    for (int i = 1; i <= 12; i++) {
                         arry_months.add(i + "");
                     }
                 }
@@ -544,6 +585,7 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
                 break;
             }
             case BEFORE: {
+                //TODO 默认不会对
                 if (year == firstFinalYear && month == firstFinalMonth &&
                         year == getCurrentYear() && month == getCurrentMonth()) {//处于上限，下限内部
                     for (int i = firstFinalDay; i <= firstStartDay; i++) {
@@ -740,21 +782,23 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
         switch (userSelectedTimeType) {
             case BEFORE_EXCEPT_TODAY: {
                 if (day == 1) {
-                    month -= 1;
+                    month = month - 1;
                     if (month < 1) {
                         year -= 1;
                         month = 12;
                     }
                     day = getSpecificYearMonthMaxDay(year, month);
                 } else {
-                    day -= day;
+                    day = day - 1;
                 }
+                //TODO 选择的是偏移后的数据
                 selectedYearString = year + "";
                 selectedMonthString = month + "";
                 selectedDayString = day + "";
                 break;
             }
             case AFTER_EXCEPT_TODAY: {
+                //TODO 往后偏移
                 if (day == getSpecificYearMonthMaxDay(year, month)) {
                     month += 1;
                     if (month > 12) {
@@ -763,7 +807,7 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
                     }
                     day = 1;
                 } else {
-                    day += day;
+                    day = day + 1;
                 }
                 selectedYearString = year + "";
                 selectedMonthString = month + "";
@@ -777,12 +821,7 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
                 break;
             }
         }
-
-
-        isSetData = true;
-
 //        //TODO 这里写法有点问题---不论当前是不是今年，month都设置成了12
-
     }
 
     /**
@@ -792,17 +831,69 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
      */
     public int setYearAdapterIndex(int year) {
         int yearIndex = 0;
-        if (year != getCurrentYear()) {
-
-        } else {
-            this.monthRange = getCurrentMonth();
-        }
-        this.monthRange = 12;
-        for (int i = getCurrentYear() + 20; i > 1950; i--) {
-            if (i == year) {
-                return yearIndex;
+        switch (userSelectedTimeType) {
+            case NORMAL: {
+                //TODO 默认从下限，到上限
+                for (int i = firstFinalYear; i < secondFinalYear; i++) {
+                    if (i == year) {
+                        return yearIndex;
+                    } else {
+                        yearIndex++;
+                    }
+                }
+                break;
             }
-            yearIndex++;
+            case BEFORE: {
+                //
+                for (int i = firstFinalYear; i <= getCurrentYear(); i++) {
+                    if (i == year) {
+                        return yearIndex;
+                    } else {
+                        yearIndex++;
+                    }
+                }
+                break;
+            }
+            case BEFORE_EXCEPT_TODAY: {
+                for (int i = firstFinalYear; i <= getCurrentYear(); i++) {
+                    if (i == year) {
+                        return yearIndex;
+                    } else {
+                        yearIndex++;
+                    }
+                }
+                break;
+            }
+            case AFTER: {
+                for (int i = getCurrentYear(); i <= secondFinalYear; i++) {
+                    if (i == year) {
+                        return yearIndex;
+                    } else {
+                        yearIndex++;
+                    }
+                }
+                break;
+            }
+            case AFTER_EXCEPT_TODAY: {
+                for (int i = getCurrentYear(); i <= secondFinalYear; i++) {
+                    if (i == year) {
+                        return yearIndex;
+                    } else {
+                        yearIndex++;
+                    }
+                }
+                break;
+            }
+            case NOLIMIT: {
+                for (int i = getCurrentYear() - LIMIT_120; i <= getCurrentYear() + LIMIT_120; i++) {
+                    if (i == year) {
+                        return yearIndex;
+                    } else {
+                        yearIndex++;
+                    }
+                }
+                break;
+            }
         }
         return yearIndex;
     }
@@ -815,12 +906,214 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
      */
     public int setMonthAdapterIndex(int month) {
         int monthIndex = 0;
-        getMonthDayRangeDays(currentYear, month);
-        for (int i = 1; i < this.monthRange; i++) {
-            if (month == i) {
-                return monthIndex;
-            } else {
-                monthIndex++;
+        getMonthDayRangeDays(selectedYearIntValue, month);
+
+        switch (userSelectedTimeType) {
+            case NORMAL: {
+                //TODO
+                if (selectedYearIntValue == firstFinalYear && selectedYearIntValue == secondFinalYear) {
+                    for (int i = firstFinalMonth; i <= secondFinalMonth; i++) {
+                        if (i == month) {
+                            return monthIndex;
+                        } else {
+                            monthIndex++;
+                        }
+                    }
+                    return 0;
+                } else if (selectedYearIntValue == firstFinalYear) {
+                    for (int i = firstFinalMonth; i <= 12; i++) {
+                        if (i == month) {
+                            return monthIndex;
+                        } else {
+                            monthIndex++;
+                        }
+                    }
+                    return 0;
+                } else if (selectedYearIntValue == secondFinalYear) {
+                    for (int i = 1; i <= secondFinalMonth; i++) {
+                        if (i == month) {
+                            return monthIndex;
+                        } else {
+                            monthIndex++;
+                        }
+                    }
+                    return 0;
+                } else {
+                    for (int i = 1; i <= 12; i++) {
+                        if (i == month) {
+                            return monthIndex;
+                        } else {
+                            monthIndex++;
+                        }
+                    }
+                    return 0;
+                }
+            }
+            case BEFORE: {
+                if (selectedYearIntValue == firstFinalYear && selectedYearIntValue == getCurrentYear()) {
+                    for (int i = firstFinalMonth; i <= getCurrentMonth(); i++) {
+                        if (i == month) {
+                            return monthIndex;
+                        } else {
+                            monthIndex++;
+                        }
+                    }
+                    return 0;
+                } else if (selectedYearIntValue == firstFinalYear) {
+                    for (int i = firstFinalMonth; i <= 12; i++) {
+                        if (i == month) {
+                            return monthIndex;
+                        } else {
+                            monthIndex++;
+                        }
+                    }
+                    return 0;
+                } else if (selectedYearIntValue == getCurrentYear()) {
+                    for (int i = 1; i <= getCurrentMonth(); i++) {
+                        if (i == month) {
+                            return monthIndex;
+                        } else {
+                            monthIndex++;
+                        }
+                    }
+                    return 0;
+                } else {
+                    for (int i = 1; i <= 12; i++) {
+                        if (i == month) {
+                            return monthIndex;
+                        } else {
+                            monthIndex++;
+                        }
+                    }
+                    return 0;
+                }
+            }
+            case BEFORE_EXCEPT_TODAY: {
+                if (selectedYearIntValue == firstFinalYear && selectedYearIntValue == getCurrentYear()) {
+                    for (int i = firstFinalMonth; i <= getCurrentMonth(); i++) {
+                        if (i == month) {
+                            return monthIndex;
+                        } else {
+                            monthIndex++;
+                        }
+                    }
+                    return 0;
+                } else if (selectedYearIntValue == firstFinalYear) {
+                    for (int i = firstFinalMonth; i <= 12; i++) {
+                        if (i == month) {
+                            return monthIndex;
+                        } else {
+                            monthIndex++;
+                        }
+                    }
+                    return 0;
+                } else if (selectedYearIntValue == getCurrentYear()) {
+                    for (int i = 1; i <= getCurrentMonth(); i++) {
+                        if (i == month) {
+                            return monthIndex;
+                        } else {
+                            monthIndex++;
+                        }
+                    }
+                    return 0;
+                } else {
+                    for (int i = 1; i <= 12; i++) {
+                        if (i == month) {
+                            return monthIndex;
+                        } else {
+                            monthIndex++;
+                        }
+                    }
+                    return 0;
+                }
+            }
+            case AFTER: {
+                if (selectedYearIntValue == secondFinalYear && selectedYearIntValue == getCurrentYear()) {
+                    for (int i = getCurrentMonth(); i <= secondFinalMonth; i++) {
+                        if (i == month) {
+                            return monthIndex;
+                        } else {
+                            monthIndex++;
+                        }
+                    }
+                    return 0;
+                } else if (selectedYearIntValue == secondFinalYear) {
+                    for (int i = 1; i <= secondFinalYear; i++) {
+                        if (i == month) {
+                            return monthIndex;
+                        } else {
+                            monthIndex++;
+                        }
+                    }
+                    return 0;
+                } else if (selectedYearIntValue == getCurrentYear()) {
+                    for (int i = getCurrentMonth(); i <= 12; i++) {
+                        if (i == month) {
+                            return monthIndex;
+                        } else {
+                            monthIndex++;
+                        }
+                    }
+                    return 0;
+                } else {
+                    for (int i = 1; i <= 12; i++) {
+                        if (i == month) {
+                            return monthIndex;
+                        } else {
+                            monthIndex++;
+                        }
+                    }
+                    return 0;
+                }
+            }
+            case AFTER_EXCEPT_TODAY: {
+                if (selectedYearIntValue == secondFinalYear && selectedYearIntValue == getCurrentYear()) {
+                    for (int i = getCurrentMonth(); i <= secondFinalMonth; i++) {
+                        if (i == month) {
+                            return monthIndex;
+                        } else {
+                            monthIndex++;
+                        }
+                    }
+                    return 0;
+                } else if (selectedYearIntValue == secondFinalYear) {
+                    for (int i = 1; i <= secondFinalYear; i++) {
+                        if (i == month) {
+                            return monthIndex;
+                        } else {
+                            monthIndex++;
+                        }
+                    }
+                    return 0;
+                } else if (selectedYearIntValue == getCurrentYear()) {
+                    for (int i = getCurrentMonth(); i <= 12; i++) {
+                        if (i == month) {
+                            return monthIndex;
+                        } else {
+                            monthIndex++;
+                        }
+                    }
+                    return 0;
+                } else {
+                    for (int i = 1; i <= 12; i++) {
+                        if (i == month) {
+                            return monthIndex;
+                        } else {
+                            monthIndex++;
+                        }
+                    }
+                    return 0;
+                }
+            }
+            case NOLIMIT: {
+                for (int i = 1; i <= 12; i++) {
+                    if (i == month) {
+                        return monthIndex;
+                    } else {
+                        monthIndex++;
+                    }
+                }
+                return 0;
             }
         }
         return monthIndex;
@@ -952,7 +1245,7 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
                         beforeDay = beforeDay - getSpecificYearMonthMaxDay(firstFinalYear, firstFinalMonth);
                     } else {
                         //计算结束日期，是上限的年月的哪一天
-                        firstFinalDay = getSpecificYearMonthMaxDay(firstFinalYear, firstFinalMonth) - beforeDay + 1;
+                        firstFinalDay = getSpecificYearMonthMaxDay(firstFinalYear, firstFinalMonth) - beforeDay + 1;//TODO 得到最后一天
                         // 年月不再需要变化---终止计算的循环
                         break;
                     }
@@ -964,27 +1257,39 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
              * 这种情况下会出现一个问题：
              * 当仅计算完日期后，若按照月份推算，是当月最后一天例如31号，往前推一个月，那个月只有30天，则此时会出问题
              *
-             *
              */
             if (getCurrentDay() >= beforeDay) {
                 //TODO 范围在当月
 
                 firstFinalDay = getCurrentDay() - beforeDay + 1;//TODO 范围即从 firstFinalDay ~  firstStartDay
 
-                firstFinalMonth = ((getCurrentMonth() > beforeMonth % 12) ? (getCurrentMonth() - beforeMonth % 12) : (12 + getCurrentMonth() - beforeMonth % 12)) % 12;
+                int tempCountMonth = firstFinalMonth;
 
-                firstFinalYear = getCurrentYear() - beforeYear - ((getCurrentMonth() > beforeMonth % 12) ? (beforeMonth / 12) : (beforeMonth / 12 + 1));
+                firstFinalMonth = (firstFinalMonth > beforeMonth % 12) ? (firstFinalMonth - beforeMonth % 12) : (12 + firstFinalMonth - beforeMonth % 12);
 
-                int finalDayRange = getSpecificYearMonthMaxDay(getCurrentYear(), getCurrentMonth()) - firstFinalDay;//计算 最后间隔了几天
-                firstFinalDay = getSpecificYearMonthMaxDay(firstFinalYear, firstFinalMonth) - finalDayRange;//根据最后的年月上限，得到真正的最终日期（避免出现最终时间异常的问题）
+                firstFinalYear = getCurrentYear() - beforeYear - ((tempCountMonth > beforeMonth % 12) ? (beforeMonth / 12) : (beforeMonth / 12 + 1));
 
+                int finalDayRange = getSpecificYearMonthMaxDay(getCurrentYear(), getCurrentMonth()) - firstFinalDay + 1;//计算 最后间隔了几天----由于日期间隔没超过一个月，
+                // 计算最终日是从月末往前偏移多少(而由于需要将最终这一天包含进去，所以需要+1)
+
+                if (getSpecificYearMonthMaxDay(firstFinalYear, firstFinalMonth) >= finalDayRange) {
+                    firstFinalDay = getSpecificYearMonthMaxDay(firstFinalYear, firstFinalMonth) - finalDayRange + 1;
+                } else {
+                    finalDayRange = finalDayRange - getSpecificYearMonthMaxDay(firstFinalYear, firstFinalMonth);
+                    firstFinalMonth--;
+                    if (firstFinalMonth <= 0) {
+                        firstFinalMonth = 12;
+                        firstFinalYear--;
+                    }
+                    firstFinalDay = getSpecificYearMonthMaxDay(firstFinalYear, firstFinalMonth) - finalDayRange + 1;//根据最后的年月上限，得到真正的最终日期（避免出现最终时间异常的问题）
+                }
                 LogUtil.e("firstFinalYear   2 :" + firstFinalYear);
             } else {
                 beforeDay = beforeDay - getCurrentDay();//
 
                 while (true) {
                     //超出了当月的，跨度为两个月 --- 先计算 上一个月时哪年哪月
-                    firstFinalMonth = getCurrentMonth() - 1;
+                    firstFinalMonth = firstFinalMonth - 1;//自己基础上偏移
                     // 计算年份的的上限
                     if (firstFinalMonth <= 0) {
                         firstFinalMonth = 12;
@@ -1002,48 +1307,35 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
                         int tempFinalMonth = firstFinalMonth;//临时保存计算日期后的月份---为计算年份准备
                         firstFinalMonth = (firstFinalMonth > beforeMonth % 12) ? (firstFinalMonth - beforeMonth % 12) : (12 + firstFinalMonth - beforeMonth % 12);
 
-                        firstFinalYear = firstFinalYear - beforeYear-((tempFinalMonth > beforeMonth % 12) ? (beforeMonth / 12) : (beforeMonth / 12 + 1));
+                        firstFinalYear = firstFinalYear - beforeYear - ((tempFinalMonth > beforeMonth % 12) ? (beforeMonth / 12) : (beforeMonth / 12 + 1));
 
                         firstFinalDay = getSpecificYearMonthMaxDay(firstFinalYear, firstFinalMonth) - beforeDay + 1;
                         // 年月不再需要变化---终止计算的循环
-
-
-
                         break;
                     }
                 }
                 //结束日期计算---开始计算年份月份
-
-
                 LogUtil.e("firstFinalYear   3 :" + firstFinalYear);
             }
         }
         //********************************   向后偏移---与向前偏移时相似，不过计算的规则需要变化（含有今天）
-
-        beforeDay = userDayRange_before;
-        beforeMonth = userMonthRange_before;
-        beforeYear = userYearRange_before;
-        //不含当前时，则需要-1天
-        secondStartDay = getCurrentDay();
-        // 设置上限的初始值---需要通过计算得到实际值
-        secondFinalMonth = getCurrentMonth();
-        secondFinalYear = getCurrentYear();
-
 
         //TODO 得到当前月份可选择的日期范围---选择最小值
         /**
          * 当选择的是当前，年，月时，
          * 日期范围 在   secondStartDay ~~~~~  月底 之间
          */
-        if (beforeMonth == 0 && beforeYear == 0) {
-            if (getSpecificYearMonthMaxDay(secondFinalYear, secondFinalMonth) >= (getCurrentDay() + beforeDay)) {
+        if (afterMonth == 0 && afterYear == 0) {// getCurrentDay() + afterDay - 1    *******************   计算第一个月的间隔是否在那个月内（包含当天；若不含当天，则不需要计算-1）
+            if (getSpecificYearMonthMaxDay(getCurrentYear(), getCurrentMonth()) >= (getCurrentDay() + afterDay - 1)) {//是否在当前月内
                 //TODO 范围在当月
-                secondFinalDay = getCurrentDay() + beforeDay;//TODO 范围即从 secondStartDay ~  secondFinalDay
+                secondFinalDay = getCurrentDay() + afterDay - 1;//TODO 范围即从 secondStartDay ~  secondFinalDay   (从secondStartDay开始算起)
             } else {
-                beforeDay = beforeDay - (getSpecificYearMonthMaxDay(secondFinalYear, secondFinalMonth) - getCurrentDay());// 减去当月剩余的天数
+                afterDay = afterDay -
+                        (getSpecificYearMonthMaxDay(secondFinalYear, secondFinalMonth) - getCurrentDay() + 1);//得到当月的间隔时间，由于需要包含当天，则需要+1
+                // 减去当月剩余的天数，得到移动到下个月的剩余时间
                 while (true) {
                     //超出了当月的，跨度为两个月 --- 先计算 下一个月是哪年哪月
-                    secondFinalMonth = getCurrentMonth() + 1;// 月份往后推一个月
+                    secondFinalMonth = secondFinalMonth + 1;// 月份往后推一个月---在自己的基础上推
                     // 计算年份的的上限
                     if (secondFinalMonth > 12) {//当超过当年的月份时，变更为下一年
                         secondFinalMonth = 1;
@@ -1052,13 +1344,13 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
 
                     }
 
-                    //若计算后的剩余日期数，少于往后推一个月那个月份的
-                    if (beforeDay > getSpecificYearMonthMaxDay(secondFinalYear, secondFinalMonth)) {
-                        // 减去往前推一个月的那月日期总数
-                        beforeDay = beforeDay - getSpecificYearMonthMaxDay(secondFinalYear, secondFinalMonth);
+                    //若计算后的剩余日期数，是否少于往后推一个月那个月份的
+                    if (afterDay > getSpecificYearMonthMaxDay(secondFinalYear, secondFinalMonth)) {//TODO 由于是在计算实际最后日期的上限，所以直接比较推后的那月的全部日期
+                        // 减去往前推一个月的那月日期总数-------------剩余日期数仍然大于往后推的那个月总天数
+                        afterDay = afterDay - getSpecificYearMonthMaxDay(secondFinalYear, secondFinalMonth);
                     } else {
                         //TODO 这里的计算方式与时间少于当月的计算方式相同
-                        secondFinalDay = beforeDay;//TODO 就是这一天了
+                        secondFinalDay = afterDay;//TODO 就是这一天了
                         // 年月不再需要变化---终止计算的循环
                         break;
                     }
@@ -1066,21 +1358,37 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
                 LogUtil.e("secondFinalYear   1 :" + secondFinalYear);
             }
         } else {// 单独的月份与年份范围不为0
-            if (getSpecificYearMonthMaxDay(secondFinalYear, secondFinalMonth) >= (getCurrentDay() + beforeDay)) {
+            if (getSpecificYearMonthMaxDay(secondFinalYear, secondFinalMonth) >= (getCurrentDay() + afterDay - 1)) {
                 //TODO 范围在当月
-                secondFinalDay = getCurrentDay() + beforeDay;//TODO 范围即从 secondStartDay ~  secondFinalDay
+                secondFinalDay = getCurrentDay() + afterDay - 1;//TODO 范围即从 secondStartDay ~  secondFinalDay  (需要将当天这一天包含进去)
                 //TODO 计算最终的年份，月份下线
-                secondFinalMonth = secondFinalMonth + beforeMonth;
-                secondFinalYear = secondFinalYear + beforeYear + (secondFinalMonth + beforeMonth) / 12;
+                int tempCountMonth = secondFinalMonth;
+
+                secondFinalMonth = (secondFinalMonth + afterMonth) % 12;
+
+                secondFinalYear = secondFinalYear + afterYear +
+                        (tempCountMonth + afterMonth) / 12;//计算在日期偏移计算完成后的，月份需要偏移多少年
+
+                //TODO 由于偏移年月计算完成后，存在最终日期可能超出这个最终的日期，所以需要再次判断下
+                if (secondFinalDay > getSpecificYearMonthMaxDay(secondFinalYear, secondFinalMonth)) {
+                    secondFinalDay = secondFinalDay - getSpecificYearMonthMaxDay(secondFinalYear, secondFinalMonth);
+                    secondFinalMonth += 1;
+                    if (secondFinalMonth > 12) {
+                        secondFinalMonth = 1;
+                        secondFinalYear++;
+                    }
+                }
+
                 LogUtil.e("secondFinalYear   2 :" + secondFinalYear);
             } else {
                 /**
                  从 getCurrentDay()  ~  到月底
                  */
-                beforeDay = beforeDay - (getSpecificYearMonthMaxDay(secondFinalYear, secondFinalMonth) - getCurrentDay());//减去--- 当月剩余的时间
+                afterDay = afterDay -
+                        (getSpecificYearMonthMaxDay(secondFinalYear, secondFinalMonth) - getCurrentDay() + 1);//减去--- 当月剩余的时间(需要包含当天，所以需要+1)
                 while (true) {
                     //超出了当月的，跨度为两个月 --- 先计算 上一个月时哪年哪月
-                    secondFinalMonth = getCurrentMonth() + 1;
+                    secondFinalMonth = secondFinalMonth + 1;//在当前最终月的基础上偏移，
                     // 计算年份的的上限
                     if (secondFinalMonth > 12) {
                         secondFinalMonth = 1;
@@ -1090,16 +1398,34 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
                     }
 
                     //若计算后的剩余日期数，少于往前推一个月那个月份的
-                    if (beforeDay > getSpecificYearMonthMaxDay(secondFinalYear, secondFinalMonth)) {
+                    if (afterDay > getSpecificYearMonthMaxDay(secondFinalYear, secondFinalMonth)) {
                         // 减去往前推一个月的那月日期总数
-                        beforeDay = beforeDay - getSpecificYearMonthMaxDay(secondFinalYear, secondFinalMonth);
+                        afterDay = afterDay - getSpecificYearMonthMaxDay(secondFinalYear, secondFinalMonth);
                     } else {
                         //TODO 这里的计算方式与时间少于当月的计算方式相同
-                        secondFinalDay = beforeDay;//TODO 就是这一天了 1~~~~这一天
+                        secondFinalDay = afterDay;//TODO 就是这一天了 1~~~~这一天
                         // 年月不再需要变化---终止计算的循环
                         break;
                     }
                 }
+
+                int tempCountMonth = secondFinalMonth;
+
+                secondFinalMonth = (secondFinalMonth + afterMonth) % 12;
+
+                secondFinalYear = secondFinalYear + afterYear +
+                        (tempCountMonth + afterMonth) / 12;//计算在日期偏移计算完成后的，月份需要偏移多少年
+
+                //TODO 由于偏移年月计算完成后，存在最终日期可能超出这个最终的日期，所以需要再次判断下
+                if (secondFinalDay > getSpecificYearMonthMaxDay(secondFinalYear, secondFinalMonth)) {
+                    secondFinalDay = secondFinalDay - getSpecificYearMonthMaxDay(secondFinalYear, secondFinalMonth);
+                    secondFinalMonth += 1;
+                    if (secondFinalMonth > 12) {
+                        secondFinalMonth = 1;
+                        secondFinalYear++;
+                    }
+                }
+
                 LogUtil.e("secondFinalYear   3 :" + secondFinalYear);
             }
         }
@@ -1127,7 +1453,8 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
                 break;
             }
             case BEFORE_EXCEPT_TODAY: {//TODO 矫正范围数据
-                if (getCurrentDay() == 1) {//TODO 月初
+                //TODO 起始日期往前推一天
+                if (firstStartDay == 1) {//TODO 月初
                     int tempCountMonth = getCurrentMonth();
                     int tempCountYear = getCurrentYear();
                     tempCountMonth -= 1;
@@ -1139,7 +1466,7 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
                 } else {
                     firstStartDay -= 1;
                 }
-
+                //TODO 最终日期往前推1
                 if (firstFinalDay == 1) {
                     firstFinalMonth -= 1;
                     if (firstFinalMonth < 1) {
@@ -1157,7 +1484,8 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
                 break;
             }
             case AFTER_EXCEPT_TODAY: {
-                if (getCurrentDay() == getSpecificYearMonthMaxDay(getCurrentYear(), getCurrentMonth())) {//TODO 月末
+                //TODO 不含当天，起始日，往后推一天
+                if (secondStartDay == getSpecificYearMonthMaxDay(getCurrentYear(), getCurrentMonth())) {//TODO 月末
                     int tempCountMonth = getCurrentMonth();
                     int tempCountYear = getCurrentYear();
                     tempCountMonth += 1;
@@ -1170,6 +1498,7 @@ public class HouseKeeperTimeSelectDialog extends Dialog implements android.view.
                     secondStartDay += 1;
                 }
 
+                //TODO 最后一天往后推一天
                 if (secondFinalDay == getSpecificYearMonthMaxDay(secondFinalYear, secondFinalMonth)) {
                     secondFinalMonth += 1;
                     if (secondFinalMonth > 12) {

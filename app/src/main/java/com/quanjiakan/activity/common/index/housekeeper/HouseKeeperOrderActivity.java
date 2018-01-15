@@ -39,12 +39,11 @@ import com.quanjiakan.util.common.SerializeToObjectUtil;
 import com.quanjiakan.util.common.StringCheckUtil;
 import com.quanjiakan.util.common.UnitExchangeUtil;
 import com.quanjiakan.util.dialog.CommonDialogHint;
-import com.quanjiakan.util.dialog.HouseKeeperTimeSelectDialog;
+import com.quanjiakan.util.dialog.CommonTimeSelectDialog;
 import com.quanjiakan.util.encrypt.SMSValidateUtil;
 import com.quanjiakan.util.pay.AlipayHandler;
 import com.quanjiakan.util.pay.WeixinPayHandler;
 import com.quanjiakan.util.widget.RoundTransform;
-import com.quanjiakan.view.dialog.ChangeBirthDialog;
 import com.squareup.picasso.Picasso;
 import com.umeng.analytics.MobclickAgent;
 
@@ -592,9 +591,9 @@ public class HouseKeeperOrderActivity extends BaseActivity {
     }
 
     public void showTimeSelectorDialog(final TimeType type){
-        HouseKeeperTimeSelectDialog day_dialog = new HouseKeeperTimeSelectDialog(this);
+        CommonTimeSelectDialog day_dialog = new CommonTimeSelectDialog(this);
         day_dialog.show();
-        day_dialog.setBirthdayListener(new HouseKeeperTimeSelectDialog.OnBirthListener() {
+        day_dialog.setBirthdayListener(new CommonTimeSelectDialog.OnBirthListener() {
             @Override
             public void onClick(String year, String month, String day) {
                 // TODO Auto-generated method stub

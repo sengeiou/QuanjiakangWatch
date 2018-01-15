@@ -29,7 +29,7 @@ import com.quanjiakan.util.common.LogUtil;
 import com.quanjiakan.util.common.MessageDigestUtil;
 import com.quanjiakan.util.common.SerializeToObjectUtil;
 import com.quanjiakan.util.dialog.CommonDialogHint;
-import com.quanjiakan.util.dialog.HouseKeeperTimeSelectDialog;
+import com.quanjiakan.util.dialog.CommonTimeSelectDialog;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.HashMap;
@@ -134,19 +134,19 @@ public class SigninActivity_mvp extends BaseActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_title: {
-                showTimeSelectorDialog(HouseKeeperTimeSelectDialog.DIALOG_TYPE.BEFORE_EXCEPT_TODAY, 0, 1, 45);
+                showTimeSelectorDialog(CommonTimeSelectDialog.DIALOG_TYPE.BEFORE_EXCEPT_TODAY, 0, 1, 45);
                 break;
             }
             case R.id.menu_text: {
-                showTimeSelectorDialog(HouseKeeperTimeSelectDialog.DIALOG_TYPE.AFTER_EXCEPT_TODAY, 0, 1, 45);
+                showTimeSelectorDialog(CommonTimeSelectDialog.DIALOG_TYPE.AFTER_EXCEPT_TODAY, 0, 1, 45);
                 break;
             }
             case R.id.login_account: {
-                showTimeSelectorDialog(HouseKeeperTimeSelectDialog.DIALOG_TYPE.BEFORE, 0, 1, 45);
+                showTimeSelectorDialog(CommonTimeSelectDialog.DIALOG_TYPE.BEFORE, 0, 1, 45);
                 break;
             }
             case R.id.login_password: {
-                showTimeSelectorDialog(HouseKeeperTimeSelectDialog.DIALOG_TYPE.AFTER, 0, 1, 45);
+                showTimeSelectorDialog(CommonTimeSelectDialog.DIALOG_TYPE.AFTER, 0, 1, 45);
                 break;
             }
             case R.id.image: {
@@ -182,11 +182,11 @@ public class SigninActivity_mvp extends BaseActivity {
      * ********************************************************************************************
      * 跳转
      */
-    private HouseKeeperTimeSelectDialog day_dialog;
+    private CommonTimeSelectDialog day_dialog;
 
     public void showTimeSelectorDialog() {
-        day_dialog = new HouseKeeperTimeSelectDialog(this, HouseKeeperTimeSelectDialog.DIALOG_TYPE.NORMAL, 0, 1, 45);
-        day_dialog.setBirthdayListener(new HouseKeeperTimeSelectDialog.OnBirthListener() {
+        day_dialog = new CommonTimeSelectDialog(this, CommonTimeSelectDialog.DIALOG_TYPE.NORMAL, 0, 1, 45);
+        day_dialog.setBirthdayListener(new CommonTimeSelectDialog.OnBirthListener() {
             @Override
             public void onClick(String year, String month, String day) {
                 // TODO Auto-generated method stub
@@ -202,9 +202,9 @@ public class SigninActivity_mvp extends BaseActivity {
         day_dialog.show();
     }
 
-    public void showTimeSelectorDialog(HouseKeeperTimeSelectDialog.DIALOG_TYPE type, int year, int month, int day) {
-        day_dialog = new HouseKeeperTimeSelectDialog(this, type, year, month, day);
-        day_dialog.setBirthdayListener(new HouseKeeperTimeSelectDialog.OnBirthListener() {
+    public void showTimeSelectorDialog(CommonTimeSelectDialog.DIALOG_TYPE type, int year, int month, int day) {
+        day_dialog = new CommonTimeSelectDialog(this, type, year, month, day);
+        day_dialog.setBirthdayListener(new CommonTimeSelectDialog.OnBirthListener() {
             @Override
             public void onClick(String year, String month, String day) {
                 // TODO Auto-generated method stub
