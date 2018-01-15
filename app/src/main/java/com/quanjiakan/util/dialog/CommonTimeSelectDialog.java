@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.pingantong.main.R;
+import com.quanjiakan.util.common.LogUtil;
 import com.quanjiakan.util.widget.wheelview.AbstractWheelTextAdapter;
 import com.quanjiakan.util.widget.wheelview.OnWheelChangedListener;
 import com.quanjiakan.util.widget.wheelview.OnWheelScrollListener;
@@ -1249,6 +1250,7 @@ public class CommonTimeSelectDialog extends Dialog implements android.view.View.
                         break;
                     }
                 }
+                LogUtil.e("firstFinalYear   1 :" + firstFinalYear);
             }
         } else {//(getCurrentDay() >= beforeDay ? beforeDay : getCurrentDay())
             /**
@@ -1281,6 +1283,7 @@ public class CommonTimeSelectDialog extends Dialog implements android.view.View.
                     }
                     firstFinalDay = getSpecificYearMonthMaxDay(firstFinalYear, firstFinalMonth) - finalDayRange + 1;//根据最后的年月上限，得到真正的最终日期（避免出现最终时间异常的问题）
                 }
+                LogUtil.e("firstFinalYear   2 :" + firstFinalYear);
             } else {
                 beforeDay = beforeDay - getCurrentDay();//
 
@@ -1312,6 +1315,7 @@ public class CommonTimeSelectDialog extends Dialog implements android.view.View.
                     }
                 }
                 //结束日期计算---开始计算年份月份
+                LogUtil.e("firstFinalYear   3 :" + firstFinalYear);
             }
         }
         //********************************   向后偏移---与向前偏移时相似，不过计算的规则需要变化（含有今天）
@@ -1373,6 +1377,8 @@ public class CommonTimeSelectDialog extends Dialog implements android.view.View.
                         secondFinalYear++;
                     }
                 }
+
+                LogUtil.e("secondFinalYear   2 :" + secondFinalYear);
             } else {
                 /**
                  从 getCurrentDay()  ~  到月底
@@ -1418,9 +1424,23 @@ public class CommonTimeSelectDialog extends Dialog implements android.view.View.
                         secondFinalYear++;
                     }
                 }
+
+                LogUtil.e("secondFinalYear   3 :" + secondFinalYear);
             }
         }
+        LogUtil.e("类型：" + userSelectedTimeType.toString());
+        LogUtil.e("日期开始日：" + firstStartDay
+                + "\n日期结束日：" + firstFinalDay
+                + "\n月份上限：" + firstFinalMonth
+                + "\n年份上限：" + firstFinalYear
+        );
+        LogUtil.e("日期开始日：" + secondStartDay
+                + "\n日期结束日：" + secondFinalDay
+                + "\n月份下限：" + secondFinalMonth
+                + "\n年份下限：" + secondFinalYear
+        );
 
+        LogUtil.e("***********************************************************************\n调整后");
 
         //TODO 按照包含今天的计算完成后，根据选择的类型，纠正对应的数据
         switch (userSelectedTimeType) {
@@ -1494,5 +1514,16 @@ public class CommonTimeSelectDialog extends Dialog implements android.view.View.
                 break;
             }
         }
+
+        LogUtil.e("日期开始日：" + firstStartDay
+                + "\n日期结束日：" + firstFinalDay
+                + "\n月份上限：" + firstFinalMonth
+                + "\n年份上限：" + firstFinalYear
+        );
+        LogUtil.e("日期开始日：" + secondStartDay
+                + "\n日期结束日：" + secondFinalDay
+                + "\n月份下限：" + secondFinalMonth
+                + "\n年份下限：" + secondFinalYear
+        );
     }
 }
