@@ -515,7 +515,7 @@ public class CommonTimeSelectDialog extends Dialog implements android.view.View.
                         arry_months.add(i + "");
                     }
                 } else if (year == secondFinalYear) {
-                    for (int i = 1; i <= secondFinalYear; i++) {
+                    for (int i = 1; i <= secondFinalMonth; i++) {
                         arry_months.add(i + "");
                     }
                 } else if (year == getCurrentYear()) {
@@ -535,7 +535,7 @@ public class CommonTimeSelectDialog extends Dialog implements android.view.View.
                         arry_months.add(i + "");
                     }
                 } else if (year == secondFinalYear) {
-                    for (int i = 1; i <= secondFinalYear; i++) {
+                    for (int i = 1; i <= secondFinalMonth; i++) {
                         arry_months.add(i + "");
                     }
                 } else if (year == getCurrentYear()) {
