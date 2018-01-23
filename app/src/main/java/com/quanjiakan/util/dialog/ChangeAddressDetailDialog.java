@@ -298,7 +298,7 @@ public class ChangeAddressDetailDialog extends Dialog implements View.OnClickLis
 	private void initJsonData() {
 		try {
 			StringBuffer sb = new StringBuffer();
-			InputStream is = context.getAssets().open("city.json");
+			InputStream is = context.getAssets().open("json/city.json");
 			int len = -1;
 			byte[] buf = new byte[1024];
 			while ((len = is.read(buf)) != -1) {
